@@ -1,0 +1,112 @@
+$VAR1 = 'query';
+$VAR2 = {
+          'within' => [
+                        's'
+                      ],
+          'corpus' => [
+                        'engl2'
+                      ],
+          'context' => {
+                         'left' => [
+                                     '7'
+                                   ],
+                         'right' => [
+                                      '7'
+                                    ],
+                         'type' => [
+                                     'chars'
+                                   ]
+                       },
+          'root' => [
+                      '/hf/foni/tekstlab/glossa-0.7/dat/'
+                    ],
+          'results' => {
+                         'random' => [
+                                       'on'
+                                     ],
+                         'fastcut' => [
+                                        'on'
+                                      ],
+                         'page' => [
+                                     '20'
+                                   ],
+                         'max' => [
+                                    '2000'
+                                  ]
+                       }
+        };
+$VAR3 = 'phrase';
+$VAR4 = {
+          'number' => [
+                        '0'
+                      ],
+          '0' => {
+                   'corpus' => [
+                                 'ENGL2'
+                               ]
+                 }
+        };
+$VAR5 = 'token';
+$VAR6 = {
+          '0' => {
+                   '1' => {
+                            'string' => [
+                                          'i'
+                                        ]
+                          }
+                 }
+        };
+$VAR7 = 'meta';
+$VAR8 = {
+          'mode' => {
+                      'schoolstart' => [
+                                         'LIKE'
+                                       ],
+                      'language' => [
+                                      'LIKE'
+                                    ],
+                      'active' => [
+                                    'LIKE'
+                                  ],
+                      'raised' => [
+                                    'LIKE'
+                                  ],
+                      'pronunciation' => [
+                                           'LIKE'
+                                         ],
+                      'sex' => [
+                                 'check'
+                               ],
+                      'tid' => [
+                                 'LIKE'
+                               ]
+                    },
+          'values' => {
+                        'active::ENGL2author.active' => [
+                                                          'y'
+                                                        ]
+                      }
+        };
+
+token_0_1_string (1): i,
+phrase_0_corpus (1): ENGL2,
+query_corpus (1): engl2,
+query_root (1): /hf/foni/tekstlab/glossa-0.7/dat/,
+query_within (1): s,
+query_results_page (1): 20,
+query_results_max (1): 2000,
+query_results_random (1): on,
+query_results_fastcut (1): on,
+query_context_type (1): chars,
+query_context_left (1): 7,
+query_context_right (1): 7,
+meta_values_active::ENGL2author.active (1): y,
+meta_mode_active (1): LIKE,
+meta_mode_tid (1): LIKE,
+meta_mode_language (1): LIKE,
+meta_mode_pronunciation (1): LIKE,
+meta_mode_sex (1): check,
+meta_mode_raised (1): LIKE,
+meta_mode_schoolstart (1): LIKE,
+CQP: ([((word="i" %c))]) ;
+base_corpus: ENGL2
