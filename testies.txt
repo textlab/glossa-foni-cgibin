@@ -1,0 +1,62 @@
+
+
+conf_file: /hf/foni/tekstlab/glossa-0.7/dat//scandiasyn/cgi.conf
+--->scandiasyn<---
+
+key: htmlRoot - val: http://tekstlab.uio.no/glossa/
+
+key: cgiRoot - val: http://tekstlab.uio.no/cgi-bin/glossa/
+
+key: charset - val: ISO-8859-1
+
+key: config_dir - val: /hf/foni/tekstlab/glossa-0.7/dat/
+
+key: corpus_attributes - val: word lemma phon pos gender num type defn temp pers case degr descr nlex mood voice id
+
+key: corpus_structures - val: sync_time sync_end turn_endtime turn_starttime turn_speaker who_nb who_name who_line_key episode_circumstance
+
+key: cwb_registry - val: /hf/foni/corpora/cwb_reg
+
+key: dat_files - val: /var/www/html/glossa/download/
+
+key: db_host - val: localhost
+
+key: db_name - val: glossa
+
+key: db_pwd - val: tuba
+
+key: db_uname - val: glossa_reader
+
+key: diacr_table - val: /var/www/html/omc/diacr.dat
+
+key: download_url - val: http://tekstlab.uio.no/glossa/download/
+
+key: lang - val: en
+
+key: link_structure - val: sync
+
+key: logfile - val: /var/www/cgi-data/omclog
+
+key: meta_text - val: tid genre
+
+key: meta_text_alias - val: code	genre
+
+key: meta_author - val: tid sex agegroup country region area place wc rec
+
+key: meta_author_alias - val: code	sex	age group	country	region	area	place	word count	recorded
+
+key: meta_class - val: class
+
+key: meta_text_sum - val: supcat tid sex agegroup country region area place
+
+key: subcorp_files - val: /hf/foni/tekstlab/glossa-0.7/dat/scandiasyn/subcorp/
+
+key: tmp_dir - val: /hf/foni/tekstlab/tmp/glossa/
+
+key: type - val: monolingual
+
+key: bounds_type - val: multiple
+
+key: corpus_mode - val: speech
+
+key: media_url - val: rtsp://lillestroem.uio.no/hf/ilf/scandiasyn/
