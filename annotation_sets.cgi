@@ -36,7 +36,7 @@ if ($newname) {
 
 
 print "<html><head></head><body>";
-
+print "<img src='http://omilia.uio.no/img/tri.png' /><br />Due to a bug, results saved prior to 30. March, 2012 may be retrieved incorrectly when using this page.<br />If you experience any problems, contact us at the Text Laboratory.<br /><br />";
 print "<table><tr><td valign=top><form action=\"", $conf{'cgiRoot'}, "/annotation_sets.cgi\" method=\"get\">";
 
 

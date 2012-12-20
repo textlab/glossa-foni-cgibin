@@ -80,11 +80,7 @@ if ($action eq 'rename') {
     else {
 	print "Can't rename to nothing.";
     }
-    
-
-
 }
-
 
 if ($action eq 'join') {
 
@@ -145,12 +141,6 @@ if ($action eq 'join') {
 
 }
 
-
-
-
-
-
-
 if ($action eq 'saveas') {
 
 
@@ -201,7 +191,7 @@ if ($action eq 'saveas') {
 
 
 
-
+print "<img src='http://omilia.uio.no/img/tri.png' /><br />Due to a bug, results saved prior to 30. March, 2012 may be retrieved incorrectly when using this page.<br />If you experience any problems, contact us at the Text Laboratory.<br /><br />";
 print "<form action='http://tekstlab.uio.no/cgi-bin/glossa/get_hits.cgi' method='GET'>\n<table border=1>\n";
 print "<th>name</th><th>delete</th><th>rename</th><th>copy</th><th>add</th>\n";
 
