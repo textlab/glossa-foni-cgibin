@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 use CGI::Carp qw(fatalsToBrowser);
-#use strict;
+use strict;
 use CGI;
 use POSIX;
 use Data::Dumper;
@@ -221,6 +221,22 @@ function translate(node, text) {
       });
     }
   });
+}
+
+var globalNodeVar;
+function appendTranslateScript(node,text){
+    globalNodeVar = node;
+    var newScript = document.createElement('script');
+    newScript.type = 'text/javascript';
+    var sourceText = encodeURI(text); // seems to work better than encode() function
+    var source = 'https://www.googleapis.com/language/translate/v2?key=AIzaSyALLIemzcsdQYpyqxAE5k3V7luZ73P5SOQ&target=en&callback=translateText&q=' + sourceText;
+    newScript.src = source;
+    document.getElementsByTagName('head')[0].appendChild(newScript);
+}
+function translateText(response){
+    globalNodeVar.innerHTML = response.data.translations[0].translatedText;
+    globalNodeVar.innerHTML += " <font size='-2'>(google)</font>"; //"&nbsp;<img src='http://tekstlab.uio.no/glossa/html/img/google-g-icon-16.png'>";
+    globalNodeVar = 0;
 }
 
 
@@ -490,6 +506,9 @@ foreach my $row (@$phrases) {
 		if ($val eq 'phon') {
 		    $string_class = "phon";
 		}
+                elsif ($val eq 'orig') {
+                    $string_class = "orig";
+                }
 		elsif ($val eq 'end') {
 		    $string_string = ".*" . $string_string;
 		}
@@ -545,7 +564,8 @@ foreach my $row (@$phrases) {
 	    while (my ($cat,$vals) = each %pos) {
 		my @vals = split(/\|/, $vals);
 		shift @vals;
-		my $pos = "(" . join(" | ", @vals) . ")";
+		# [AN 13.11.12]: Fjernet whitespace rundt pipe-symbolet
+		my $pos = "(" . join("|", @vals) . ")";
 		push @pos, $pos;
 	    }
 	}
@@ -700,9 +720,6 @@ if ($debug) {
 
 
 
-
-
-
 ##                                        ##
 ##             2. Build subcorpus         ##
 ##                                        ##
@@ -806,7 +823,7 @@ my $fastcut=$in{'query'}->{'results'}->{'fastcut'}->[0];
 my $query = new WebCqp::Query "$base_corpus";
 
 # print errors
-$query->on_error(sub{grep {print "<2>$_</h2>\n"} @_}); # this error needs to be dealt with in a more informative way
+$query->on_error(sub{grep {print "<h2>$_</h2>\n"} @_}); # this error needs to be dealt with in a more informative way
 
 if($debug) {
 	print Dumper %aligned_corpora;
@@ -817,7 +834,7 @@ if($debug) {
 $query->alignments(keys %aligned_corpora, keys %aligned_corpora_opt); 
 
 # get structural attributes
-my $sts = $conf{'corpus_structures'};
+my $sts = $conf{'corpus_structures'}; #eg sync_time sync_end turn_endtime turn_starttime turn_speaker who_nb who_name who_line_key episode_circumstance...
 my @sts = split(/ +/, $sts);
 
 $query->structures(@sts);  # specify str-attrib. to print
@@ -1041,7 +1058,7 @@ $top_text .= "<option value='" . $conf{'cgiRoot'} . "/save_hits_choose.cgi?$acti
 #$top_text .= "<option value='" . $conf{'htmlRoot'} . "/html/profile.php?informants=$all_informants'>show on map</option>\n";
 $top_text .="</select>\n";
 
-if($CORPUS eq 'scandiasyn'){
+if($CORPUS eq 'scandiasyn' || $CORPUS eq 'amerikanorsk'){
     $top_text .= "<input type='button' onclick=\"mapper();\" value='Map' />";
     $top_text .= "<div style='float: right; top:0px;'><span onclick=\"mapper2();\">ø</span></div>";
 }
@@ -1117,7 +1134,7 @@ for (my $i = 0; $i < $nr_result; $i++) {
 
     # Loop through the annotations specified in the configuration file,
     # make some corpus-specific changes, and add them to a hash.
-    foreach my $a (@sts) {
+    foreach my $a (@sts) { # @sts is array of corpus structure as defined in cgi.conf [sync_time, sync_end, turn_endtime, ...]
 
 	# temporary fix for OMC ...
 	next if (($CORPUS eq 'omc') and ($a eq 'text_id'));
@@ -1160,8 +1177,6 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	if ($speech_corpus and ($a eq 'who_line_key')) {
 	    $sts{'s_id'} = $m->{'data'}->{$a};
 	}
-
-
     }
 
     #corpus position
@@ -1282,6 +1297,7 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	$lang =~ s/omc3_//;
 	$lang =~ s/omc4_//;
 	$lang =~ s/run_//;
+	$lang =~ s/subtitles_//;
 	# FIXME: should be general
 	if ($CORPUS eq 'samno') {
 	    if ($base_corpus eq 'SAMNO_SAMISK') {  $lang = "sme" }
@@ -1379,6 +1395,25 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	    $source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" onClick=\"window.open('$conf{'htmlRoot'}/html/profile.php?tid=$identifier&corpus=$CORPUS',");
 	    $source_line.=sprintf("'mywindow','height=600,width=600,status,scrollbars,resizable');\"><img src='$conf{'htmlRoot'}/html/img/i.gif' alt='i' / border='0'></a> \n&nbsp;</font>\n");
 	}
+        elsif ($CORPUS eq "skriv")
+        {
+            $identifier = $sts{text_id};
+            my $assignment_code = join("_", (split("_", $identifier))[1,2]);
+            my $assignment_path = "/michalkk/skriv/oppgavetekster/${assignment_code}.pdf";
+
+	    $source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" onClick=\"window.open('$conf{'htmlRoot'}/html/profile.php?tid=$identifier&corpus=$CORPUS',");
+	    $source_line.=sprintf("'mywindow','height=600,width=600,status,scrollbars,resizable');\"><img src='$conf{'htmlRoot'}/html/img/i.gif' alt='i' border='0'></a>&nbsp;</font>");
+
+            if (-e "/var/www/html$assignment_path") {
+                $source_line.=sprintf("<a href=\"$assignment_path\" target=\"_new\"><img src=\"/michalkk/skriv/img/assignment-text.png\" height=\"14\"/></a>&nbsp;");
+            }
+            my $identifier_noslash = $identifier;
+            $identifier_noslash =~ s,/,_,g;
+            my $answer_path = "/michalkk/skriv/oppgavesvar/${identifier_noslash}.pdf";
+            if (-e "/var/www/html$answer_path") {
+                $source_line.=sprintf("<a href=\"$answer_path\" target=\"_new\"><img src=\"/michalkk/skriv/img/assignment-answer.png\" height=\"14\"/></a>");
+            }
+        }
 	else
 	{
 	    $source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" onClick=\"window.open('$conf{'cgiRoot'}/show_context.cgi$sts_url&cs=3',");
@@ -1451,7 +1486,12 @@ for (my $i = 0; $i < $nr_result; $i++) {
 
 ###
 	if($parallel){
-	    $source_line .= "<tr><td></td><td>";
+            if ($CORPUS eq "skriv") {
+              $source_line .= "<tr><td></td><td align=\"right\">";
+            }
+            else {
+              $source_line .= "<tr><td></td><td>";
+            }
 	    $source_line .= print_tokens($res_l, 2);
 	    if ($context_type eq "chars") {$source_line.=sprintf("</td><td>"); }
 	    $source_line.=sprintf("<b> &nbsp;");
@@ -1469,8 +1509,9 @@ for (my $i = 0; $i < $nr_result; $i++) {
 #	    my $translation = print_tokens($res_l, 1) . print_tokens($ord, 1) . print_tokens($res_r, 1);
 	    my $orig = get_first($res_l) . "<b>" . get_first($ord) . "</b>" . get_first($res_r);
 	    $orig =~ s/"/_/g;
+	    $orig =~ s/\#+/&hellip;/g;
 	    $source_line .= "<tr><td></td><td>";
-#	    $source_line .= "<div><span onclick=\"translate(this.parentNode, '$orig');\" style='font-size:small;cursor:pointer;'>[translate]</span></div>";
+	    $source_line .= "<div><span onclick=\"appendTranslateScript(this.parentNode, '$orig');\" style='font-size:small;cursor:pointer;'>[translate]</span></div>";
 	    $source_line.=sprintf("</td></tr>");
 #<img src=\"" . $conf{'htmlRoot'} . "html/img/google-g-icon-16.png\">
 	    $source_line .= "<tr><td></td><td></td></tr>";
@@ -1497,7 +1538,7 @@ print "</table>";
 
 #my $all_informants = "";#join(",", keys %allinfs);
 
-my %tok_inf_map = ();
+#my %tok_inf_map = ();
 
 my $tok2infs_map = {};
 
@@ -1528,7 +1569,7 @@ foreach my $key ( keys %$tok2infs_map ){
     $json_tok_inf .= "\"$key\":[";
     foreach my $key2 (keys %{$tok2infs_map->{$key}}){
 	$json_tok_inf .= "\"$key2\",";
-	if($CORPUS eq 'scandiasyn'){	
+	if($CORPUS eq 'scandiasyn' || $CORPUS eq 'amerikanorsk'){	
 	    my $sth = $dbh->prepare( "SELECT place FROM " . uc ( $CORPUS ) . "author where tid = '$key2';");
 	
 #	$json_inf_loc .= "\nSELECT place FROM " . uc ( $CORPUS ) . "author where tid = '$key2';\n";
@@ -1607,8 +1648,12 @@ close TOK_INF;
 my $tok_inf_file_index = $n;
 =cut
 
-print "\n<script>\nvar mapObj = {\ntokInf : $json_tok_inf,\ninfLoc : $json_inf_loc,\nallLocs : $json_all_locs};\n</script>";
-print TOP "\n<script>\nvar mapObj = {\ntokInf : $json_tok_inf,\ninfLoc : $json_inf_loc,\nallLocs : $json_all_locs};\n</script>";
+#added 20120920. Need parameters for centering the map. The are used by gmap.html (documents.opener.blablabla)
+my $lat = "64";
+my $lng = "3";
+if($CORPUS eq 'amerikanorsk'){ $lat = "37"; $lng = "-95"; }
+print "\n<script>\nvar mapObj = {\ntokInf : $json_tok_inf,\ninfLoc : $json_inf_loc,\nallLocs : $json_all_locs,\nlat : $lat,\nlng : $lng};\n</script>";
+print TOP "\n<script>\nvar mapObj = {\ntokInf : $json_tok_inf,\ninfLoc : $json_inf_loc,\nallLocs : $json_all_locs,\nlat : $lat,\nlng : $lng};\n</script>";
 #my $maplink = sprintf("<a href='#' onClick=\"window.open('$conf{'htmlRoot'}/html/map.php?informants=$all_informants&corpus=$CORPUS','mywindow','height=580,width=660,status,scrollbars,resizable');\"><img src='$conf{'htmlRoot'}/html/img/i.gif' alt='i' / border='0'></a>");
 
 #my $maplink = "window.open('$conf{'htmlRoot'}/html/map.php?informants=$all_informants&corpus=$CORPUS','mywindow','height=580,width=660,status,scrollbars,resizable');";
@@ -1660,7 +1705,7 @@ if($parallel){$atttype = 'x'}
 #</scandiasyn>
 #print "<script>alert('attype: $atttype');</script>";
 print "\n<script language=\"javascript\">showList($d_files,'".$conf{'query_id'}."','".$lang{'hits_found'}."',$hits,'".$lang{'results_pages'}."','$CORPUS','$max', '$atttype', '$player')</script>\n";
-
+#print "showList($d_files,'".$conf{'query_id'}."','".$lang{'hits_found'}."',$hits,'".$lang{'results_pages'}."','$CORPUS','$max', '$atttype', '$player')\n";
 # print page header to file, so that it is accessible for 
 # the other results pages
 print TOP "$lang{'no_hits'}: <b>$hits</b> $max";

@@ -38,19 +38,21 @@ my @data;
 my $pri = CGI::param('primary');
 my $sec = CGI::param('secondary');
 
+#print "pos1--->" . CGI::param('pos1') . "<--<hr />";
 foreach my $f (@files) {
-
+#    print "FILE $f<br />PRI: $pri<br />";
     open (FILE, $f);
 
     $/="\n\n\n";
     while (<FILE>) {
-
+#	print "Leeen: $_<hr />";
 	my $dat = $_;
 	my $pri_dat;
 	my $sec_dat;
 
 	my @lines = split(/\n/, $_);
 	my $source = shift @lines;
+#	print "sarce: $source<hr />";
 	my ($c, $t,$s,$left,$match,$right) = split(/\t/, $source);
 
 	if ($pri eq "sent_id") {
@@ -88,16 +90,13 @@ foreach my $f (@files) {
 	    my @to_sort2;
 	    foreach my $token (@to_sort) {
 		my ($form, $pos, $lexeme)=split(/\//,$token);
-		
-		if (CGI::param('form_in1')) { push @to_sort2, $form };
+#		print "form: $form<br />pos: $pos<br /> lexeme: $lexeme<br />";
+		if (CGI::param('form_in1')) { push @to_sort2, $form; print "form_inl: $form<br />" };
 		if (CGI::param('pos_in1')) { push @to_sort2, $pos };
 		if (CGI::param('lexeme_in1')) { push @to_sort2, $lexeme };
 	    }
 	    $pri_dat .= join("/", @to_sort2) . " ";	    
-	    
-
-
-
+   
             print LOGG $pri_dat, "\n";
 	}
 
@@ -139,7 +138,7 @@ foreach my $f (@files) {
 		if (CGI::param('lexeme_in2')) { push @to_sort2, $lexeme };
 	    }
 	    $sec_dat .= join("/", @to_sort2) . " ";	    
-	    print "S: $sec_dat<br>";
+#	    print "S: $sec_dat<br>";
 	}
 
 	unless (CGI::param('case')) { $pri_dat = lc($pri_dat); $sec_dat = lc($sec_dat) }
@@ -168,11 +167,12 @@ open (OUT, ">$filename");
 foreach my $e (@data_sorted) {
 
     $j++;
-
+#    print "\$e->[2]=" . $e->[2] . "<br />filename: $filename<br />";
+#    print "filename: $filename<br />";
     print OUT $e->[2];
     if ($j==20) { 
 	close OUT;
-	my $filename = $conf{'tmp_dir'} . "/" . $query_id . "_" . $i . ".dat";
+	$filename = $conf{'tmp_dir'} . "/" . $query_id . "_" . $i . ".dat";
 	open (OUT, ">$filename");
 	$j=0;
 	$i++;

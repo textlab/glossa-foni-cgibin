@@ -49,13 +49,23 @@ my $format = CGI::param('format');
 my $out = $query_id . "." . $format;
 
 $query_id = $query_id."_";
-my @files = <$conf{'tmp_dir'}/$query_id*>;
+my @files = <$conf{'tmp_dir'}/$query_id*>; # AHA!!! There are more than one!!  !!!This doesn't work, as "file_2.txt" > "file_12.txt"
+
+my $number_of_files = @files;#<$conf{'tmp_dir'}/$query_id*>;
+
+#print "No. of files = $number_of_files<br />";
+#print "$conf{'tmp_dir'}/$query_id<br />";
+
+@files = ();
+for (my $j = 1; $j <= $number_of_files; $j++ ){
+    $files[$j-1] = "$conf{'tmp_dir'}/$query_id" . "$j.dat";
+}
 
 print "<a href=\"", $conf{'download_url'}, "/"; 
 print $out, "\">", $out, "</a>";
 
 $out = $conf{'dat_files'} . "/"  . $out;
-print "FILE: $out<br />";
+print "FILEddd: $out<br />";
 
 my $workbook;
 if ($format eq "xls") { 
@@ -135,12 +145,12 @@ foreach my $f (@files) {
 
 
     open (FILE, $f);
-
+#   print "FILE: $f<br />";
     $/="\n\n\n";
     while (<FILE>) {
 
 	my @n;
-
+#	print "$_<br />";
 	my @lines = split(/\n/, $_);
 
 	my $source = shift @lines;
@@ -173,14 +183,22 @@ foreach my $f (@files) {
 	    }	    
 	}
 
+	my ($phon,$token,$pos,$lexeme);
+	my $speech = 0;
+	if( $corpus == 'scandiasyn' ){ $speech = 1 }
+
 	my $left2;
 	my @left = split(/ /, $left);
 	foreach my $l (@left) {
-	    my ($token, $pos, $lexeme)=split(/\//,$l);
+	    ($token, $pos, $lexeme)=split(/\//,$l);
+	    if($speech){
+		($token, $lexeme, $phon, $pos)=split(/\//,$l);		
+	    }
 	    my @tmp;
 	    if (CGI::param('form')) { push @tmp, $token };
 	    if (CGI::param('pos')) { push @tmp, $pos };
 	    if (CGI::param('lexeme')) { push @tmp, $lexeme };
+	    if($speech){push @tmp,$phon}
 	    $left2 .= join("/", @tmp) . " ";
 	}
 	push @n, $left2;
@@ -188,11 +206,15 @@ foreach my $f (@files) {
 	my $match2;
 	my @match = split(/ /, $match);
 	foreach my $m (@match) {
-	    my ($token, $pos, $lexeme)=split(/\//,$m);
+	    ($token, $pos, $lexeme)=split(/\//,$m);
+	    if($speech){
+		($token, $lexeme, $phon, $pos)=split(/\//,$m);		
+	    }
 	    my @tmp;
 	    if (CGI::param('form') or CGI::param('mform')) { push @tmp, $token };
 	    if (CGI::param('pos') or CGI::param('mpos')) { push @tmp, $pos };
 	    if (CGI::param('lexeme') or CGI::param('mlexeme')) { push @tmp, $lexeme };
+	    if($speech){push @tmp, $phon}
 	    $match2 .= join("/", @tmp) . " ";
 	}
 	push @n, $match2;
@@ -200,11 +222,15 @@ foreach my $f (@files) {
 	my $r2;
 	my @r = split(/ /, $right);
 	foreach my $r (@r) {
-	    my ($token, $pos, $lexeme)=split(/\//,$r);
+	    ($token, $pos, $lexeme)=split(/\//,$r);
+	    if($speech){
+		($token, $lexeme, $phon, $pos)=split(/\//,$r);		
+	    }
 	    my @tmp;
 	    if (CGI::param('form')) { push @tmp, $token };
 	    if (CGI::param('pos')) { push @tmp, $pos };
 	    if (CGI::param('lexeme')) { push @tmp, $lexeme };
+	    if($speech){push @tmp,$phon}
 	    $r2 .= join("/", @tmp) . " ";
 	}
 	push @n, $r2;

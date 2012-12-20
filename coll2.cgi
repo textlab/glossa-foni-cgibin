@@ -147,10 +147,15 @@ foreach my $f (@files) {
 	    @left2 = ($tmp1);
 	    @right2 = (shift @right);
 	}
-
-
+	my $speech = 0;
+	if( $corpus == 'scandiasyn' ){ $speech = 1 }
+#	my ($token, $lexeme, $pos)=split(/\//,$t);
 	foreach $t (@left2) {
+	    
 	    my ($token, $lexeme, $pos)=split(/\//,$t);
+	    if($speech){
+		($token, $lexeme, $phon, $pos)=split(/\//,$t);		
+	    }
 	    my @tmp;
 	    if (CGI::param('form')) { unless ($case) { $token = lc($token) }; push @tmp, $token };
 	    if (CGI::param('lexeme')) { push @tmp, $lexeme };
@@ -162,6 +167,9 @@ foreach my $f (@files) {
 	foreach $t (@right2) {
 	    my @tmp;
 	    my ($token, $lexeme, $pos)=split(/\//,$t);
+	    if($speech){
+		($token, $lexeme, $phon, $pos)=split(/\//,$t);		
+	    }
 	    if (CGI::param('form')) { unless ($case) { $token = lc($token) };  push @tmp, $token };
 	    if (CGI::param('lexeme')) { push @tmp, $lexeme };
 	    if (CGI::param('pos')) { push @tmp, $pos };

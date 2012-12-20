@@ -38,9 +38,10 @@ foreach my $p (@params) {
 
 my $filename= $conf{'tmp_dir'} . "/" . $query_id . "_" . $n . ".dat"; 
 open (DATA, "$filename");
-
+#print "DAT: $filename<br />"; 
 my $filename_n=$conf{'tmp_dir'} . "/"  . $query_id . "_" . $n . ".tmp"; 
 open (NEW, ">$filename_n");
+
 
 $/="\n\n\n";
 
@@ -62,10 +63,10 @@ close DATA;
 close NEW;
 
 
-copy($filename_n,$filename);
+move($filename_n,$filename);
 
 
-
+#print "$filename_n to $filename<br />";
 print "Please select:<br>";
  print "<a href='", $conf{'cgiRoot'}, "/show_page_dev.cgi?corpus=$corpus&n=$n&query_id=$query_id&player=$player'>Finished deleting</a><br>";
 

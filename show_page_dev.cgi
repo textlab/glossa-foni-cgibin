@@ -55,6 +55,23 @@ my $googletrans = <<STOP;
 <script type="text/javascript" src="http://www.google.com/jsapi"></script>
 <script type="text/javascript">
 
+
+var globalNodeVar;
+function appendTranslateScript(node,text){
+    globalNodeVar = node;
+    var newScript = document.createElement('script');
+    newScript.type = 'text/javascript';
+    var sourceText = encodeURI(text);
+    var source = 'https://www.googleapis.com/language/translate/v2?key=AIzaSyALLIemzcsdQYpyqxAE5k3V7luZ73P5SOQ&target=en&callback=translateText&q=' + sourceText;
+    newScript.src = source;
+    document.getElementsByTagName('head')[0].appendChild(newScript);
+}
+function translateText(response){
+    globalNodeVar.innerHTML = response.data.translations[0].translatedText;
+    globalNodeVar.innerHTML += " <font size='-2'>(google)</font>"; //"&nbsp;<img src='http://tekstlab.uio.no/glossa/html/img/google-g-icon-16.png'>";
+    globalNodeVar = 0;
+}
+
 google.load("language", "1");
 
 function translate(node, text) {
@@ -174,7 +191,12 @@ my $annotation_in_conf_file;
 
 my $context_type;
 my $hlight;
+
+open (CONF, ">/hf/foni/tekstlab/glossa-0.7/dat/engl2/hits/joeljp/conf.txt"); 
+
 my $conf= $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 
+
+print CONF "\$conf = $conf\n";
 
 # FIXME: this is a silly way of doing things
 unless (-e $conf) {
@@ -188,10 +210,9 @@ if ($hits_name) {
 
 $conf= $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 
 
-open (CONF, ">/hf/foni/tekstlab/glossa-0.7/dat/engl2/hits/joeljp/conf.txt"); 
 
 print CONF $conf . "\n";
-
+close CONF;
 open (CONF, "$conf");
 while (<CONF>) {
     chomp;
@@ -465,7 +486,25 @@ while (<DATA>) {
 	print ("'mywindow','height=480,width=600,status,scrollbars,resizable');\"><img src='$conf{'htmlRoot'}/html/img/i.gif' alt='i' / border='0'></a> \n&nbsp;</font>\n");
 
     }
-    
+    elsif ($CORPUS eq "skriv")
+    {
+        $identifier = $sts{text_id};
+        my $assignment_code = join("_", (split("_", $identifier))[1,2]);
+        my $assignment_path = "/michalkk/skriv/oppgavetekster/${assignment_code}.pdf";
+
+	print ("<font size=\"-2\">\n<a href=\"#\" onClick=\"window.open('$conf{'htmlRoot'}/html/profile.php?tid=$identifier&corpus=$CORPUS',");
+	print ("'mywindow','height=480,width=600,status,scrollbars,resizable');\"><img src='$conf{'htmlRoot'}/html/img/i.gif' alt='i' border='0'></a>&nbsp;</font>");
+
+        if (-e "/var/www/html$assignment_path") {
+            printf("<a href=\"$assignment_path\" target=\"_new\"><img src=\"/michalkk/skriv/img/assignment-text.png\" height=\"14\" /></a>&nbsp;");
+        }
+        my $identifier_noslash = $identifier;
+        $identifier_noslash =~ s,/,_,g;
+        my $answer_path = "/michalkk/skriv/oppgavesvar/${identifier_noslash}.pdf";
+        if (-e "/var/www/html$answer_path") {
+            printf("<a href=\"$answer_path\" target=\"_new\"><img src=\"/michalkk/skriv/img/assignment-answer.png\" height=\"14\" /></a>");
+        }
+    }
     else
     {
 	
@@ -580,8 +619,9 @@ while (<DATA>) {
 #	    my $translation = print_tokens($res_l, 1) . print_tokens($ord, 1) . print_tokens($res_r, 1);
 	my $orig = get_first($res_l) . "<b>" . get_first($ord) . "</b>" . get_first($res_r);
 	$orig =~ s/"/_/g;
+	$orig =~ s/\#+/&hellip;/g;
 	my $source_line .= "<tr><td></td><td>";
-	$source_line .= "<div><span onclick=\"translate(this.parentNode, '$orig');\" style='font-size:small;cursor:pointer;'>[translate]</span></div>";
+	$source_line .= "<div><span onclick=\"appendTranslateScript(this.parentNode, '$orig');\" style='font-size:small;cursor:pointer;'>[translate]</span></div>";
 	$source_line.=sprintf("</td></tr>");
 #<img src=\"" . $conf{'htmlRoot'} . "html/img/google-g-icon-16.png\">
 	$source_line .= "<tr><td></td><td></td></tr>";
