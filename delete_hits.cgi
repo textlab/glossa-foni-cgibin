@@ -13,6 +13,7 @@ print "Content-type: text/html\n\n";
 
 my $corpus=CGI::param('corpus');
 my $player=CGI::param('player');
+my $atttype=CGI::param('atttype');
 my $user = $ENV{'REMOTE_USER'}; 
 my $conf = Glossa::get_conf_file($corpus);
 
@@ -68,12 +69,12 @@ move($filename_n,$filename);
 
 #print "$filename_n to $filename<br />";
 print "Please select:<br>";
- print "<a href='", $conf{'cgiRoot'}, "/show_page_dev.cgi?corpus=$corpus&n=$n&query_id=$query_id&player=$player'>Finished deleting</a><br>";
+ print "<a href='", $conf{'cgiRoot'}, "/show_page_dev.cgi?corpus=$corpus&n=$n&query_id=$query_id&player=$player&atttype=$atttype'>Finished deleting</a><br>";
 
- print "<a href='", $conf{'cgiRoot'}, "/show_page_dev.cgi?corpus=$corpus&n=$n&query_id=$query_id&del=yes&player=$player'>Delete more hits on same page</a><br>";
+ print "<a href='", $conf{'cgiRoot'}, "/show_page_dev.cgi?corpus=$corpus&n=$n&query_id=$query_id&del=yes&player=$player&atttype=$atttype'>Delete more hits on same page</a><br>";
 
 my $m = $n+1;
 my $filenamem=$conf{'tmp_dir'} . "/"  . $query_id . "_" . $m . ".dat"; 
 if (-e $filenamem) {
- print "<a href='", $conf{'cgiRoot'}, "/show_page_dev.cgi?corpus=$corpus&n=$m&query_id=$query_id&del=yes&player=$player'>Delete hits on next page</a><br>";
+ print "<a href='", $conf{'cgiRoot'}, "/show_page_dev.cgi?corpus=$corpus&n=$m&query_id=$query_id&del=yes&player=$player&atttype=$atttype'>Delete hits on next page</a><br>";
 }

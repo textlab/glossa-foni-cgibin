@@ -17,6 +17,7 @@ my $player = CGI::param('player');
 
 #<scandiasyn>
 my $parallel = 0;
+my $atttype_copy = $atttype;
 if($atttype eq 'x'){$parallel = 2; $atttype = 0;}
 #</scandiasyn>
 
@@ -353,6 +354,7 @@ if ($del) {
     print "<input type=\"hidden\" name=\"n\" value=\"$n\">";
     print "<input type=\"hidden\" name=\"corpus\" value=\"$corpus\"></input>";
     print "<input type=\"hidden\" name=\"player\" value=\"$player\"></input>";
+    print "<input type=\"hidden\" name=\"atttype\" value=\"$atttype_copy\"></input>";
     print "<input type=\"submit\" value=\"Delete selection\"></input>";
     print " &nbsp;<input type='button' value='select all' onClick='selectAll(0)'></input>";
     print "<input type='button' value='unselect all' onClick='selectAll(1)'></input>";
@@ -364,6 +366,7 @@ elsif ($set_id) {
     print "<input type=\"hidden\" name=\"query_id\" value=\"$query_id\">";
     print "<input type=\"hidden\" name=\"corpus\" value=\"$corpus\"></input>";
     print "<input type=\"hidden\" name=\"player\" value=\"$player\"></input>";
+    print "<input type=\"hidden\" name=\"atttype\" value=\"$atttype_copy\"></input>";
     print "<br><input type=\"submit\" value=\"Save annotations\"></input>";
     print "&nbsp;(<font color='red'>*</font> indicates: no reviewed value stored.)";
 }

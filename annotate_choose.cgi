@@ -8,6 +8,7 @@ use Glossa_old;
 my $query_id = CGI::param('query_id');
 my $corpus = CGI::param('corpus');
 my $player = CGI::param('player');
+my $atttype = CGI::param('atttype');
 
 
 my $conf = Glossa::get_conf_file($corpus);
@@ -27,6 +28,7 @@ print "<form action=\"", $conf{'cgiRoot'}, "/show_page_dev.cgi\" method=\"get\">
 print "<input type=\"hidden\" name=\"query_id\" value=\"$query_id\"></input>";
 print "<input type=\"hidden\" name=\"corpus\" value=\"$corpus\"></input>";
 print "<input type=\"hidden\" name=\"player\" value=\"$player\"></input>";
+print "<input type=\"hidden\" name=\"atttype\" value=\"$atttype\"></input>";
 
 print "<input type=\"hidden\" name=\"n\" value=\"1\"></input>";
 print "<select name=\"set\">";
