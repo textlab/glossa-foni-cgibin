@@ -21,6 +21,34 @@ use lib ('/home/httpd/html/glossa/pm/');
 
 use Glossa_old;
 
+# Some functions used later
+
+# reading the main and corpus config files
+# returns a hash of the key=value pairs in the file.
+sub readConfigFile {
+    my ($fn) = @_;
+
+    my %conf;
+    open (CONF, $fn);
+    while ( <CONF> ) {
+        chomp;
+        next if (/^\#/);
+        s/\s*$//;
+        my ($k,$v)=split(/\s*=\s*/);
+        $conf{$k}=$v;
+    }
+    close CONF;
+
+    return %conf;
+}
+
+sub getRootURIPath {
+    my $path = $ENV{REQUEST_URI};
+    my @parts = split("/", $path);
+    
+    return join("/", @parts[2..($#parts-2)]);
+}
+
 ##                                        ##
 ##             0. Initialization          ##
 ##                                        ##
@@ -76,41 +104,23 @@ my %in = %$in;
 
 my $debug = 0;
 
-# get shorter name of some values that are used frequently
 my $CORPUS = $in{'query'}->{'corpus'}->[0];
-my $ROOT = $in{'query'}->{'root'}->[0];
 my $user = $ENV{'REMOTE_USER'};
-
-
-
 my $display_struct = CGI::param('structDisplay');
 my $player = CGI::param('player');
 
-## read configuration files
-# FIXME: should also be done in module
-# FIXME: standard file format
+# read main configuration file
+my $conf_path_fn = "paths.conf";
+my %base_conf = readConfigFile($conf_path_fn);
 
-# main configuration file
-my $conf_file = $ROOT . "/" . $CORPUS . "/cgi.conf";
+# read corpus configuration file
+my $conf_corpus_fn = $base_conf{'config_dir'} . "/" . $CORPUS . "/cgi.conf";
+my %conf = readConfigFile($conf_corpus_fn);
 
-open (TEMP, ">testies.txt"); 
-
-print TEMP "\n\nconf_file: ".$conf_file;
-
-my %conf;
-open (CONF, $conf_file);
-print TEMP "\n--->" . $CORPUS . "<---\n";
-while ( <CONF> ) {
-    chomp;
-    next if (/^\#/);
-    s/\s*$//;
-    my ($k,$v)=split(/\s*=\s*/);
-    print TEMP "\nkey: $k - val: $v\n";
-    $conf{$k}=$v;
-}
-close CONF;
-
+# update configuration with information passed in the http request
 $conf{'base_corpus'}=$CORPUS;
+$conf{'htmlRoot'}='/' . getRootURIPath() . "/glossa";
+$conf{'cgiRoot'}='/cgi-bin/' . getRootURIPath() . '/glossa';
 
 my $corpus_mode = $conf{'corpus_mode'};
 
@@ -154,7 +164,7 @@ close LANG;
 ## start the HTTP session and HTML file
 print "Content-type: text/html; charset=$conf{'charset'}\n\n";
 
-print "<html>\n<head>\n<link rel=\"shortcut icon\" href=\"http://www.tekstlab.uio.no/favicon.ico\" type=\"image/ico\" />\n<title>$lang{'title'}</title>\n" .
+print "<html>\n<head>\n<link rel=\"shortcut icon\" href=\"/favicon.ico\" type=\"image/ico\" />\n<title>$lang{'title'}</title>\n" .
       "<link href=\"", $conf{'htmlRoot'}, "/html/tags.css\" rel=\"stylesheet\" type=\"text/css\"></link>\n";
 
     if($CORPUS eq 'mak') {
@@ -191,13 +201,13 @@ print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/showtag.
 my $video_scripts = <<STOP;
    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/base/jquery-ui.css" type="text/css" media="all" />
    <link rel="stylesheet" href="http://static.jquery.com/ui/css/demo-docs-theme/ui.theme.css" type="text/css" media="all" />
-   <link rel="stylesheet" type="text/css" href="http://tekstlab.uio.no/glossa/player/player.css" />
-   <link href="http://tekstlab.uio.no/glossa/html/tags.css" rel="stylesheet" type="text/css" />
-   <script type='text/javascript' src='http://tekstlab.uio.no/glossa/player/player.ajax.js'></script>
-   <script language="JavaScript" src="http://tekstlab.uio.no/glossa/js/showtag.js" ></script>
-   <script type='text/javascript' src='http://tekstlab.uio.no/glossa/js/jquery/jquery-1.4.3.min.js'></script>
-   <script type='text/javascript' src='http://tekstlab.uio.no/glossa/js/jquery/jquery-ui-1.8.6.custom.min.js'></script>
-   <script type='text/javascript' src='http://tekstlab.uio.no/glossa/player/slider.js'></script>
+   <link rel="stylesheet" type="text/css" href="$conf{'htmlRoot'}/player/player.css" />
+   <link href="$conf{'htmlRoot'}/html/tags.css" rel="stylesheet" type="text/css" />
+   <script type='text/javascript' src='$conf{'htmlRoot'}/player/player.ajax.js'></script>
+   <script language="JavaScript" src="$conf{'htmlRoot'}/js/showtag.js" ></script>
+   <script type='text/javascript' src='$conf{'htmlRoot'}/js/jquery/jquery-1.4.3.min.js'></script>
+   <script type='text/javascript' src='$conf{'htmlRoot'}/js/jquery/jquery-ui-1.8.6.custom.min.js'></script>
+   <script type='text/javascript' src='$conf{'htmlRoot'}/player/slider.js'></script>
    <script type='text/javascript'>var player;</script>
 STOP
 
@@ -215,7 +225,7 @@ function translate(node, text) {
                                 function(result) {
         if (result.translation) {
 	    node.innerHTML = result.translation;
-	    node.innerHTML += " <font size='-2'>(google)</font>"; //"&nbsp;<img src='http://tekstlab.uio.no/glossa/html/img/google-g-icon-16.png'>";
+	    node.innerHTML += " <font size='-2'>(google)</font>"; //"&nbsp;<img src='$conf{'htmlRoot'}/html/img/google-g-icon-16.png'>";
         }
         else{ node.innerHTML = 'No translation available' }
       });
@@ -235,7 +245,7 @@ function appendTranslateScript(node,text){
 }
 function translateText(response){
     globalNodeVar.innerHTML = response.data.translations[0].translatedText;
-    globalNodeVar.innerHTML += " <font size='-2'>(google)</font>"; //"&nbsp;<img src='http://tekstlab.uio.no/glossa/html/img/google-g-icon-16.png'>";
+    globalNodeVar.innerHTML += " <font size='-2'>(google)</font>"; //"&nbsp;<img src='$conf{'htmlRoot'}/html/img/google-g-icon-16.png'>";
     globalNodeVar = 0;
 }
 
@@ -300,7 +310,7 @@ my $media_div = <<STOP;
         <div class="demo" id="holder">
            <div id="slider-range"></div>
            <div style="float:left;width:24px;position:absolute;left:6px;bottom:3;"><input type="text" id="amountl" style="border:0; color:#ff2200; font-weight:bold;width:24px;background:#000;" /></div>
-           <div style="float:left;position:absolute;left:194px;width:12px;height:16px;cursor:pointer;border:0px solid #f00;bottom:3;" id="play" ><img src="http://tekstlab.uio.no/glossa/player/Button-Play-icon.png" style="align:bottom;" /></div>
+           <div style="float:left;position:absolute;left:194px;width:12px;height:16px;cursor:pointer;border:0px solid #f00;bottom:3;" id="play" ><img src="$conf{'htmlRoot'}/player/Button-Play-icon.png" style="align:bottom;" /></div>
            <div style="float:right;width:24px;position:absolute;left:378px;bottom:3;"><input type="text" id="amountr" style="border:0; color:#ff2200; font-weight:bold;background:#000;width:20px;" /></div>
        </div>
     </div>
@@ -340,7 +350,7 @@ print "  <div id=\"body\">\n";
 
 ## for debugging
 if ($debug) {
-    print "L: $conf_file<br>";
+    print "L: $conf_corpus_fn<br>";
     print "<pre>";
     print Dumper %in;
     print "</pre>";
@@ -358,7 +368,6 @@ if($debug){
 	}
     }
 }
-
 
 # group file; for corpora with restricted access (in addition to 
 # the .htaccess restrictions). Space-separated list of allowed users.
@@ -1662,8 +1671,8 @@ print TOP "\n<script>\nvar mapObj = {\ntokInf : $json_tok_inf,\ninfLoc : $json_i
 #$maplink = "<a href='' window.open('$conf{'htmlRoot'}/html/map.php?informants=$all_informants&corpus=$CORPUS','mywindow','height=580,width=660,status,scrollbars,resizable');\" />";
 #    my $ord = $m->{'kwic'}->{'match'};
 #print "\n<script language='javascript'>\nfunction mapper(){\nwindow.open('$conf{'htmlRoot'}/html/map_hits_dev.php?informants=$tok_inf_file_index&corpus=$CORPUS','mywindow','height=780,width=1200,status,scrollbars,resizable');\n}\n</script>";
-print "\n<script language='javascript'>\nfunction mapper(){\nwindow.open('http://tekstlab.uio.no/glossa/html/gmap.html','mywindow2','height=780,width=1200,status,scrollbars,resizable');\n}\n</script>";
-print TOP "\n<script language='javascript'>\nfunction mapper(){\nwindow.open('http://tekstlab.uio.no/glossa/html/gmap.html','mywindow2','height=780,width=1200,status,scrollbars,resizable');\n}\n</script>";
+print "\n<script language='javascript'>\nfunction mapper(){\nwindow.open('$conf{'htmlRoot'}/html/gmap.html','mywindow2','height=780,width=1200,status,scrollbars,resizable');\n}\n</script>";
+print TOP "\n<script language='javascript'>\nfunction mapper(){\nwindow.open('$conf{'htmlRoot'}/html/gmap.html','mywindow2','height=780,width=1200,status,scrollbars,resizable');\n}\n</script>";
 print "\n<script language='javascript'>\nfunction mapper2(){\nwindow.open('http://tekstlab.uio.no/joel/gmap.html','mywindow2','height=780,width=1200,status,scrollbars,resizable');\n}\n</script>";
 #print "\n<script language='javascript'>\ndocument.getElementById('maplink').innerHTML=$maplink;\n</script>\n";
 
@@ -1848,6 +1857,3 @@ sub print_tokens_target {
 
     }
 }
-
-
-
