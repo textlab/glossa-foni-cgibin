@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+# probably not in use and superseded by expand.php/js
+
 use strict;
 use CGI;
 use DBI;
