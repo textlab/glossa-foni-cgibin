@@ -1,0 +1,8 @@
+config_dir = /hf/foni/tekstlab/glossa-0.7/dat/
+db_pwd = tuba
+db_name = glossa
+db_uname = glossa_reader
+db_host = localhost
+htmlRoot = http://tekstlab.uio.no/glossa/
+cgiRoot = http://tekstlab.uio.no/cgi-bin/glossa/
+download_url = http://tekstlab.uio.no/glossa/download/
