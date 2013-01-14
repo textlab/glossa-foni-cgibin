@@ -6,19 +6,16 @@ use CGI::Carp qw(fatalsToBrowser);
 use strict;
 use CGI;
 use DBI;
-use lib("/home/httpd/html/glossa/pm");
-use Glossa_old;
+
+use lib ('./lib/');
+use Glossa_local;
 
 # get cgi input
 my $cgi = CGI->new;
 my $corpus = CGI::param('corpus');
 my $query_id = CGI::param('query_id');
 
-
-my $conf = Glossa::get_conf_file($corpus);
-my %conf = %$conf;
-
-
+my %conf = Glossa::readConfig($corpus);
 
 my @tids;
 # read query configuration fil

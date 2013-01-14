@@ -10,8 +10,7 @@ my $query_id = CGI::param('query_id');
 my $corpus = CGI::param('corpus');
 my $user = $ENV{'REMOTE_USER'}; 
 
-my $conf = Glossa::get_conf_file($corpus);
-my %conf = %$conf;
+my %conf = Glossa::readConfig($corpus);
 
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
 $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 0}) || die $DBI::errstr;

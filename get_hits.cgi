@@ -4,9 +4,10 @@
 
 use CGI;
 use strict;
-use lib("/home/httpd/html/glossa/pm/");
-use Glossa_old;
 use File::Copy;
+
+use lib ('./lib/');
+use Glossa_local;
 
 select(STDOUT);
 $|=1;
@@ -16,8 +17,8 @@ print "Content-type: text/html\n\n";
 my $corpus=CGI::param('corpus');
 my $user = $ENV{'REMOTE_USER'}; 
 my $player = CGI::param('player'); 
-my $conf = Glossa::get_conf_file($corpus);
-my %conf = %$conf;
+my %conf = Glossa::readConfig($corpus);
+
 print "<html>\n<head>\n";
 print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/misc.js\"></script>\n";
 print "</head>\n<body>\n";

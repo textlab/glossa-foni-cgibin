@@ -2,11 +2,11 @@
 
 use CGI;
 use DBI;
-
-use lib ('/home/httpd/html/glossa/pm/');
-use Glossa_old;
 use Data::Dumper;
 use strict;
+
+use lib ('./lib/');
+use Glossa_local;
 
 select(STDOUT);
 $|=1;
@@ -37,8 +37,7 @@ my $CORPUS = $in{'query'}->{'corpus'}->[0];
 my $base_corpus = $in{'phrase'}->{'0'}->{'corpus'}->[0];
 
 
-my $conf = Glossa::get_conf_file($CORPUS);
-my %conf = %$conf;
+my %conf = Glossa::readConfig($CORPUS);
 
 
 

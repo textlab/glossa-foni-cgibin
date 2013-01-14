@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 
 use CGI;
-use lib("/home/httpd/html/glossa/pm");
-use Glossa_old;
+use lib ('./lib/');
+use Glossa_local;
 
 print "Content-type: text/html\n\n";
 
@@ -11,8 +11,7 @@ my $db_name = CGI::param('db_name');
 my $corpus = CGI::param('corpus');
 my $base_corpus = CGI::param('base_corpus');
 
-my $conf = Glossa::get_conf_file($corpus);
-my %conf = %$conf;
+my %conf = Glossa::readConfig($corpus);
 my $ngram = CGI::param('ngram');
 
 print "<html><head></head><body>";

@@ -3,12 +3,12 @@
 use CGI;
 use Spreadsheet::WriteExcel;
 use DBI;
-use lib("/home/httpd/html/glossa/pm");
-use Glossa_old;
+
+use lib ('./lib/');
+use Glossa_local;
 
 my $corpus=CGI::param('corpus');
-my $conf = Glossa::get_conf_file($corpus);
-my %conf = %$conf;
+my %conf = Glossa::readConfig($corpus);
 
 my $user = $ENV{'REMOTE_USER'}; 
 my $query_id = CGI::param('query_id');

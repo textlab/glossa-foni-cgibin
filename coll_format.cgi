@@ -9,8 +9,9 @@ use GD::Graph::pie;
 use GD::Text;
 use Data::Dumper;
 use Encode;
-use lib("/home/httpd/html/glossa/pm");
-use Glossa_old;
+
+use lib ('./lib/');
+use Glossa_local;
 
 print "Content-type: text/html\n\n";
 
@@ -27,7 +28,6 @@ my $query_id = CGI::param('query_id');
 unless ($query_id =~ m/^\d+_\d+$/) { die("illegal value") };
 
 my $corpus = CGI::param('corpus');
-my $conf = Glossa::get_conf_file($corpus);
 my $ngram = CGI::param('ngram');
 
 my $format = CGI::param('format');
@@ -48,8 +48,7 @@ my $graph_left;
 my $graph_center;
 my $graph_right;
 
-my $conf = Glossa::get_conf_file($corpus);
-my %conf = %$conf;
+my %conf = Glossa::readConfig($corpus);
 
 foreach my $pos ("left", "center", "right") {
 

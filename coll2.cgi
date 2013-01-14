@@ -2,11 +2,11 @@
 
 use CGI;
 use DBI;
-use lib("/home/httpd/html/glossa/pm");
-use Glossa_old;
 use Spreadsheet::WriteExcel;
 use Data::Dumper;
 
+use lib ('./lib/');
+use Glossa_local;
 
 
 select(STDOUT);
@@ -28,8 +28,7 @@ my $user = $ENV{'REMOTE_USER'};
 my $corpus = CGI::param('corpus');
 my $globalstats = CGI::param('globalstats');
 
-my $conf = Glossa::get_conf_file($corpus);
-my %conf = %$conf;
+my %conf = Glossa::readConfig($corpus);
 
 print "Content-type: text/html; charset=$conf{'charset'}\n\n";
 print "<html><head></head><body>";
