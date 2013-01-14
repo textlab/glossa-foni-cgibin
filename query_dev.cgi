@@ -14,14 +14,9 @@ use Encode;
 
 
 
-# if Glossa.pm is not installed in the system directories
-# (you can use this, for example, if you are making changes, 
-# or if you don't have access to the root account)          
-use lib ('/home/httpd/html/glossa/pm/');
-
-use Glossa_old;
-
-require 'shared.pl';
+# Use Glossa module embedded in repo
+use lib ('./lib/');
+use Glossa_local;
 
 ##                                        ##
 ##             0. Initialization          ##
@@ -85,16 +80,16 @@ my $player = CGI::param('player');
 
 # read main configuration file
 my $conf_path_fn = "paths.conf";
-my %base_conf = readConfigFile($conf_path_fn);
+my %base_conf = Glossa::readConfigFile($conf_path_fn);
 
 # read corpus configuration file
 my $conf_corpus_fn = $base_conf{'config_dir'} . "/" . $CORPUS . "/cgi.conf";
-my %conf = readConfigFile($conf_corpus_fn);
+my %conf = Glossa::readConfigFile($conf_corpus_fn);
 
 # update configuration with information passed in the http request
 $conf{'base_corpus'}=$CORPUS;
-$conf{'htmlRoot'}='/' . getRootURIPath() . "/glossa";
-$conf{'cgiRoot'}='/cgi-bin/' . getRootURIPath() . '/glossa';
+$conf{'htmlRoot'}='/' . Glossa::getRootURIPath() . "/glossa";
+$conf{'cgiRoot'}='/cgi-bin/' . Glossa::getRootURIPath() . '/glossa';
 
 my $corpus_mode = $conf{'corpus_mode'};
 
