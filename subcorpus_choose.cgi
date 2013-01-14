@@ -2,8 +2,9 @@
 
 use CGI;
 use strict;
-use lib("/home/httpd/html/glossa/pm");
-use Glossa_old;
+
+use lib ('./lib/');
+use Glossa_local;
 
 select(STDOUT);
 $|=1;
@@ -13,8 +14,7 @@ print "<html><head></head><body>";
 
 
 my $corpus = CGI::param('corpus');
-my $conf=Glossa::get_conf_file($corpus);
-my %conf = %$conf;
+my %conf=Glossa::readConfig($corpus);
 
 my $subcorp_dir = $conf{'subcorp_files'};
 

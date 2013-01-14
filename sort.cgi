@@ -8,14 +8,13 @@ use locale;
 use POSIX qw(locale_h);
 setlocale(LC_ALL, "norwegian");
 
-use lib("/home/httpd/html/glossa/pm");
-use Glossa_old;
+use lib ('./lib/');
+use Glossa_local;
 
 my $corpus=CGI::param('corpus');
 my $user = $ENV{'REMOTE_USER'}; 
 my $query_id = CGI::param('query_id');
-my $conf=Glossa::get_conf_file($corpus);
-my %conf = %$conf;
+my %conf=Glossa::readConfig($corpus);
 
 # FIXME: this is a silly way of doing things
 my $conf= $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 

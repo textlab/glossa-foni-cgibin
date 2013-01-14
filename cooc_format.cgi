@@ -7,8 +7,9 @@ use GD::Graph::hbars;
 use GD::Graph::pie;
 use Data::Dumper;
 use strict;
-use lib("/home/httpd/html/glossa/pm");
-use Glossa_old;
+
+use lib ('./lib/');
+use Glossa_local;
 
 print "Content-type: text/html\n\n";
 
@@ -28,8 +29,7 @@ my $cut_min = CGI::param('cut_min');
 my $cut_occ = CGI::param('cut_occ');
 
 my $corpus = CGI::param('corpus');
-my $conf = Glossa::get_conf_file($corpus);
-my %conf = %$conf;
+my %conf = Glossa::readConfig($corpus);
 
 my $excel = $conf{'dat_files'} . "/" . $query_id . "_" . $lib . "_" . $format . ".xls";
 if (-s $excel) { `rm $excel` }

@@ -5,9 +5,10 @@ use DBI;
 
 use Encode;
 use WebCqp::Query_dev;
-use lib("/home/httpd/html/glossa/pm");
-use Glossa_old;
 use Data::Dumper;
+
+use lib ('./lib/');
+use Glossa_local;
 
 # meta
 #  - tid
@@ -26,8 +27,7 @@ my $corpus = CGI::param('corpus');
 my $base_corpus=CGI::param('subcorpus');
 
 
-my $conf=Glossa::get_conf_file($corpus);
-my %conf = %$conf;
+my %conf=Glossa::readConfig($corpus);
 
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
 my $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 1});

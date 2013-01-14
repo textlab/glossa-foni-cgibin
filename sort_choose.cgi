@@ -1,16 +1,15 @@
 #!/usr/bin/perl
 
 use CGI;
-use lib("/home/httpd/html/glossa/pm");
-use Glossa_old;
+
+use lib ('./lib/');
+use Glossa_local;
 
 print "Content-type: text/html\n\n";
 my $query_id = CGI::param('query_id');
 my $corpus=CGI::param('corpus');
 
-my $conf = Glossa::get_conf_file($corpus);
-my %conf = %$conf;
-
+my %conf = Glossa::readConfig($corpus);
 
 print "<html><head></head><body>";
 

@@ -3,8 +3,9 @@
 use CGI;
 use File::Copy;
 use strict;
-use lib("/home/httpd/html/glossa/pm");
-use Glossa_old;
+
+use lib ('./lib/');
+use Glossa_local;
 
 select(STDOUT);
 $|=1;
@@ -15,9 +16,7 @@ my $corpus=CGI::param('corpus');
 my $player=CGI::param('player');
 my $atttype=CGI::param('atttype');
 my $user = $ENV{'REMOTE_USER'}; 
-my $conf = Glossa::get_conf_file($corpus);
-
-my %conf = %$conf;
+my %conf = Glossa::readConfig($corpus);
 
 my $n = CGI::param('n');
 my $query_id = CGI::param('query_id');

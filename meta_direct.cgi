@@ -2,11 +2,12 @@
 
 use CGI;
 use DBI;
-use lib ('/home/httpd/html/glossa/pm/');
-use Glossa_old;
 use Data::Dumper;
 use strict;
 use POSIX qw(locale_h);
+
+use lib ('./lib/');
+use Glossa_local;
 
 setlocale('LC_TYPE', "norweigan");
 
@@ -50,8 +51,7 @@ print "<html>\n<head>\n</head>\n<body>\n";
 
 
 
-my $conf = Glossa::get_conf_file($CORPUS);
-my %conf = %$conf;
+my %conf = Glossa::readConfig($CORPUS);
 
 my $corpus_mode = $conf{'corpus_mode'};
 

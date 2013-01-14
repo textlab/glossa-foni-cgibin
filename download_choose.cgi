@@ -1,15 +1,15 @@
 #!/usr/bin/perl
 
 use CGI;
-use lib("/home/httpd/html/glossa/pm");
-use Glossa_old;
+
+use lib ('./lib/');
+use Glossa_local;
 
 print "Content-type: text/html\n\n";
 
 my $corpus = CGI::param('corpus');
 
-my $conf = Glossa::get_conf_file($corpus);
-my %conf = %$conf;
+my %conf = Glossa::readConfig($corpus);
 
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
 $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 0}) || die $DBI::errstr;

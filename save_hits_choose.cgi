@@ -4,11 +4,8 @@ use CGI;
 use File::Copy;
 use strict;
 
-use lib("/home/httpd/html/glossa/pm");
-use Glossa_old;
-
-
-
+use lib ('./lib/');
+use Glossa_local;
 
 select(STDOUT);
 $|=1;
@@ -20,8 +17,7 @@ my $query_id = CGI::param('query_id');
 my $name = CGI::param('name');
 my $user = $ENV{'REMOTE_USER'}; 
 
-my $conf = Glossa::get_conf_file($corpus);
-my %conf = %$conf;
+my %conf = Glossa::readConfig($corpus);
 
 print "<form action='", $conf{'cgiRoot'}, "/save_hits.cgi' method='GET'>\n";
 print "<input type='hidden' name='corpus' value='$corpus' />\n";

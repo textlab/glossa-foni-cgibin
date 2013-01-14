@@ -2,13 +2,13 @@
 
 use CGI;
 use DBI;
-
-use lib ('/home/httpd/html/glossa/pm/');
-use Glossa_old;
 use Spreadsheet::WriteExcel;
 use Data::Dumper;
 use IO::Zlib;
 use strict;
+
+use lib ('./lib/');
+use Glossa_local;
 
 select(STDOUT);
 $|=1;
@@ -24,9 +24,7 @@ unless ($base_corpus) { $base_corpus = $corpus }
 
 my $cutoff = CGI::param('cutoff');
 
-my $conf = Glossa::get_conf_file($corpus);
-my %conf = %$conf;
-
+my %conf = Glossa::readConfig($corpus);
 
 # start waiting ticker
 print "<div id='waiting'>searching </div>";

@@ -3,9 +3,10 @@
 use CGI;
 use File::Copy;
 use strict;
-use lib("/home/httpd/html/glossa/pm/");
-use Glossa_old;
 use Data::Dumper;
+
+use lib ('./lib/');
+use Glossa_local;
 
 select(STDOUT);
 $|=1;
@@ -18,8 +19,7 @@ my $user = $ENV{'REMOTE_USER'};
 my $name = CGI::param('name');
 my $confirm = CGI::param('confirm');
  
-my $conf = Glossa::get_conf_file($corpus);
-my %conf = %$conf;
+my %conf = Glossa::readConfig($corpus);
 
 my %taken_names;
 my $hits_dir = $conf{'config_dir'} . "/" . $corpus . "/hits/" . $user . "/";
