@@ -21,33 +21,7 @@ use lib ('/home/httpd/html/glossa/pm/');
 
 use Glossa_old;
 
-# Some functions used later
-
-# reading the main and corpus config files
-# returns a hash of the key=value pairs in the file.
-sub readConfigFile {
-    my ($fn) = @_;
-
-    my %conf;
-    open (CONF, $fn);
-    while ( <CONF> ) {
-        chomp;
-        next if (/^\#/);
-        s/\s*$//;
-        my ($k,$v)=split(/\s*=\s*/);
-        $conf{$k}=$v;
-    }
-    close CONF;
-
-    return %conf;
-}
-
-sub getRootURIPath {
-    my $path = $ENV{REQUEST_URI};
-    my @parts = split("/", $path);
-    
-    return join("/", @parts[2..($#parts-2)]);
-}
+require 'shared.pl';
 
 ##                                        ##
 ##             0. Initialization          ##
@@ -1712,7 +1686,7 @@ if($parallel){$atttype = 'x'}
 
 #</scandiasyn>
 #print "<script>alert('attype: $atttype');</script>";
-print "\n<script language=\"javascript\">showList($d_files,'".$conf{'query_id'}."','".$lang{'hits_found'}."',$hits,'".$lang{'results_pages'}."','$CORPUS','$max', '$atttype', '$player')</script>\n";
+print "\n<script language=\"javascript\">showList($d_files,'".$conf{'query_id'}."','".$lang{'hits_found'}."',$hits,'".$lang{'results_pages'}."','$CORPUS','$max', '$atttype', '$player', '$conf{'cgiRoot'}')</script>\n";
 #print "showList($d_files,'".$conf{'query_id'}."','".$lang{'hits_found'}."',$hits,'".$lang{'results_pages'}."','$CORPUS','$max', '$atttype', '$player')\n";
 # print page header to file, so that it is accessible for 
 # the other results pages
