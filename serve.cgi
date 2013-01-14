@@ -1341,7 +1341,7 @@ if ($hits == $results_max) {
 
 # The javscript function (in reslist.js) to display the links to the 
 # results pages (in the "placeholder" span).
-print "<script language=\"javascript\">showList($d_files,'".$conf{'query_id'}."','".$lang{'hits_found'}."',$hits,'".$lang{'results_pages'}."','$CORPUS','$max', '$atttype')</script>\n";
+print "<script language=\"javascript\">showList($d_files,'".$conf{'query_id'}."','".$lang{'hits_found'}."',$hits,'".$lang{'results_pages'}."','$CORPUS','$max', '$atttype', '$conf{'cgiRoot'}')</script>\n";
 
 # print page header to file, so that it is accessible for 
 # the other results pages
