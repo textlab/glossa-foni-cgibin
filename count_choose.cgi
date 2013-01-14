@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 
 use CGI;
-use lib("/home/httpd/html/glossa/pm");
-use Glossa_old;
+use lib("./lib/");
+use Glossa_local;
 use Data::Dumper;
 
 print "Content-type: text/html\n\n";
@@ -10,12 +10,7 @@ print "Content-type: text/html\n\n";
 my $corpus = CGI::param('corpus');
 my $base_corpus = CGI::param('base_corpus');
 
-my $conf = Glossa::get_conf_file($corpus);
-my %conf = %$conf;
-
-# print Dumper %conf;
-
-
+my %conf = Glossa::readConfig($corpus);
 
 my $query_id = CGI::param('query_id');
 
