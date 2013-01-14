@@ -3,8 +3,8 @@
 use CGI;
 use DBI;
 use Data::Dumper;
-use lib("/home/httpd/html/glossa/pm");
-use Glossa_old;
+use lib("./lib/");
+use Glossa_local;
 use strict;
 
 
@@ -30,8 +30,7 @@ my $hits_name=CGI::param('name');
 
 my $user = $ENV{'REMOTE_USER'}; 
 
-my $conf=Glossa::get_conf_file($corpus);
-my %conf = %$conf;
+my %conf=Glossa::readConfig($corpus);
 
 my $corpus_mode = $conf{'corpus_mode'};
 
@@ -43,13 +42,13 @@ if($corpus_mode eq 'speech'){
 my $video_scripts = <<STOP;
    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/base/jquery-ui.css" type="text/css" media="all" />
    <link rel="stylesheet" href="http://static.jquery.com/ui/css/demo-docs-theme/ui.theme.css" type="text/css" media="all" />
-   <link rel="stylesheet" type="text/css" href="http://tekstlab.uio.no/glossa/player/player.css" />
-   <link href="http://tekstlab.uio.no/glossa/html/tags.css" rel="stylesheet" type="text/css" />
-   <script type='text/javascript' src='http://tekstlab.uio.no/glossa/player/player.ajax.js'></script>
-   <script language="JavaScript" src="http://tekstlab.uio.no/glossa/js/showtag.js" ></script>
-   <script type='text/javascript' src='http://tekstlab.uio.no/glossa/js/jquery/jquery-1.4.3.min.js'></script>
-   <script type='text/javascript' src='http://tekstlab.uio.no/glossa/js/jquery/jquery-ui-1.8.6.custom.min.js'></script>
-   <script type='text/javascript' src='http://tekstlab.uio.no/glossa/player/slider.js'></script>
+   <link rel="stylesheet" type="text/css" href="$conf{'htmlRoot'}/player/player.css" />
+   <link href="$conf{'htmlRoot'}/html/tags.css" rel="stylesheet" type="text/css" />
+   <script type='text/javascript' src="$conf{'htmlRoot'}/player/player.ajax.js"></script>
+   <script language="JavaScript" src="$conf{'htmlRoot'}/js/showtag.js" ></script>
+   <script type='text/javascript' src="$conf{'htmlRoot'}/js/jquery/jquery-1.4.3.min.js"></script>
+   <script type='text/javascript' src="$conf{'htmlRoot'}/js/jquery/jquery-ui-1.8.6.custom.min.js"></script>
+   <script type='text/javascript' src="$conf{'htmlRoot'}/player/slider.js"></script>
    <script type='text/javascript'>var player;</script>
 STOP
 my $googletrans = <<STOP;
@@ -69,7 +68,7 @@ function appendTranslateScript(node,text){
 }
 function translateText(response){
     globalNodeVar.innerHTML = response.data.translations[0].translatedText;
-    globalNodeVar.innerHTML += " <font size='-2'>(google)</font>"; //"&nbsp;<img src='http://tekstlab.uio.no/glossa/html/img/google-g-icon-16.png'>";
+    globalNodeVar.innerHTML += " <font size='-2'>(google)</font>"; //"&nbsp;<img src='$conf{'htmlRoot'}/html/img/google-g-icon-16.png'>";
     globalNodeVar = 0;
 }
 
@@ -83,7 +82,7 @@ function translate(node, text) {
                                 function(result) {
         if (result.translation) {
 	    node.innerHTML = result.translation;
-	    node.innerHTML += " <font size='-2'>(google)</font>"; //"&nbsp;<img src='http://tekstlab.uio.no/glossa/html/img/google-g-icon-16.png'>";
+	    node.innerHTML += " <font size='-2'>(google)</font>"; //"&nbsp;<img src='$conf{'htmlRoot'}/html/img/google-g-icon-16.png'>";
         }
         else{ node.innerHTML = 'No translation available' }
       });
