@@ -5,8 +5,8 @@ use Spreadsheet::WriteExcel;
 use GD::Graph::bars;
 use GD::Graph::hbars;
 use GD::Graph::pie;
-use lib("/home/httpd/html/glossa/pm");
-use Glossa_old;
+use lib("./lib/");
+use Glossa_local;
 
 print "Content-type: text/html\n\n";
 
@@ -16,8 +16,7 @@ print "<html><head></head><body>";
 my $query_id = CGI::param('query_id');
 my $user = $ENV{'REMOTE_USER'}; 
 my $corpus = CGI::param('corpus');
-my $conf = Glossa::get_conf_file($corpus);
-my %conf = %$conf;
+my %conf = Glossa::readConfig($corpus);
 
 # FIXME: this is a silly way of doing things
 my $conf= $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 
