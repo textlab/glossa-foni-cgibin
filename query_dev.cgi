@@ -1673,7 +1673,6 @@ print TOP "\n<script>\nvar mapObj = {\ntokInf : $json_tok_inf,\ninfLoc : $json_i
 #print "\n<script language='javascript'>\nfunction mapper(){\nwindow.open('$conf{'htmlRoot'}/html/map_hits_dev.php?informants=$tok_inf_file_index&corpus=$CORPUS','mywindow','height=780,width=1200,status,scrollbars,resizable');\n}\n</script>";
 print "\n<script language='javascript'>\nfunction mapper(){\nwindow.open('$conf{'htmlRoot'}/html/gmap.html','mywindow2','height=780,width=1200,status,scrollbars,resizable');\n}\n</script>";
 print TOP "\n<script language='javascript'>\nfunction mapper(){\nwindow.open('$conf{'htmlRoot'}/html/gmap.html','mywindow2','height=780,width=1200,status,scrollbars,resizable');\n}\n</script>";
-print "\n<script language='javascript'>\nfunction mapper2(){\nwindow.open('http://tekstlab.uio.no/joel/gmap.html','mywindow2','height=780,width=1200,status,scrollbars,resizable');\n}\n</script>";
 #print "\n<script language='javascript'>\ndocument.getElementById('maplink').innerHTML=$maplink;\n</script>\n";
 
 #<a href='#' ><img src='$conf{'htmlRoot'}/html/img/i.gif' alt='i' / border='0'></a>
