@@ -12,7 +12,27 @@ open (LOG, ">/var/www/cgi-data/omclog");
 print LOG "BEGYNNER GLOSSA.PM\n";
 
 our $VERSION   = '0.1';
-our @EXPORT_OK = qw{ readConfigFile getRootURIPath get_conf_file print_token print_token_target create_tid_list get_metadata_feat };
+our @EXPORT_OK = qw{ readConfig get_conf_file print_token print_token_target create_tid_list get_metadata_feat };
+
+# reads global and corpus configuration file and constructs config hash
+sub readConfig {
+    my ($corpus) = @_;
+
+    # read main configuration file
+    my $conf_path_fn = "paths.conf";
+    my %base_conf = readConfigFile($conf_path_fn);
+
+    # read corpus configuration file
+    my $conf_corpus_fn = $base_conf{'config_dir'} . "/" . $corpus . "/cgi.conf";
+    my %conf = readConfigFile($conf_corpus_fn);
+
+    # update configuration with information passed in the http request
+    $conf{'base_corpus'}=$corpus;
+    $conf{'htmlRoot'}='/' . getRootURIPath() . "/glossa";
+    $conf{'cgiRoot'}='/cgi-bin/' . getRootURIPath() . '/glossa';
+
+    return %conf;
+}
 
 # reading the main and corpus config files
 # returns a hash of the key=value pairs in the file.
@@ -33,6 +53,9 @@ sub readConfigFile {
     return %conf;
 }
 
+# split out the unique URL part for the installation
+# i.e. the dev part when installed in alternate location
+# for development
 sub getRootURIPath {
     my $path = $ENV{REQUEST_URI};
     my @parts = split("/", $path);

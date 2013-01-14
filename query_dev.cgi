@@ -78,18 +78,7 @@ my $user = $ENV{'REMOTE_USER'};
 my $display_struct = CGI::param('structDisplay');
 my $player = CGI::param('player');
 
-# read main configuration file
-my $conf_path_fn = "paths.conf";
-my %base_conf = Glossa::readConfigFile($conf_path_fn);
-
-# read corpus configuration file
-my $conf_corpus_fn = $base_conf{'config_dir'} . "/" . $CORPUS . "/cgi.conf";
-my %conf = Glossa::readConfigFile($conf_corpus_fn);
-
-# update configuration with information passed in the http request
-$conf{'base_corpus'}=$CORPUS;
-$conf{'htmlRoot'}='/' . Glossa::getRootURIPath() . "/glossa";
-$conf{'cgiRoot'}='/cgi-bin/' . Glossa::getRootURIPath() . '/glossa';
+my %conf = Glossa::readConfig($CORPUS);
 
 my $corpus_mode = $conf{'corpus_mode'};
 
@@ -319,7 +308,7 @@ print "  <div id=\"body\">\n";
 
 ## for debugging
 if ($debug) {
-    print "L: $conf_corpus_fn<br>";
+    # print "L: $conf_corpus_fn<br>";
     print "<pre>";
     print Dumper %in;
     print "</pre>";
