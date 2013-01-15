@@ -55,7 +55,7 @@ my $number_of_files = @files;#<$conf{'tmp_dir'}/$query_id*>;
 
 #print "No. of files = $number_of_files<br />";
 #print "$conf{'tmp_dir'}/$query_id<br />";
-
+# a fix i did way back in the days.. joel
 @files = ();
 for (my $j = 1; $j <= $number_of_files; $j++ ){
     $files[$j-1] = "$conf{'tmp_dir'}/$query_id" . "$j.dat";
@@ -88,9 +88,9 @@ if (CGI::param('head')) {
 
 
 
-    if (CGI::param('form') or CGI::param('pos') or CGI::param('lexeme')) { push @head, "Left context" }
-    if (CGI::param('form') or CGI::param('pos') or CGI::param('lexeme') or CGI::param('mform') or CGI::param('mpos') or CGI::param('mlexeme')) { push @head, "match" }
-    if (CGI::param('form') or CGI::param('pos') or CGI::param('lexeme')) { push @head, "Right context" }
+    if (CGI::param('form') or CGI::param('pos') or CGI::param('lexeme') or CGI::param('phon')) { push @head, "Left context" }
+    if (CGI::param('form') or CGI::param('pos') or CGI::param('lexeme') or CGI::param('phon') or CGI::param('mform') or CGI::param('mpos') or CGI::param('mlexeme') or CGI::param('mphon')) { push @head, "match" }
+    if (CGI::param('form') or CGI::param('pos') or CGI::param('lexeme') or CGI::param('phon')) { push @head, "Right context" }
 
 
     
@@ -102,7 +102,7 @@ if (CGI::param('head')) {
 	    } 
     }
  
-    if (CGI::param('aform') or CGI::param('apos') or CGI::param('alexeme')) { push @head, "Aligned region" }
+    if (CGI::param('aform') or CGI::param('apos') or CGI::param('alexeme') or CGI::param('aphon')) { push @head, "Aligned region" }
 
     if ($annotation_set) {
 	push @head, "Annotation";
@@ -198,7 +198,7 @@ foreach my $f (@files) {
 	    if (CGI::param('form')) { push @tmp, $token };
 	    if (CGI::param('pos')) { push @tmp, $pos };
 	    if (CGI::param('lexeme')) { push @tmp, $lexeme };
-	    if($speech){push @tmp,$phon}
+	    if (CGI::param('phon')){push @tmp,$phon}
 	    $left2 .= join("/", @tmp) . " ";
 	}
 	push @n, $left2;
@@ -214,7 +214,7 @@ foreach my $f (@files) {
 	    if (CGI::param('form') or CGI::param('mform')) { push @tmp, $token };
 	    if (CGI::param('pos') or CGI::param('mpos')) { push @tmp, $pos };
 	    if (CGI::param('lexeme') or CGI::param('mlexeme')) { push @tmp, $lexeme };
-	    if($speech){push @tmp, $phon}
+	    if(CGI::param('phon') or CGI::param('mphon')){push @tmp, $phon}
 	    $match2 .= join("/", @tmp) . " ";
 	}
 	push @n, $match2;
@@ -230,7 +230,7 @@ foreach my $f (@files) {
 	    if (CGI::param('form')) { push @tmp, $token };
 	    if (CGI::param('pos')) { push @tmp, $pos };
 	    if (CGI::param('lexeme')) { push @tmp, $lexeme };
-	    if($speech){push @tmp,$phon}
+	    if(CGI::param('phon')){push @tmp,$phon}
 	    $r2 .= join("/", @tmp) . " ";
 	}
 	push @n, $r2;
