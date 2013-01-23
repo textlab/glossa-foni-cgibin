@@ -44,7 +44,7 @@ my %meta = $in{"meta"};
 
 my $CORPUS = $in{'query'}->{'corpus'}->[0];
 
-print "Content-type: text/html; charset=" . ($CORPUS eq "run" ? "UTF-8" : "ISO-8859-1") . "\n\n";
+print "Content-type: text/html; charset=" . ($CORPUS =~ /^(run|skriv)$/ ? "UTF-8" : "ISO-8859-1") . "\n\n";
 print "<html>\n<head>\n</head>\n<body>\n";
 
 
@@ -97,6 +97,13 @@ print "<div id='stats'>\n</div>\n";
 
 print ($speech_corpus ? "Informanter: $infs<br />" : "Tekster: $infs<br />"); # joel 20071211; anders 20110125
 
+my $cnt_select = 0;
+if ($CORPUS eq "skriv") {
+  my $word_count = $dbh->selectrow_array("SELECT MAX(endpos)+1 FROM SKRIVtext");
+  print "Antall ord: $word_count";
+  $cnt_select = 1;
+}
+
 print "<hr>\n<table style='border-width:1px;border-style:outset;border-color:#afaeae;padding:0px;margin:0px'>\n";
 print "<tr>\n";
 my @meta_text = split(/ /, $conf{'meta_text'});
@@ -108,6 +115,10 @@ foreach my $m (@meta_text) {
 my $text_select = join(", ", @meta_text);
 
 my @meta_text_sum = split(/ /, $conf{'meta_text_sum'});
+
+if ($cnt_select) {
+    print "<td>\n<b>word count</b>\n</td>\n";
+}
 
 if ($class_select) {
     print "<td>\n<b>class</b>\n</td>\n";
@@ -161,6 +172,31 @@ foreach my $tid (@tids_sorted) {
     print "<td>\n";
     print join("</td>\n<td>\n", @r);
     print "</td>\n";
+    
+    if ($cnt_select) {
+        my $word_count = $r{'endpos'}-$r{'startpos'}+1;
+        print "<td>$word_count</td>\n";
+
+            my $identifier = $r{'tid'};
+            my $source_line = "";
+            my $assignment_code = join("_", (split("_", $identifier))[1,2]);
+            my $assignment_path = "/michalkk/skriv/oppgavetekster/${assignment_code}.pdf";
+
+	    $source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" onClick=\"window.open('$conf{'htmlRoot'}/html/profile.php?tid=$identifier&corpus=$CORPUS',");
+	    $source_line.=sprintf("'mywindow','height=600,width=600,status,scrollbars,resizable');\"><img src='$conf{'htmlRoot'}/html/img/i.gif' alt='i' border='0'></a>&nbsp;</font>");
+
+            if (-e "/var/www/html$assignment_path") {
+                $source_line.=sprintf("<a href=\"$assignment_path\" target=\"_new\"><img src=\"/michalkk/skriv/img/assignment-text.png\" height=\"14\"/></a>&nbsp;");
+            }
+            my $identifier_noslash = $identifier;
+            $identifier_noslash =~ s,/,_,g;
+            my $answer_path = "/michalkk/skriv/oppgavesvar/${identifier_noslash}.pdf";
+            if (-e "/var/www/html$answer_path") {
+                $source_line.=sprintf("<a href=\"$answer_path\" target=\"_new\"><img src=\"/michalkk/skriv/img/assignment-answer.png\" height=\"14\"/></a>");
+            }
+            print "<td>$source_line</td>";
+    }
+	
 
     if ($class_select) {
 	# FIXME: at det er den første kommer an på cgi.conf
@@ -174,7 +210,6 @@ foreach my $tid (@tids_sorted) {
 	while (my ($r2) = $sth2->fetchrow_array) { push @res, $r2 }
 	print join("<hr>\n", @res);
 	print "</td>\n";
-	
     }
 
     if ($author_select) {
