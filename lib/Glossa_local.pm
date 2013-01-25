@@ -28,8 +28,8 @@ sub readConfig {
 
     # update configuration with information passed in the http request
     $conf{'base_corpus'}=$corpus;
-    $conf{'htmlRoot'}='/' . getRootURIPath() . "/glossa";
-    $conf{'cgiRoot'}='/cgi-bin/' . getRootURIPath() . '/glossa';
+    $conf{'htmlRoot'}='/' . getRootURIPath() . '/glossa/';
+    $conf{'cgiRoot'}='/cgi-bin/' . getRootURIPath() . '/glossa/';
 
     return %conf;
 }
