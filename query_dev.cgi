@@ -285,7 +285,7 @@ STOP
 print "  <div id=\"inspector\" class=\"inspect\">\n" .
       "    <iframe frameborder='0' width='100%' height='100%' id=\"movie_frame\"></iframe>\n" .
       "    <div style=\"position: relative; left: 0px; top: 0px; cursor: pointer\" onclick=\"document.getElementById('inspector').style.display='none';\">\n" .
-      "      <img alt=\"[x]\" src=\"" . $conf{'htmlRoot'}  . "html/img/close.png\" />\n" . 
+      "      <img alt=\"[x]\" src=\"" . $conf{'htmlRoot'}  . "/html/img/close.png\" />\n" . 
       "    </div>\n" .
       "  </div>\n<br />\n";
 	}
@@ -329,7 +329,7 @@ if($debug){
 
 # group file; for corpora with restricted access (in addition to 
 # the .htaccess restrictions). Space-separated list of allowed users.
-if ($conf{'groupfile'}) {
+if ($conf{'groupfile'} and not ($conf{'disable_groupfile'} == 'true')) {
     unless (-e $conf{'groupfile'}) { die("group file specified, but not found ($conf{'groupfile'})"); }
     my %allowed_users;
     open (H, $conf{'groupfile'});
@@ -1395,24 +1395,24 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	    if($video_stars{ucfirst $identifier}){
 		if($player ne 'flash'){
 		    $source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" onClick=\"document.getElementById('inspector').style.display='block';");
-		    $source_line.=sprintf("document.getElementById('movie_frame').src = '$conf{'htmlRoot'}html/$phpfile.php$ex_url&video=1';\">\n");
-		    $source_line.=sprintf("<img style='border-style:none' src='$conf{'htmlRoot'}html/img/mov.gif'>\n</a> \n&nbsp;</font>");
+		    $source_line.=sprintf("document.getElementById('movie_frame').src = '$conf{'htmlRoot'}/html/$phpfile.php$ex_url&video=1';\">\n");
+		    $source_line.=sprintf("<img style='border-style:none' src='$conf{'htmlRoot'}/html/img/mov.gif'>\n</a> \n&nbsp;</font>");
 		}
 		else{
 		    $source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" onClick=\"document.getElementById('inspector').style.display='block';");
 		    $source_line.=sprintf("player = shebang('$CORPUS', '$line_key', true);\">\n");
-		    $source_line.=sprintf("<img style='border-style:none' src='$conf{'htmlRoot'}html/img/mov.gif'>\n</a> \n&nbsp;</font>");
+		    $source_line.=sprintf("<img style='border-style:none' src='$conf{'htmlRoot'}/html/img/mov.gif'>\n</a> \n&nbsp;</font>");
 		}
 	    }
 	    if($player ne 'flash'){
 		$source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" onClick=\"document.getElementById('inspector').style.display='block';");
-		$source_line.=sprintf("document.getElementById('movie_frame').src = '$conf{'htmlRoot'}html/$phpfile.php$ex_url&video=0';\">\n");
-		$source_line.=sprintf("<img style='border-style:none' src='$conf{'htmlRoot'}html/img/sound.gif'>\n</a> \n&nbsp;</font>");
+		$source_line.=sprintf("document.getElementById('movie_frame').src = '$conf{'htmlRoot'}/html/$phpfile.php$ex_url&video=0';\">\n");
+		$source_line.=sprintf("<img style='border-style:none' src='$conf{'htmlRoot'}/html/img/sound.gif'>\n</a> \n&nbsp;</font>");
 	    }
 	    else{
 		    $source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" onClick=\"document.getElementById('inspector').style.display='block';");
 		    $source_line.=sprintf("player = shebang('$CORPUS', '$line_key',false);\">\n");
-		    $source_line.=sprintf("<img style='border-style:none' src='$conf{'htmlRoot'}html/img/sound.gif'>\n</a> \n&nbsp;</font>");
+		    $source_line.=sprintf("<img style='border-style:none' src='$conf{'htmlRoot'}/html/img/sound.gif'>\n</a> \n&nbsp;</font>");
 	    }
 	    $source_line.="<strong>" . $sts{"text_id"} . "</strong>&nbsp;";	    
 	}
@@ -1480,7 +1480,7 @@ for (my $i = 0; $i < $nr_result; $i++) {
 	    $source_line .= "<tr><td></td><td>";
 	    $source_line .= "<div><span onclick=\"appendTranslateScript(this.parentNode, '$orig');\" style='font-size:small;cursor:pointer;'>[translate]</span></div>";
 	    $source_line.=sprintf("</td></tr>");
-#<img src=\"" . $conf{'htmlRoot'} . "html/img/google-g-icon-16.png\">
+#<img src=\"" . $conf{'htmlRoot'} . "/html/img/google-g-icon-16.png\">
 	    $source_line .= "<tr><td></td><td></td></tr>";
 	}
 ###
