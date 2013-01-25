@@ -29,6 +29,7 @@ my $cut_min = CGI::param('cut_min');
 my $cut_occ = CGI::param('cut_occ');
 
 my $corpus = CGI::param('corpus');
+
 my %conf = Glossa::readConfig($corpus);
 
 my $excel = $conf{'dat_files'} . "/" . $query_id . "_" . $lib . "_" . $format . ".xls";
