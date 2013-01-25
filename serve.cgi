@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# This file looks like it's only used bu servertest.html which is an old
+# This file looks like it's only used by servertest.html which is an old
 # test page. Should probably be deleted.
 
 use CGI::Carp qw(fatalsToBrowser);

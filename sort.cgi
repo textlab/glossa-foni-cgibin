@@ -14,6 +14,7 @@ use Glossa_local;
 my $corpus=CGI::param('corpus');
 my $user = $ENV{'REMOTE_USER'}; 
 my $query_id = CGI::param('query_id');
+
 my %conf=Glossa::readConfig($corpus);
 
 # FIXME: this is a silly way of doing things

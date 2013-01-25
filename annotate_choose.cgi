@@ -2,6 +2,7 @@
 
 use CGI;
 use DBI;
+
 use lib ('./lib/');
 use Glossa_local;
 
@@ -9,7 +10,6 @@ my $query_id = CGI::param('query_id');
 my $corpus = CGI::param('corpus');
 my $player = CGI::param('player');
 my $atttype = CGI::param('atttype');
-
 
 my %conf = Glossa::readConfig($corpus);
 

@@ -242,12 +242,13 @@ while (my ($k,$v) = each %stats) {
 	
 	($total) = $sth->fetchrow_array;
 	
-	next unless ($total > 1);
-	
-	$ratio = $v2 / ($total / 1000);
-	$ratio= sprintf("%.3f",$ratio);
-
-
+	# [AN 22.01.13]: Show count even if total is missing
+	if($total == 0) {
+		$ratio = "unknown - missing total";
+	} else {
+		$ratio = $v2 / ($total / 1000);
+		$ratio= sprintf("%.3f",$ratio);
+	}
 	push @res, [$k2, $v2, $ratio, $total];
 
 

@@ -5,6 +5,7 @@ use Spreadsheet::WriteExcel;
 use GD::Graph::bars;
 use GD::Graph::hbars;
 use GD::Graph::pie;
+
 use lib("./lib/");
 use Glossa_local;
 
@@ -16,6 +17,7 @@ print "<html><head></head><body>";
 my $query_id = CGI::param('query_id');
 my $user = $ENV{'REMOTE_USER'}; 
 my $corpus = CGI::param('corpus');
+
 my %conf = Glossa::readConfig($corpus);
 
 # FIXME: this is a silly way of doing things

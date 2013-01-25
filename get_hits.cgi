@@ -17,6 +17,7 @@ print "Content-type: text/html\n\n";
 my $corpus=CGI::param('corpus');
 my $user = $ENV{'REMOTE_USER'}; 
 my $player = CGI::param('player'); 
+
 my %conf = Glossa::readConfig($corpus);
 
 print "<html>\n<head>\n";

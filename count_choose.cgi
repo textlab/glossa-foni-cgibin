@@ -1,9 +1,10 @@
 #!/usr/bin/perl
 
 use CGI;
+use Data::Dumper;
+
 use lib("./lib/");
 use Glossa_local;
-use Data::Dumper;
 
 print "Content-type: text/html\n\n";
 

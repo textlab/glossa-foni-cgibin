@@ -36,11 +36,7 @@ my %in = %$in;
 my $CORPUS = $in{'query'}->{'corpus'}->[0];
 my $base_corpus = $in{'phrase'}->{'0'}->{'corpus'}->[0];
 
-
 my %conf = Glossa::readConfig($CORPUS);
-
-
-
 
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
 my $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 0}) || die $DBI::errstr;

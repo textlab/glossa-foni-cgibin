@@ -26,7 +26,6 @@ my $context_size = CGI::param('cs');
 my $corpus = CGI::param('corpus');
 my $base_corpus=CGI::param('subcorpus');
 
-
 my %conf=Glossa::readConfig($corpus);
 
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";

@@ -8,7 +8,6 @@ use Data::Dumper;
 use lib ('./lib/');
 use Glossa_local;
 
-
 select(STDOUT);
 $|=1;
 

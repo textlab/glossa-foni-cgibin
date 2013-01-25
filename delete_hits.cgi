@@ -16,6 +16,7 @@ my $corpus=CGI::param('corpus');
 my $player=CGI::param('player');
 my $atttype=CGI::param('atttype');
 my $user = $ENV{'REMOTE_USER'}; 
+
 my %conf = Glossa::readConfig($corpus);
 
 my $n = CGI::param('n');

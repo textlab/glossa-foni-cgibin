@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
 use CGI;
+
 use lib ('./lib/');
 use Glossa_local;
 
