@@ -28,8 +28,6 @@ sub readConfig {
 
     # update configuration with information passed in the http request
     $conf{'base_corpus'}=$corpus;
-    $conf{'htmlRoot'}='/' . getRootURIPath() . '/glossa/';
-    $conf{'cgiRoot'}='/cgi-bin/' . getRootURIPath() . '/glossa/';
 
     return %conf;
 }
@@ -53,16 +51,6 @@ sub readConfigFile {
     return %conf;
 }
 
-# split out the unique URL part for the installation
-# i.e. the dev part when installed in alternate location
-# for development
-sub getRootURIPath {
-    my $path = $ENV{REQUEST_URI};
-    my @parts = split("/", $path);
-    
-    return join("/", @parts[2..($#parts-2)]);
-}
- 
 sub get_conf_file {
 
     my $corpus = shift;
