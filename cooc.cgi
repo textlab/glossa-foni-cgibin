@@ -26,7 +26,7 @@ unless ($lib =~ m/^\w+\d*$/) { die("illegal value") };
 my $corpus_name = CGI::param('corpus_name');
 my $user = $ENV{'REMOTE_USER'}; 
 
-my %conf = Glossa::readConfig($corpus);
+my %conf = Glossa::readConfig($corpus_name);
 
 # FIXME: this is a silly way of doing things
 my $conf= $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 

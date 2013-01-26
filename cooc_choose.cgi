@@ -16,6 +16,7 @@ print "<form action=\"", $conf{'cgiRoot'}, "/cooc.cgi\" method=\"get\">";
 
 my $query_id = CGI::param('query_id');
 print "<br><input type=\"hidden\" name=\"query_id\" value=\"$query_id\">";
+print "<br><input type=\"hidden\" name=\"corpus_name\" value=\"$corpus\">";
 
 print "<input type=\"checkbox\" name=\"case\">Case sensitive</input><br><br>";
 
