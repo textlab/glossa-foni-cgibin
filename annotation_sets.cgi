@@ -3,8 +3,8 @@
 use CGI;
 use DBI;
 
-use lib ('/home/httpd/html/glossa/pm/');
-use Glossa_old;
+use lib ('./lib');
+use Glossa_local;
 
 my $query_id = CGI::param('query_id');
 my $corpus = CGI::param('corpus');
