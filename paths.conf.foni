@@ -1,5 +1,5 @@
 config_dir = /hf/foni/tekstlab/glossa-0.7/dat/
-db_pwd = tuba
+db_pwd = fake
 db_name = glossa
 db_uname = glossa_reader
 db_host = localhost
