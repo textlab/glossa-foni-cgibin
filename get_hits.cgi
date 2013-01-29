@@ -206,42 +206,23 @@ my @confs = <$hits_dir/*.conf>;
 my %nameId = ();
 
 foreach my $conf (@confs) {
-
-
-
     my $query_id = $conf;
     $query_id =~ s/\.conf$//;
     $query_id =~ s/.*\///;
 
-
     my $name;
     open (CONF, $conf);
     while (<CONF>) {
-
-
-	chomp;
+        chomp;
         my ($key,$val) = split(/\s*=\s*/, $_);
-	if ($key eq "name") {
-	    $name=$val;
-#	    next unless $name;
-#	    $nameId{$val} = $query_id;
-	}
+        if ($key eq "name") {
+            $name=$val;
+        }
     }
     close CONF;
 
     next unless $name;
     $nameId{$name} = $query_id;
-
-#    print "<tr><td><a href='", $conf{'cgiRoot'}, "/show_page_dev.cgi?query_id=$query_id&name=$name&corpus=$corpus&n=1&player=$player'>$name</a></td>";
-#    print "<td><a href='", $conf{'cgiRoot'}, "/get_hits.cgi?action=delete&for_deletion=$query_id&corpus=$corpus'>*</a></td>";
-#    print "<td>to: <input type='text' id='renameto$name' size=9></input> <a id='rename$name' href='", $conf{'cgiRoot'}, "/get_hits.cgi?action=rename&for_renaming=$query_id&corpus=$corpus' onClick='getNewName(\"$name\",\"rename\")'>*</a></td>";
-
-#    print "<td>to: <input type='text' id='saveasto$name' size=9></input> <a id='saveas$name' href='", $conf{'cgiRoot'}, "/get_hits.cgi?action=saveas&for_saveas=$query_id&corpus=$corpus' onClick='getNewName(\"$name\",\"saveas\")'>*</a></td>";
-    
-#    print "<td><input type='checkbox' name='joinme' value='$query_id'></input></td></tr>";
-
-
-
 }
 
 my @myResults = keys %nameId;
@@ -259,12 +240,7 @@ foreach my $name (@myResults) {
     print "<td>to: <input type='text' id='saveasto$name' size=9></input> <a id='saveas$name' href='", $conf{'cgiRoot'}, "/get_hits.cgi?action=saveas&for_saveas=$query_id&corpus=$corpus' onClick='getNewName(\"$name\",\"saveas\")'>*</a></td>\n";
     
     print "<td><input type='checkbox' name='joinme' value='$query_id'></input></td>\n</tr>\n";
-
-
-
 }
-
-
 
 print "</table>\n"; 
 

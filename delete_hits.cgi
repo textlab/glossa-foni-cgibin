@@ -39,7 +39,7 @@ foreach my $p (@params) {
 
 my $filename= $conf{'tmp_dir'} . "/" . $query_id . "_" . $n . ".dat"; 
 open (DATA, "$filename");
-#print "DAT: $filename<br />"; 
+
 my $filename_n=$conf{'tmp_dir'} . "/"  . $query_id . "_" . $n . ".tmp"; 
 open (NEW, ">$filename_n");
 
@@ -55,23 +55,20 @@ while (<DATA>) {
     my ($corp, $s_id, $sts_string, $res_l, $ord, $res_r) = split(/\t/, $source);
     $sts_string =~ /cpos=(\d+)/;
     my $cpos = $1;
-    unless ($to_delete{$cpos}) { # was $to_delete{$s_id}
-	print NEW $_;
+    unless ($to_delete{$cpos}) {
+        print NEW $_;
     }
 }
 
 close DATA;
 close NEW;
 
-
 move($filename_n,$filename);
 
-
-#print "$filename_n to $filename<br />";
 print "Please select:<br>";
- print "<a href='", $conf{'cgiRoot'}, "/show_page_dev.cgi?corpus=$corpus&n=$n&query_id=$query_id&player=$player&atttype=$atttype'>Finished deleting</a><br>";
+print "<a href='", $conf{'cgiRoot'}, "/show_page_dev.cgi?corpus=$corpus&n=$n&query_id=$query_id&player=$player&atttype=$atttype'>Finished deleting</a><br>";
 
- print "<a href='", $conf{'cgiRoot'}, "/show_page_dev.cgi?corpus=$corpus&n=$n&query_id=$query_id&del=yes&player=$player&atttype=$atttype'>Delete more hits on same page</a><br>";
+print "<a href='", $conf{'cgiRoot'}, "/show_page_dev.cgi?corpus=$corpus&n=$n&query_id=$query_id&del=yes&player=$player&atttype=$atttype'>Delete more hits on same page</a><br>";
 
 my $m = $n+1;
 my $filenamem=$conf{'tmp_dir'} . "/"  . $query_id . "_" . $m . ".dat"; 

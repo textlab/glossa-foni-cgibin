@@ -27,10 +27,6 @@ print "<input type=\"hidden\" name=\"base_corpus\" value=\"$base_corpus\">";
 print "<table cellpadding=\"15\"><tr><td>";
 print "<input type=\"checkbox\" name=\"case\">Case sensitive</input><br>";
 print "<input type=\"checkbox\" name=\"globalstats\">Use global lexical statistics (only bigrams)</input>";
-#print "<b>Case sensitive:</b><br>";
-#print "<input type=\"radio\" name=\"case\" value=\"never\" checked></input> Never<br>";
-#print "<input type=\"radio\" name=\"case\" value=\"always\"></input> Always<br>";
-#print "<input type=\"radio\" name=\"case\" value=\"proper\"></input> On proper names<br>";
 
 print "</td><td valign=\"top\">";
 print "<b>Collocates:</b><br>";
@@ -83,9 +79,6 @@ print "Minimum association value: <input type=\"text\" name=\"cut_min\" size=\"3
 print "Minimum no of occurences: <input type=\"text\" name=\"cut_occ\" size=\"3\"></input> <br><br>";
 
 print "</td><td valign=\"top\">";
-
-#print "<b>Collocate filter:</b><br>";
-#print "<input type=\"text\" size=\"7\"></input>";
 
 print "</td></tr></table>";
 

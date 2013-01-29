@@ -39,17 +39,11 @@ my $in = Glossa::create_cgi_hash2(\%cgi_hash);
 my %in = %$in;
 
 my %meta = $in{"meta"};
-#print %meta;
-#foreach my $key (keys(%meta)){ print "<br />$key::".$meta{$key};  }
-
 
 my $CORPUS = $in{'query'}->{'corpus'}->[0];
 
 print "Content-type: text/html; charset=" . ($CORPUS =~ /^(run|skriv)$/ ? "UTF-8" : "ISO-8859-1") . "\n\n";
 print "<html>\n<head>\n</head>\n<body>\n";
-
-
-
 
 my %conf = Glossa::readConfig($CORPUS);
 
@@ -60,7 +54,6 @@ my $speech_corpus = 0;
 if($corpus_mode eq 'speech'){
     $speech_corpus = 1;
 }
-
 
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
 my $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 1})          ||              die $DBI::errstr;

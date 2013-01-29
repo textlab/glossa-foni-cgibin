@@ -64,12 +64,6 @@ foreach my $f (@files) {
 }
 $/="\n";
 
-#print "<pre>";
-#print Dumper %count;
-#print "</pre>";
-
-
-
 my @tids;
 # read query configuration fil
 my $conf=$conf{'tmp_dir'} . "/" . $query_id . ".conf"; 
@@ -188,17 +182,9 @@ foreach my $tid (keys %tids) {
     
 }
 
-
-#print "<pre>";
-#print Dumper %stats;
-#print "</pre>";
-
 while (my ($k,$v) = each %stats) {
-
-    
     # map
     if ($k eq 'text.pubplace') {
-#	print " <a href='http://omilia.uio.no/omc/dat/$query_id.svg'>(kart)</a>";
     }
 
     my %s = %$v;
@@ -207,56 +193,56 @@ while (my ($k,$v) = each %stats) {
     my @map;
 
     while (my ($k2,$v2) = each %s) {
+        my $ratio;
+        my $total;
 
-	my $ratio;
-	my $total;
+        # map
+        if ($k eq 'text.pubplace') {
+            push @map, $k2;
+        }
 
-	# map
-	if ($k eq 'text.pubplace') {
-	    push @map, $k2;
-	}
+        $k2 =~ s/\\/\\\\/g;
+        $k2 =~ s/\"/\\"/g;      # "
+        $k2 =~ s/\'/\\'/g;      # '	    
 
-	    
-	$k2 =~ s/\\/\\\\/g;
-	$k2 =~ s/\"/\\"/g; # "
-	$k2 =~ s/\'/\\'/g; # '	    
+        my $sql;
+        if ($k =~ m/text\./) {
+            $sql = "select sum(wordcount) from $text_table where $k = '$k2';";
+        }
+        elsif ($k =~ m/class\./) {
+            $sql = "select sum($text_table.wordcount) " .
+                "from $text_table,$class_table " .
+                "where $k = '$k2' and $class_table.tid=$text_table.tid;";
+        }
+        elsif ($k =~ m/author\./) {
+            $sql = "select sum($text_table.wordcount) " .
+                "from $text_table,$author_table " .
+                "where $k = '$k2' and $author_table.tid=$text_table.tid;";
+        }
+        else {
+            print "K $k<br>";
+            die ("invalid option");
+        }
 
-  	my $sql;
- 	if ($k =~ m/text\./) {
-	    $sql = "select sum(wordcount) from $text_table where $k = '$k2';";
-	}
-	elsif ($k =~ m/class\./) {
-	    $sql = "select sum($text_table.wordcount) from $text_table,$class_table where $k = '$k2' and $class_table.tid=$text_table.tid;";
-	}
-	elsif ($k =~ m/author\./) {
-	    $sql = "select sum($text_table.wordcount) from $text_table,$author_table where $k = '$k2' and $author_table.tid=$text_table.tid;";
-	}
-	else {
-	    print "K $k<br>";
-	    die ("invalid option");
-	}
-#	print $sql, "<br>";
+        my $sth = $dbh->prepare($sql);
+        $sth->execute  || die "Error fetching data: $DBI::errstr";
 
-	my $sth = $dbh->prepare($sql);
-	$sth->execute  || die "Error fetching data: $DBI::errstr";
-	
-	($total) = $sth->fetchrow_array;
-	
-	# [AN 22.01.13]: Show count even if total is missing
-	if($total == 0) {
-		$ratio = "unknown - missing total";
-	} else {
-		$ratio = $v2 / ($total / 1000);
-		$ratio= sprintf("%.3f",$ratio);
-	}
-	push @res, [$k2, $v2, $ratio, $total];
+        ($total) = $sth->fetchrow_array;
 
+        # [AN 22.01.13]: Show count even if total is missing
+        if($total == 0) {
+            $ratio = "unknown - missing total";
+        } else {
+            $ratio = $v2 / ($total / 1000);
+            $ratio= sprintf("%.3f",$ratio);
+        }
 
+        push @res, [$k2, $v2, $ratio, $total];
     }
 
     # map
     if ($k eq 'text.pubplace') {
-	print_map(\@map);
+        print_map(\@map);
     }
 
     my @res_sorted = sort {$b->[2] <=> $a->[2]} @res;
@@ -269,24 +255,19 @@ while (my ($k,$v) = each %stats) {
 
     print "<table border=1>";
     foreach my $r (@res_sorted) {
-	print OUTFILE $r->[0], "\t", $r->[1], "\t", $r->[2], "\t", $r->[3], "\n";
-	print "<tr><td>", $r->[0], "</td><td>", $r->[1], "</td><td>", $r->[2], "</td><td>", $r->[3], "</td></tr>";
+        print OUTFILE $r->[0], "\t", $r->[1], "\t", $r->[2], "\t", $r->[3], "\n";
+        print "<tr><td>", $r->[0], "</td><td>", $r->[1], "</td><td>", $r->[2], "</td><td>", $r->[3], "</td></tr>";
     }
     print "</table>";
     print "<br>";
 
     print OUTFILE "\n";
-
-
 }
 
 sub print_map {
-
     # This function is not written yet ...
 
     my $map = shift;
     my @map = @$map;
-
-
 }
 

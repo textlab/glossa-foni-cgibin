@@ -28,7 +28,6 @@ my $session;                      # to hold the name of the transcriber file
 my $db = CGI::param('db');
 my $table  = CGI::param('table');
 
-#if(!$db){ $db = 'nota'; }
 if(!$table){ $table = 'segments'; }
 
 my $database = 'DBI:mysql:database='.$db.';host=omilia.uio.no';
@@ -57,7 +56,6 @@ $fn=filename($fn,$video); # prepare audio file name.
 
 if( $db eq 'upus' ){ $fn = "upus/".$fn; }
 
-###################################################
 # need to check that all segments in range are from
 # the same transcription, ie have same file name:)
 # if not, adjust range.
@@ -89,10 +87,7 @@ while($hashref){
     }
     last;
 }
-###################################################
-#print "<script>alert('line_key:$id, size: $size, bottom: $bottom, top: $top')</script>";
-#print "<script>alert('test: $test');</script>";
-###################################################
+
 # obtain the start time code from the first segment
 # and the stop time code from the last segment
 # convert to QuickTime 30 f/s format
@@ -113,8 +108,6 @@ $sth->execute;
 $stop=$array[0];
 my $QTstop=sec2QTcode($stop);
 
-
-###################################################
 # fetch the range, using the tested upper and lower
 # limits
 my $SQL="SELECT * FROM $table WHERE audio_file LIKE '$session' AND begin >= $start AND end <= $stop";
@@ -122,7 +115,6 @@ $dbh->do($SQL);
 $sth=$dbh->prepare($SQL);
 $sth->execute;
 
-###################################################
 # the movie object for embedding
 my $obj = <<EMBED_END;
 <object CLASSID='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B' 
@@ -144,7 +136,6 @@ name='QTplayer'>\n
 </object><br />\n
 EMBED_END
 
-###################################################
 # the movie object for embedding
 my $obj2 = <<FIX_END;
 <script language="JavaScript" type="text/javascript">\n
@@ -162,8 +153,6 @@ my $obj2 = <<FIX_END;
 </script>\n
 FIX_END
 
-###
-###################################################
 # the movie object for embedding
 my $obj3 = <<FIXIT_END;
 <script language="JavaScript" type="text/javascript">\n
@@ -197,7 +186,6 @@ QT_WriteOBJECT(
 NUVVA_FIX
 
 
-###################################################
 # the movie object for embedding
 my $obj__ = <<DOCWRITE_END;
 <script language="JavaScript" type="text/javascript">\n
@@ -222,7 +210,6 @@ my $obj__ = <<DOCWRITE_END;
 </script>\n
 DOCWRITE_END
 
-###################################################
 # the html
 print <<headEnd;
 <html>\n
@@ -238,50 +225,50 @@ print <<headEnd;
 <body class=\"topframe\">\n
 headEnd
 
-###################################################
 my $url=sprintf("%s%s?line_key=%s&video=%s&db=%s&table=%s&size=",$notacgibin,"expand.pl",$id,$video,$db,$table);
 
-if(!$nested){
+if(!$nested) {
     print "<div class=\"ctrl\">";
     print "<div class=\"div\">";
     print "<strong>Kontekst:</strong><br />&#177; tur: ";
-    print "<select id=\"\" name=\"\" class=\"\" size=\"1\" onchange=\"window.location='$url'+this.value+''\">";
+    print "<select id=\"\" name=\"\" class=\"\" size=\"1\" " .
+        "onchange=\"window.location='$url'+this.value+''\">";
     print "<option value=\"\">-</option>";
     for(my $i=1;$i<30;$i++){
-	print "<option value=\"$i\">$i</option>";
+        print "<option value=\"$i\">$i</option>";
     }
     print "</select><br />\n";
     print "</div>";
     print "<br /><div class=\"div\">\n";
     if($video ne "no"){
-	print "<strong>Video:</strong><br />";
-#	print "&nbsp;<span style=\"cursor: pointer;\" onclick=\"javascript:restart(document.QTplayer, -500)\">&lt;&lt;</span>start";
-#	print "&nbsp;<span style=\"cursor: pointer;\" onclick=\"javascript:restart(document.QTplayer, 500)\">&gt;&gt;</span><br />\n";
-#	print "<span style=\"cursor: pointer;\" onclick=\"javascript:reend(document.QTplayer, -500);\">&lt;&lt;</span>stopp";
-#	print "<span style=\"cursor: pointer;\" onclick=\"javascript:reend(document.QTplayer, 500);\">&gt;&gt;</span><br />\n";
-	print "<span style=\"cursor: pointer;\" onclick=\"javascript:replay(document.QTplayer);\">" .
-	      "<img src=\"http://omilia.uio.no/img/qtp.png\" /></span><br /><br />\n";
-	print "<select id=\"\" name=\"start\" class=\"\" size=\"1\" ". 
-	      "onchange=\"javascript:restart(document.QTplayer, this.value*1);this.value=0;\">";
-	print "<option value=\"0\">-</option>\n";
-	for(my $j=-5;$j<6;$j++){
-	    printf("<option value=\"%d\">%d</option>\n",$j*100,$j);
-	}
-	print "</select><br />\n";
-	print "<select id=\"\" name=\"end\" class=\"\" size=\"1\" ".
-	       "onchange=\"javascript:reend(document.QTplayer, this.value*1);this.value=0;\">";
-	print "<option value=\"0\">-</option>\n";
-	for(my $j=-5;$j<6;$j++){
-	    printf("<option value=\"%d\">%d</option>\n",$j*100,$j);
-	}
-	print "</select><br />\n";
+        print "<strong>Video:</strong><br />";
+        print "<span style=\"cursor: pointer;\" " .
+            "onclick=\"javascript:replay(document.QTplayer);\">" .
+            "<img src=\"http://omilia.uio.no/img/qtp.png\" /></span><br /><br />\n";
+        print "<select id=\"\" name=\"start\" class=\"\" size=\"1\" ". 
+            "onchange=\"javascript:restart(document.QTplayer, this.value*1);" .
+            "this.value=0;\">";
+        print "<option value=\"0\">-</option>\n";
+        for(my $j=-5;$j<6;$j++){
+            printf("<option value=\"%d\">%d</option>\n",$j*100,$j);
+        }
+        print "</select><br />\n";
+        print "<select id=\"\" name=\"end\" class=\"\" size=\"1\" ".
+            "onchange=\"javascript:reend(document.QTplayer, this.value*1);" .
+            "this.value=0;\">";
+        print "<option value=\"0\">-</option>\n";
+        for(my $j=-5;$j<6;$j++){
+            printf("<option value=\"%d\">%d</option>\n",$j*100,$j);
+        }
+        print "</select><br />\n";
     }
     print "</div>\n";
     print "</div>\n";
     print "<div class=\"txt\">\n";
     if($size>3){
-	print "<iframe name=\"text\" frameborder=\"0\" width=\"500\" height=\"256\" ".
-	      "scrolling=\"auto\" src=\"$url$size&nested=yes\">\n</iframe>\n";
+        print "<iframe name=\"text\" frameborder=\"0\" width=\"500\" " .
+            "height=\"256\" ".
+            "scrolling=\"auto\" src=\"$url$size&nested=yes\">\n</iframe>\n";
     }
 }
 if($size<=3||$nested){
@@ -303,9 +290,6 @@ print "</body></html>\n";
 $sth->finish;
 $dbh->disconnect;
 
-# ---------------------------------------------
-# ---------------------------------------------
-
 sub tablefill{
     my ($sth)=shift;
     my $hashref;
@@ -319,11 +303,16 @@ sub tablefill{
 	my $begin=$hashref->{"begin"};
 	my $end=$hashref->{"end"};
 	$seg=tidyTags($seg);
-#	if($begin < $start || $end > $stop){next;}
-	if($ref ne $last_ref){
-	    if($bgcolor eq "#ffffff"){$bgcolor="#aaddff";}
-	    else{$bgcolor="#ffffff";}
+
+	if($ref ne $last_ref) {
+	    if($bgcolor eq "#ffffff") {
+          $bgcolor="#aaddff";
+      }
+	    else {
+          $bgcolor="#ffffff";
+      }
 	}
+
 	if($hashref->{"id"} eq $id){$color="#cc2222";}
 	else{$color="#000000";}
 	$fill .= "<tr valign=\"top\" bgcolor=\"$bgcolor\">\n<td>$ref</td>".
@@ -333,7 +322,8 @@ sub tablefill{
     return $fill;
 }
 
-sub filename{ # removes initials, adds suffix.
+# removes initials, adds suffix.
+sub filename{
     my $fn=shift;
     my $v=shift;
     $fn=~s/[A-Z]*_?//;
@@ -341,7 +331,8 @@ sub filename{ # removes initials, adds suffix.
     return $fn."_320kbps.mov";
 }
 
-sub sec2QTcode{ #converts time code to quicktime format.
+# converts time code to quicktime format.
+sub sec2QTcode{
     my $arg = shift;
     if($arg > 0){
 	my $QTS = $arg;
@@ -353,11 +344,19 @@ sub sec2QTcode{ #converts time code to quicktime format.
     ($hour, $min) = divSplit($time[0], 3600);
     ($min, $sec) = divSplit($min, 60);
     $dec = $time[1];
-    if($dec =~ /^\d\d$/){$dec = $dec."0";} #must be three digits. ie this is to the right of the decimal point.
+
+    # must be three digits. ie this is to the right of the decimal point.
+    if($dec =~ /^\d\d$/) {
+        $dec = $dec."0";
+    }
+ 
     $dec = floor($dec/(1000/30));
+    
     return sprintf "%.2d:%.2d:%.2d:%.2d",$hour,$min,$sec,$dec;
 }
-sub divSplit{ #devide $num by $divisor, putting result and remainder in @res
+
+# divide $num by $divisor, putting result and remainder in @res
+sub divSplit { 
     my ($num, $divisor)=@_;
     my @res;
     my $rem=$num % $divisor;
@@ -367,7 +366,7 @@ sub divSplit{ #devide $num by $divisor, putting result and remainder in @res
     return @res;
 }
 
-sub tidyTags{
+sub tidyTags {
     my $str=shift;
     my @toks = split /\]\[/, $str;
     my @arr;
@@ -375,12 +374,13 @@ sub tidyTags{
 
     foreach my $tok(@toks){
 
-	$tok =~ s/[\[\]]//g;
-	@arr = split /\|/, $tok;
-    
-	$out .= $arr[0]." ";
+        $tok =~ s/[\[\]]//g;
+        @arr = split /\|/, $tok;
+
+        $out .= $arr[0]." ";
 
     }
+
     $out =~ s/&amp;/&/g;
     return $out;
 }

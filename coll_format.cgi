@@ -64,14 +64,8 @@ foreach my $pos ("left", "center", "right") {
     $out2 = $conf{'dat_files'} . "/" . $out;
     if (-s $out2) { `rm $out2` }
 
-    if (($format eq "bars") or ($format eq "pie") or ($format eq "hbars")) {
-#	print "<img src=\"http://omilia.uio.no/omc/";
-#	print $out, "\"><br>";
-    }
-    else {
-	print "<a href=\"", $conf{'download_url'}, "/";
-	print $out, "\">", $out, "</a><br>";
-    }
+    print "<a href=\"", $conf{'download_url'}, "/";
+    print $out, "\">", $out, "</a><br>";
 
     if ($pos eq "center") {
 	if ($format eq "xls") { 
@@ -243,12 +237,6 @@ elsif (($format eq "bars") or ($format eq "hbars")) {
 
     my $fontname = $conf{'htmlRoot'} . "/dat/l.ttf";
     my $gd_text = GD::Text->new() or die GD::Text::error();
-    #$gd_text->set_font($fontname, 18) or die $gd_text->error;
-#    $gd_text->set_font(gdLucidaUnicode);
-#    $gd_text->set_font(GD::Font::LucidaUnicode);
-#    GD::Text->font_path("/var/www/html/CE");
-
-    
 
     my @x; my @y;
     my $max_y=0;
@@ -286,28 +274,26 @@ elsif (($format eq "bars") or ($format eq "hbars")) {
     }
 
     my $graph;
+    
     if ($format eq "bars") {
-	$graph = GD::Graph::bars->new($graph_width, 400);
-        #$graph->set_x_axis_font($fontname, 8) or die $graph->error;
-	$graph->set( 
-		     x_label           => 'String',
-		     y_label           => 'Occurences',
-#		     y_max_value           => 1,
-		     x_labels_vertical => $vertical,
-		     title             => 'OMC Lexical Statistics'
-		     ) or die $graph->error;
+        $graph = GD::Graph::bars->new($graph_width, 400);
+        $graph->set( 
+            x_label           => 'String',
+            y_label           => 'Occurences',
+            x_labels_vertical => $vertical,
+            title             => 'OMC Lexical Statistics'
+            ) or die $graph->error;
 
     }
+    
     if ($format eq "hbars") {
 	$graph_heigth = $no_labels * 15;
 	if ($graph_heigth < 100) { $graph_heigth = 100 }
 	$vertical=0;
 	$graph = GD::Graph::hbars->new(750, $graph_heigth);
-#        $graph->set_x_axis_font($fontname, 8) or die $graph->error;
 	$graph->set( 
 		     x_label           => 'String',
 		     y_label           => 'Occurences',
-#		     y_max_value           => $max_y,
 		     x_labels_vertical => $vertical,
 		     title             => 'OMC Lexical Statistics'
 		     ) or die $graph->error;
@@ -362,29 +348,33 @@ elsif (($format eq "bars") or ($format eq "hbars")) {
     }
 
     my $graph;
-    if ($format eq "bars") {
-	$graph = GD::Graph::bars->new($graph_width, 400);
-	$graph->set( 
-		     x_label           => 'String',
-		     y_label           => 'Occurences',
-#		     y_max_value           => 1,
-		     x_labels_vertical => $vertical,
-		     title             => 'OMC Lexical Statistics'
-		     ) or die $graph->error;
 
+    if ($format eq "bars") {
+        $graph = GD::Graph::bars->new($graph_width, 400);
+        $graph->set( 
+            x_label           => 'String',
+            y_label           => 'Occurences',
+            x_labels_vertical => $vertical,
+            title             => 'OMC Lexical Statistics'
+            ) or die $graph->error;
     }
+
     if ($format eq "hbars") {
-	$graph_heigth = $no_labels * 15;
-	if ($graph_heigth < 100) { $graph_heigth = 100 }
-	$vertical=0;
-	$graph = GD::Graph::hbars->new(750, $graph_heigth);
-	$graph->set( 
-		     x_label           => 'String',
-		     y_label           => 'Occurences',
-#		     y_max_value           => 1,
-		     x_labels_vertical => $vertical,
-		     title             => 'OMC Lexical Statistics'
-		     ) or die $graph->error;
+        $graph_heigth = $no_labels * 15;
+        if ($graph_heigth < 100) {
+            $graph_heigth = 100
+        }
+
+        $vertical=0;
+
+        $graph = GD::Graph::hbars->new(750, $graph_heigth);
+
+        $graph->set( 
+            x_label           => 'String',
+            y_label           => 'Occurences',
+            x_labels_vertical => $vertical,
+            title             => 'OMC Lexical Statistics'
+            ) or die $graph->error;
 
     }
 
@@ -439,29 +429,29 @@ elsif (($format eq "bars") or ($format eq "hbars")) {
 	}
 	
 	my $graph;
+
 	if ($format eq "bars") {
 	    $graph = GD::Graph::bars->new($graph_width, 400);
 	    $graph->set( 
-			 x_label           => 'String',
-			 y_label           => 'Occurences',
-#			 y_max_value           => $max_y,
-			 x_labels_vertical => $vertical,
-			 title             => 'OMC Lexical Statistics'
-			 ) or die $graph->error;
+          x_label           => 'String',
+          y_label           => 'Occurences',
+          x_labels_vertical => $vertical,
+          title             => 'OMC Lexical Statistics'
+          ) or die $graph->error;
 
 	}
+
 	if ($format eq "hbars") {
 	    $graph_heigth = $no_labels * 15;
 	    if ($graph_heigth < 100) { $graph_heigth = 100 }
 	    $vertical=0;
 	    $graph = GD::Graph::hbars->new(750, $graph_heigth);
 	    $graph->set( 
-			 x_label           => 'String',
-			 y_label           => 'Occurences',
-#			 y_max_value           => $max_y,
-			 x_labels_vertical => $vertical,
-			 title             => 'OMC Lexical Statistics'
-			 ) or die $graph->error;
+          x_label           => 'String',
+          y_label           => 'Occurences',
+          x_labels_vertical => $vertical,
+          title             => 'OMC Lexical Statistics'
+          ) or die $graph->error;
 
 	}
 	
@@ -480,7 +470,6 @@ elsif (($format eq "bars") or ($format eq "hbars")) {
 	
 }
 
-
 foreach my $pos ("left", "center", "right") {
 
     next if (($pos eq "center") and !($ngrams == 3));
@@ -493,9 +482,7 @@ foreach my $pos ("left", "center", "right") {
     if (($format eq "bars") or ($format eq "pie") or ($format eq "hbars")) {
 	print "<img src=\"", $conf{'download_url'}, "/";
 	print $out, "\"></img><br>";
-    }
-
-    
+    }    
 }
 
 print "</body></html>";

@@ -51,10 +51,7 @@ my $out = $query_id . "." . $format;
 $query_id = $query_id."_";
 my @files = <$conf{'tmp_dir'}/$query_id*>; # AHA!!! There are more than one!!  !!!This doesn't work, as "file_2.txt" > "file_12.txt"
 
-my $number_of_files = @files;#<$conf{'tmp_dir'}/$query_id*>;
-
-#print "No. of files = $number_of_files<br />";
-#print "$conf{'tmp_dir'}/$query_id<br />";
+my $number_of_files = @files;
 
 # a fix i did way back in the days.. joel
 @files = ();
@@ -118,7 +115,6 @@ if (CGI::param('head')) {
 
 	my $format = $workbook->add_format(); # Add a format
 	$format->set_bold();
-#	$format->set_color('red');
 	$format->set_align('center');
 
 	my $j = 0;
@@ -143,12 +139,10 @@ foreach my $f (@files) {
 
 
     open (FILE, $f);
-#   print "FILE: $f<br />";
     $/="\n\n\n";
     while (<FILE>) {
 
 	my @n;
-#	print "$_<br />";
 	my @lines = split(/\n/, $_);
 
 	my $source = shift @lines;
@@ -280,21 +274,20 @@ foreach my $f (@files) {
 	# annotations
 
 	if ($annotation_set) {
-	    	my $annotation_table = uc($corpus) . "annotations";
-#		print "SELECT value_id FROM $annotation_table where s_id = '$s_id' and set_id = '$annotation_set';\m";
-		my $sth = $dbh->prepare(qq{ SELECT value_id FROM $annotation_table where s_id = '$s_id' and set_id = '$annotation_set';});
-		$sth->execute  || die "Error fetching data: $DBI::errstr";
-		my ($stored_value) = $sth->fetchrow_array;
+      my $annotation_table = uc($corpus) . "annotations";
+      my $sth = $dbh->prepare(qq{ SELECT value_id FROM $annotation_table where s_id = '$s_id' and set_id = '$annotation_set';});
+      $sth->execute  || die "Error fetching data: $DBI::errstr";
+      my ($stored_value) = $sth->fetchrow_array;
 
-		my $displayed_value;
-		if ($annotation_set eq '__FREE__') {
-		    $displayed_value = $stored_value;
-		}
-		else {
-		    $displayed_value = $annotation_value{$stored_value};
-		}
-	
-		push @n, $displayed_value;
+      my $displayed_value;
+      if ($annotation_set eq '__FREE__') {
+          $displayed_value = $stored_value;
+      }
+      else {
+          $displayed_value = $annotation_value{$stored_value};
+      }
+
+      push @n, $displayed_value;
 	}
 
         if ($format eq "html") { print OUT "<tr><td>", join ("</td><td>", @n), "</td></tr>"; }
@@ -313,17 +306,9 @@ foreach my $f (@files) {
 	    }
 	    $i++;
 	}
-
-
-
     }
     close FILE;
 
 }
 
-
 if ($format eq "html") { print OUT "</table>"; }
-
-
-
-

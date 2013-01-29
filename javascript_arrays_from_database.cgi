@@ -93,8 +93,6 @@ while (<CONF>) {
 
 
 foreach my $el (keys %conf_db) {
-
-
     my @content;
     my @uncontent;
 
@@ -105,35 +103,30 @@ foreach my $el (keys %conf_db) {
     my $el2 = $el;
     $el2 =~ s/-alle$//;
 
-#    print("alert('SELECT DISTINCT $colname FROM $tablename $constraint order by $colname;');");
-    
     my $sth = $dbh->prepare(qq{ SELECT DISTINCT $colname FROM $tablename $constraint order by $colname;});
 
     $sth->execute  || die "Error fetching data: $DBI::errstr";
     while (my ($a, $b) = $sth->fetchrow_array) {
-	
-	if  ($b) {
-	    $a = $a . ", " . $b;
-	} 
-	
-	$a =~ s/\n//g; 
-	$a =~ s/\r//g; 
-	$a =~ s/\'/\\'/g;   # '
+        if  ($b) {
+            $a = $a . ", " . $b;
+        } 
 
-	my $c = $a;
- 
-	$c =~ s/^(.{40}).*/$1.../;
+        $a =~ s/\n//g; 
+        $a =~ s/\r//g; 
+        $a =~ s/\'/\\'/g;       # '
 
-	next unless ($a);
+        my $c = $a;
 
-	if ($subcorpus{$el}->{$a}) {
-	    push @uncontent, "['$a', '$c']";
-	}
-	else {
-	    push @content, "['$a', '$c']";	    
-	}
+        $c =~ s/^(.{40}).*/$1.../;
 
+        next unless ($a);
 
+        if ($subcorpus{$el}->{$a}) {
+            push @uncontent, "['$a', '$c']";
+        }
+        else {
+            push @content, "['$a', '$c']";	    
+        }
     }
 
     my $mode = $subcorpus{$el}->{'THEMODE'};
@@ -154,14 +147,7 @@ foreach my $el (keys %conf_db) {
 
 }
 
-
-
-
-
-
 foreach my $el (keys %conf_file) {
-
-
     my @content;
     my @uncontent;
 
@@ -172,32 +158,33 @@ foreach my $el (keys %conf_file) {
 
     open (IN, $file);
     while (<IN>) {
+        chomp;
+        s/\'/\\'/g;             #'
 
-	chomp;
-	s/\'/\\'/g; #'
+        my ($name, $value) = split(/\t+/);
 
-	my ($name, $value) = split(/\t+/);
+        unless (($el eq 'auth-type') or
+                ($el eq 'auth-gender') or
+                ($el eq 'text-type') or
+                ($el eq 'pro')  or
+                ($el eq 'edu')  or
+                ($el eq 'intendedu')  or
+                ($el eq 'medu')  or
+                ($el eq 'fedu')  or
+                ($el eq 'sex') or
+                ($el eq 'rep')or
+                ($el eq 'agegroup')) {
+            $name = $value . ": " . $name;
+        }
 
-#	$name =~ s/^\s.*//;
-#	$name =~ s/\s.*$//;
-#	$value =~ s/^\s.*//;
-#	$value =~ s/\s.*$//;
+        next unless ($name and $value);
 
-	unless (($el eq 'auth-type') or ($el eq 'auth-gender') or ($el eq 'text-type') or ($el eq 'pro')  or ($el eq 'edu')  or ($el eq 'intendedu')  or ($el eq 'medu')  or ($el eq 'fedu')  or ($el eq 'sex') or ($el eq 'rep')or ($el eq 'agegroup')) {
-	    $name = $value . ": " . $name;
-	}
-
-	next unless ($name and $value);
-
-
-	if ($subcorpus{$el}->{$value}) {
-	    push @uncontent, "['$value', '$name']";
-	}
-	else {
-	    push @content, "['$value', '$name']";	    
-	}
-#	push @content, "['$value', '$name']";
-
+        if ($subcorpus{$el}->{$value}) {
+            push @uncontent, "['$value', '$name']";
+        }
+        else {
+            push @content, "['$value', '$name']";	    
+        }
     }
 
     my $mode = $subcorpus{$el}->{'THEMODE'};
@@ -212,5 +199,4 @@ foreach my $el (keys %conf_file) {
     print "widgetContent['$el'].selected=[\n";
     print join(", ", @content);
     print "]\n";
-
 }

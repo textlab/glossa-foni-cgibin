@@ -12,7 +12,6 @@ use Glossa_local;
 print "Content-type: text/html\n\n";
 
 print "<html><head></head><body>";
-#print "Result: ";
 
 my $query_id = CGI::param('query_id');
 my $user = $ENV{'REMOTE_USER'}; 
@@ -192,16 +191,10 @@ elsif (($format eq "bars") or ($format eq "pie") or ($format eq "hbars")) {
 
     }
     if ($format eq "pie") {
-	$graph = GD::Graph::pie->new(400, 400);
-	$graph->set( 
-#		     x_label           => 'String',
-#		     y_label           => 'Occurences',
-#		     y_max_value           => $max_y,
-#		     x_labels_vertical => $vertical,
-		     title             => "Lexical Statistics"
-		     ) or die $graph->error;
-
+        $graph = GD::Graph::pie->new(400, 400);
+        $graph->set(title => "Lexical Statistics") or die $graph->error;
     }
+
     my @data = (\@x, \@y);
 
     my $gd = $graph->plot(\@data) or die $graph->error;

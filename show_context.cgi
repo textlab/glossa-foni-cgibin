@@ -15,7 +15,8 @@ use Glossa_local;
 #  - felt i text, felt i author, felt i topic
 
 
-# [AN 12.11.08]: When several s-units are listed to the left of a result line, all of them will be 
+# [AN 12.11.08]: When several s-units are listed to the left of a
+# result line, all of them will be 
 # sent as parameters, and we should pick the first one.
 my $s = CGI::param('s_id');
 my @ss = split(/\s+/, $s);
@@ -31,13 +32,12 @@ my %conf=Glossa::readConfig($corpus);
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
 my $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 1});
 
-
 print "Content-type: text/html; charset=$conf{'charset'}\n\n";
 print "<html><head></head><body>";
 
-
-
-if ($context_size > 10) { $context_size = 10 }
+if ($context_size > 10) {
+    $context_size = 10;
+}
 
 print "<form action=\"", $conf{'cgiRoot'}, "/show_context.cgi\">";
 print "context size: ";
@@ -49,24 +49,18 @@ print "<input type=\"hidden\" name=\"text_id\" value=\"$text\"></input>";
 print "<input type=\"submit\" value=\"change\"></input>";
 print "<table cellpadding=20><tr><td width=\"300\" valign=\"top\">";
 
-
-
 my $match;
 my $match_id;
 
 # FIXME
 
-
 $base_corpus = uc($base_corpus);
-
 
 my $text_table = uc($corpus) . "text";
 my $author_table = uc($corpus) . "author";
 my $class_table = uc($corpus) . "class";
 
-
 $WebCqp::Query::Registry = $conf{'cwb_registry'};
-
 
 my $query = new WebCqp::Query "$base_corpus";
 
@@ -74,27 +68,18 @@ $context_size++;
 
 my $context_att = "s";
 
-my $cqp = "<" . $context_att . "_id='" . $s . "'> [] expand to " . $context_att . ";";
+my $cqp = "<" . $context_att . "_id='" . $s . "'> [] expand to " .
+    $context_att . ";";
+
 if (($corpus eq 'nota') or ($corpus eq 'upus') or ($corpus eq 'taus')) {
     $context_att = "who";
     $s = CGI::param('who_line_key');
     $cqp = "<who_line_key='" . $s . "'> [] expand to " . $context_att . ";";
-
 }
-
-#    my $cqp2 = $cqp;
-#    $cqp2 =~ s/\</{/g;
-#    $cqp2 =~ s/\>/}/g;
-#    print "<br>", $cqp2, "<br>";
 
 $context_size = $context_size . " " . $context_att;
 
-#print "CS: $context_size<br>";
-
 $query->context($context_size, $context_size);
-#$query->context("0 text", "0 text");
-
-
 
 my ($result,$size) = $query->query("$cqp");
 
@@ -107,8 +92,8 @@ my $res_r = $m->{'kwic'}->{'right'};
 my $res_l = $m->{'kwic'}->{'left'};
 my $pos = $m->{'cpos'};
 
-my $sql_query = "SELECT startpos,endpos FROM $text_table WHERE $text_table.tid='$text';";
-#print $sql_query, "<br>";
+my $sql_query = "SELECT startpos,endpos FROM $text_table " .
+    "WHERE $text_table.tid='$text';";
 my $sth = $dbh->prepare($sql_query);
 $sth->execute  || die "Error fetching data: $DBI::errstr";
 my ($startpos,$endpos) = $sth->fetchrow_array;
@@ -119,16 +104,17 @@ if ($startpos and $endpos) {
     my @res_l = split(/ /, $res_l);
 
     if (($pos - @res_l) < $startpos) {
-	
-	my $remove = @res_l - ($pos - $startpos);
-	splice(@res_l, 0,$remove);
-	$res_l = join(" ", @res_l);
-	
+
+        my $remove = @res_l - ($pos - $startpos);
+        splice(@res_l, 0,$remove);
+        $res_l = join(" ", @res_l);
+
     }
+
     if (($pos + @ord + @res_r) > $endpos) {
-	my $context = $endpos - ($pos + @ord);
-	splice(@res_r, $context);
-	$res_r = join(" ", @res_r);
+        my $context = $endpos - ($pos + @ord);
+        splice(@res_r, $context);
+        $res_r = join(" ", @res_r);
     }
 }
 
@@ -139,10 +125,6 @@ print "<div style=\"word-wrap: break-word\">";
 print $res_r;
 
 print "</div></td><td>";
-
-
-##########################################################################
-
 
 
 
