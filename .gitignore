@@ -4,3 +4,6 @@ backup
 *.bak
 glossa.sql.gz
 *htaccess*
+old
+paths.conf
+
