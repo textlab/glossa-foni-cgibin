@@ -1260,8 +1260,8 @@ for (my $i = 0; $i < $nr_result; $i++) {
 
             if (-e "/var/www/html$assignment_path") {
                 $source_line.=sprintf("<a href=\"$assignment_path\" " .
-                                      "target=\"_new\"><img src=\"/michalkk/skriv/"
-                                      "img/assignment-text.png\" height=\"14\"/>"
+                                      "target=\"_new\"><img src=\"/michalkk/skriv/" .
+                                      "img/assignment-text.png\" height=\"14\"/>" .
                                       "</a>&nbsp;");
             }
             my $identifier_noslash = $identifier;
