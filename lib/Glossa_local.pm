@@ -11,6 +11,16 @@ use DBI;
 our $VERSION   = '0.1';
 our @EXPORT_OK = qw{ readConfig get_conf_file print_token print_token_target create_tid_list get_metadata_feat };
 
+# Trims the passed string of preceding and trailing whitespace
+sub trimString {
+    my($str) = @_;
+
+    $str =~ s/^\s+//;
+    $str =~ s/\s+$//;
+
+    return $str;
+}
+
 # reads global and corpus configuration file and constructs config hash
 sub readConfig {
     my ($corpus) = @_;
@@ -38,11 +48,18 @@ sub readConfigFile {
     open (CONF, $fn);
     while ( <CONF> ) {
         chomp;
-        next if (/^\#/);
-        s/\s*$//;
-        my ($k,$v)=split(/\s*=\s*/);
-        $conf{$k}=$v;
+
+        my $line = $_;
+        $line = trimString($line);
+
+        # skip comments and empty lines
+        next if ($line =~ /^\#/);
+        next if ($line =~ /^$/);
+        
+        my ($k,$v)=split(/\s*=\s*/, $line);
+        $conf{trimString($k)} = trimString($v);
     }
+
     close CONF;
 
     return %conf;
