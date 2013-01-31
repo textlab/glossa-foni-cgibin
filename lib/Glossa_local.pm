@@ -33,6 +33,10 @@ sub readConfig {
     my $conf_corpus_fn = $base_conf{'config_dir'} . "/" . $corpus . "/cgi.conf";
     my %conf = readConfigFile($conf_corpus_fn);
 
+    foreach my $key (keys %base_conf) {
+        $conf{$key} = $base_conf{$key};
+    }
+
     # update configuration with information passed in the http request
     $conf{'base_corpus'}=$corpus;
 
