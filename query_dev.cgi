@@ -1175,8 +1175,8 @@ for (my $i = 0; $i < $nr_result; $i++) {
                 $target_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" " .
                                       "onClick=\"window.open('$conf{'cgiRoot'}" .
                                       "/show_context.cgi?s_id=$target&" .
-                                      "text_id=$t2&cs=3&corpus=$in{'query'}->" .
-                                      "{'corpus'}->[0]&subcorpus=$a',");
+                                      "text_id=$t2&cs=3&corpus=" .
+                                      "$in{'query'}->{'corpus'}->[0]&subcorpus=$a',");
                 $target_line.=sprintf("'mywindow','height=500,width=650,status," .
                                       "scrollbars,resizable');\">" .
                                       "$target</a>\n</font>\n");
