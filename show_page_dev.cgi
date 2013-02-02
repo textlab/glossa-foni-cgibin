@@ -37,7 +37,7 @@ my $speech_corpus = 0;
 if($corpus_mode eq 'speech'){
     $speech_corpus = 1;
 }
-my $video_scripts = << STOP;
+my $video_scripts = <<STOP;
 
    <link rel="stylesheet"
     href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/base/jquery-ui.css"
@@ -60,7 +60,7 @@ my $video_scripts = << STOP;
 
 STOP
     
-my $googletrans = << STOP;
+my $googletrans = <<STOP;
 
 <script type="text/javascript" src="http://www.google.com/jsapi"></script>
 <script type="text/javascript">
@@ -104,7 +104,7 @@ function translate(node, text) {
 
 STOP
 
-my $style = << STYLE;
+my $style = <<STYLE;
 
 <style>
 div.inspect{
@@ -136,7 +136,7 @@ if ($speech_corpus) {
 print "\n$googletrans\n\n";
 print $style, "\n</head>\n<body>\n";
 
-print << SCRIPT;
+print <<SCRIPT;
 
 <script type="text/javascript">
 function selectAll(Direction)  {
@@ -156,7 +156,7 @@ function selectAll(Direction)  {
 
 SCRIPT
 
-my $media_div = << STOP;
+my $media_div = <<STOP;
 
 <div id="inspector" class="inspect">
     <div id="playerpos" style="top:0px;left:0px;position:absolute;width:400px;height:300px">
