@@ -1,0 +1,9 @@
+# Remember to make the logfile writable by the cgi process
+log4perl.rootLogger=INFO, LOGFILE
+
+log4perl.appender.LOGFILE=Log::Log4perl::Appender::File
+log4perl.appender.LOGFILE.filename=debug.log
+log4perl.appender.LOGFILE.mode=append
+
+log4perl.appender.LOGFILE.layout=PatternLayout
+log4perl.appender.LOGFILE.layout.ConversionPattern=[%d] %F %L %c - %m%n

@@ -8,6 +8,7 @@ use base qw{ Exporter };
 use Data::Dumper;
 use DBI;
 use Log::Log4perl;
+use File::Spec
 
 our $VERSION   = '0.1';
 our @EXPORT_OK = qw{ readConfig get_conf_file print_token print_token_target create_tid_list get_metadata_feat };
@@ -54,16 +55,24 @@ sub trimString {
     return $str;
 }
 
+my $global_config_file = "paths.conf";
+my $corpus_config_file = "cgi.conf";
+
 # reads global and corpus configuration file and constructs config hash
 sub readConfig {
     my ($corpus) = @_;
 
     # read main configuration file
-    my $conf_path_fn = "paths.conf";
+    my $conf_path_fn = $global_config_file;
+    $logger->info("Reading global configuration file $conf_path_fn");
+    
     my %base_conf = readConfigFile($conf_path_fn);
 
     # read corpus configuration file
-    my $conf_corpus_fn = $base_conf{'config_dir'} . "/" . $corpus . "/cgi.conf";
+    my $conf_corpus_fn = File::Spec->catfile($base_conf{'config_dir'},
+                                             $corpus, $corpus_config_file);
+
+    $logger->info("Reading corpus configuration file $conf_corpus_fn");
     my %conf = readConfigFile($conf_corpus_fn);
 
     foreach my $key (keys %base_conf) {
@@ -98,6 +107,9 @@ sub readConfigFile {
     }
 
     close CONF;
+
+    my $entries = (scalar keys %conf);
+    $logger->info("Read $entries configuration keys from $fn");
 
     return %conf;
 }
