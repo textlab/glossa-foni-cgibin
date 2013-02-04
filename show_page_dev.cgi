@@ -255,20 +255,7 @@ my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
 my $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 1});
 
 # read multitag file
-my $file = $conf{'config_dir'} . "/" . $corpus . "/multitags.dat";
-my %multitags;
-open (M, $file);
-
-while (<M>) {    
-    chomp;
-    next if (/^\#/);
-    s/\s*$//;
-    my ($a,$b,$c)=split(/\t/);
-    next unless ($a and $b and $c);
-    $multitags{$a}->{$b}=$c;
-}
-
-close M;
+my %multitags = Glossa::readMultitagFile(%conf);
 
 my $atts = $conf{'corpus_attributes'};
 my @atts = split(/ +/, $atts);

@@ -11,9 +11,6 @@ use File::Copy;
 use Text::Iconv;
 use Encode;
 
-
-
-
 # Use Glossa module embedded in repo
 use lib ('./lib/');
 use Glossa_local;
@@ -22,7 +19,7 @@ use Glossa_local;
 ##             0. Initialization          ##
 ##                                        ##
 
-
+my $logger = Glossa::getLogger('query_dev');
 
 ## get cgi input
 
@@ -89,17 +86,7 @@ if($corpus_mode eq 'speech'){
 
 # multitag file
 my $file = $conf{'config_dir'} . "/" . $CORPUS . "/multitags.dat";
-my %multitags;
-open (M, $file);
-while (<M>) {
-    chomp;
-    next if (/^#/);
-    s/\s*$//;
-    my ($a,$b,$c)=split(/\t/);
-    next unless ($a and $b and $c);
-    $multitags{$a}->{$b}=$c;
-}
-close M;
+my %multitags = Glossa::readMultitagFile(%conf);
 
 # language file
 my $lang_file = $conf{'config_dir'} . "/lang/" . $conf{'lang'} . ".dat";

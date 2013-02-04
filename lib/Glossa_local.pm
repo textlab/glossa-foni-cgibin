@@ -114,6 +114,36 @@ sub readConfigFile {
     return %conf;
 }
 
+my $multitag_fn = "multitags.dat";
+
+# Reads the multitag file from the corpus set in $conf{'base_corpus'}
+# and returns the Hash with it's contents
+sub readMultitagFile {
+    my (%conf) = @_;
+    my $fn = File::Spec->catfile($conf{'config_dir'},
+                                 $conf{'base_corpus'},
+                                 $multitag_fn);
+    my %multitags;
+
+    $logger->info("Reading multitags from $fn");
+
+    open (M, $fn) or $logger->info("File $fn not found");;
+    while (<M>) {
+        chomp;
+        next if (/^#/);
+        s/\s*$//;
+        my ($a,$b,$c)=split(/\t/);
+        next unless ($a and $b and $c);
+        $multitags{$a}->{$b}=$c;
+    }
+    close M;
+
+    my $entries = (scalar keys %multitags);
+    $logger->info("Read $entries multitags from $fn");
+
+    return %multitags
+}
+
 sub get_conf_file {
 
     my $corpus = shift;
