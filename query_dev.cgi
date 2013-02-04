@@ -85,7 +85,6 @@ if($corpus_mode eq 'speech'){
 }
 
 # multitag file
-my $file = $conf{'config_dir'} . "/" . $CORPUS . "/multitags.dat";
 my %multitags = Glossa::readMultitagFile(%conf);
 
 # language file

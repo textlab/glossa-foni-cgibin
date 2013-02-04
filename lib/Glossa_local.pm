@@ -144,35 +144,6 @@ sub readMultitagFile {
     return %multitags
 }
 
-sub get_conf_file {
-
-    my $corpus = shift;
-    my $conf_file = shift;
-
-    my %conf;
-
-    unless ($corpus) { $corpus = "test" }
-
-    # read configuration file
-    unless ($conf_file) {
-	$conf_file = "/hf/foni/tekstlab/glossa-0.7/dat/" . $corpus . "/cgi.conf";
-    }
-
-
-    open (CONF, $conf_file);
-    while (<CONF>) {
-	chomp;
-	next if (/^#/);
-	s/\s*$//;
-	my ($k,$v)=split(/\s*=\s*/);
-	$conf{$k}=$v;
-    }
-    close CONF;
-    
-    return \%conf;
-
-}
-
 sub create_cgi_hash0 {
     # FIXED (joel 20071221) uses hash_string to recursively build perl code,
     # then evals it.. or so we thought:-/
