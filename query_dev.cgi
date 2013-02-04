@@ -88,18 +88,7 @@ if($corpus_mode eq 'speech'){
 my %multitags = Glossa::readMultitagFile(%conf);
 
 # language file
-my $lang_file = $conf{'config_dir'} . "/lang/" . $conf{'lang'} . ".dat";
-
-my %lang;
-
-open (LANG, $lang_file);
-while (<LANG>) {
-    chomp;
-    s/\s*$//;
-    my ($k,$v)=split(/\s*=\s*/);
-    $lang{$k}=$v;
-}
-close LANG;
+my %lang = Glossa::readLanguageFile(%conf);
 
 ## start the HTTP session and HTML file
 print "Content-type: text/html; charset=$conf{'charset'}\n\n";

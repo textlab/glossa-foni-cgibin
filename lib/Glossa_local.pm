@@ -144,6 +144,35 @@ sub readMultitagFile {
     return %multitags
 }
 
+my $language_dir = "lang";
+my $language_filesuf = "dat";
+
+# read the language file based on %conf and returm the Hash
+sub readLanguageFile {
+    my(%conf) = @_;
+    my $fn = File::Spec->catfile($conf{'config_dir'},
+                                 $language_dir,
+                                 $conf{'lang'} . "." . $language_filesuf);
+
+    my %lang;
+
+    $logger->info("Reading language strings from $fn");
+
+    open (LANG, $fn) or $logger->info("File $fn not found");
+    while (<LANG>) {
+        chomp;
+        s/\s*$//;
+        my ($k,$v)=split(/\s*=\s*/);
+        $lang{$k}=$v;
+    }
+    close LANG;
+
+    my $entries = (scalar keys %lang);
+    $logger->info("Read $entries strings from $fn");
+
+    return %lang;
+}
+
 sub create_cgi_hash0 {
     # FIXED (joel 20071221) uses hash_string to recursively build perl code,
     # then evals it.. or so we thought:-/
