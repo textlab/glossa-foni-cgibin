@@ -91,7 +91,7 @@ sub readConfigFile {
     my ($fn) = @_;
 
     my %conf;
-    open (CONF, $fn);
+    open (CONF, $fn) or $logger->warn("File $fn not found");;;
     while ( <CONF> ) {
         chomp;
 
