@@ -7,9 +7,42 @@ use CGI;
 use base qw{ Exporter };
 use Data::Dumper;
 use DBI;
+use Log::Log4perl;
 
 our $VERSION   = '0.1';
 our @EXPORT_OK = qw{ readConfig get_conf_file print_token print_token_target create_tid_list get_metadata_feat };
+
+my $local_log_file = 'log.conf';
+my $default_log_file = 'log.default.conf';
+
+my $logger = getLogger('Glossa_local');
+
+# Initializes Log4perl singleton and returns 'Glossa' logger
+# instance.
+#
+# Reads the local log config or alternatively the global one. If none
+# of these files are present an empty config is loaded.
+sub getLogger {
+    my($name) = @_;
+
+    if (Log::Log4perl::initialized()) {
+        return Log::Log4perl->get_logger($name);
+    }
+    
+    if (-e $local_log_file) {
+        Log::Log4perl->init($local_log_file);
+    }
+    elsif (-e $default_log_file) {
+        Log::Log4perl->init($default_log_file);
+    }
+    else {
+        # use empty config
+        my $conf = "";
+        Log::Log4perl->init(\$conf);
+    }
+
+    return Log::Log4perl->get_logger($name);
+}
 
 # Trims the passed string of preceding and trailing whitespace
 sub trimString {
