@@ -2,7 +2,7 @@
 
 use CGI::Carp qw(fatalsToBrowser);
 use strict;
-use CGI;
+use CGI qw/:standard/;
 use POSIX;
 use Data::Dumper;
 use DBI;
@@ -90,76 +90,106 @@ my %multitags = Glossa::readMultitagFile(%conf);
 # language file
 my %lang = Glossa::readLanguageFile(%conf);
 
+
 ## start the HTTP session and HTML file
-print "Content-type: text/html; charset=$conf{'charset'}\n\n";
+print header(-type=>'text/html', -charset=>$conf{'charset'});
 
-print "<html>\n<head>\n<link rel=\"shortcut icon\" href=\"/favicon.ico\" type=\"image/ico\" />\n<title>$lang{'title'}</title>\n" .
-      "<link href=\"", $conf{'htmlRoot'}, "/html/tags.css\" rel=\"stylesheet\" type=\"text/css\"></link>\n";
+# collect script and html tags for head section
+my @header_html_elts = (Link({-rel=>'shortcut icon',
+                              -href=>'favicon.ico',
+                              -type=>'image/ico'}),
+                        Link({-rel=>'stylesheet',
+                              -href=>"$conf{'htmlRoot'}/html/tags.css",
+                              -type=>'text/css'}));
 
-    if($CORPUS eq 'mak') {
-	print '<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-5">';
-    }
-    elsif($CORPUS eq 'latvian') {
-	print '<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=CP1257">';
-    }
-    elsif($CORPUS eq 'run') {
-	print '<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">';
-    }
-    elsif($CORPUS eq 'quran_mono') {
-	print '<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">';
-    }
-    elsif($CORPUS eq 'quran_parallel') {
-	print '<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">';
-    }
-    elsif($CORPUS eq 'uncorpora') {
-	print '<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">';
-    }
-    elsif($CORPUS eq 'japanese_test') {
-	print '<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">';
-    }
-    elsif($CORPUS eq 'japanese_s_test') {
-	print '<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">';
-    }
+my @header_script_elts = ({-type=>'text/javascript',
+                           -src=>"$conf{'htmlRoot'}/js/wait.js"},
+                          {-type=>'text/javascript',
+                           -src=>"$conf{'htmlRoot'}/js/$CORPUS.conf.js"},
+                          {-type=>'text/javascript',
+                           -src=>"$conf{'htmlRoot'}/js/reslist.js"},
+                          {-type=>'text/javascript',
+                           -src=>"$conf{'htmlRoot'}/js/showtag.js"});
+
+# charset is set correctly in cgi.conf for these corpora,
+# shouldn't be necessary to do it here
+if($CORPUS eq 'mak') {
+    push(@header_html_elts, meta({-http-equiv=>'"Content-Type',
+                                  -content=>'text/html', -charset=>'ISO-8859-5'}));
+}
+elsif($CORPUS eq 'latvian') {
+    push(@header_html_elts, meta({-http-equiv=>'"Content-Type',
+                                  -content=>'text/html', -charset=>'CP1257'}));
+
+}
+elsif($CORPUS eq 'run') {
+    push(@header_html_elts, meta({-http-equiv=>'"Content-Type',
+                                  -content=>'text/html', -charset=>'UTF-8'}));
+}
+
+if ($speech_corpus) {
+    push(@header_html_elts, Link({-rel=>'stylesheet',
+                                  -href=>"http://ajax.googleapis.com/" .
+                                      "ajax/libs/jqueryui/1.8.6/themes/" .
+                                      "base/jquery-ui.css",
+                                  -type=>'text/css',
+                                  -media=>'all'}));
+
+    push(@header_html_elts, Link({-rel=>'stylesheet',
+                                  -href=>"http://static.jquery.com/" .
+                                      "ui/css/demo-docs-theme/ui.theme.css",
+                                  -type=>'text/css',
+                                  -media=>'all'}));
+
+    push(@header_html_elts, Link({-rel=>'stylesheet',
+                                  -href=>"$conf{'htmlRoot'}/player/player.css",
+                                  -type=>'text/css'}));
+
+    push(@header_html_elts, Link({-rel=>'stylesheet',
+                                  -href=>"$conf{'htmlRoot'}/html/tags.css",
+                                  -type=>'text/css'}));
+
+    push(@header_script_elts, {-type=>'text/javascript',
+                               -src=>"$conf{'htmlRoot'}/player/player.ajax.js"});
+    
+    push(@header_script_elts, {-type=>'text/javascript',
+                               -src=>"$conf{'htmlRoot'}/js/showtag.js"});
+
+    push(@header_script_elts, {-type=>'text/javascript',
+                               -src=>"$conf{'htmlRoot'}" .
+                                   "/js/jquery/jquery-1.4.3.min.js"});
+    
+    push(@header_script_elts, {-type=>'text/javascript',
+                               -src=>$conf{'htmlRoot'} .
+                                   "/js/jquery/jquery-ui-1.8.6.custom.min.js"});
+
+    push(@header_script_elts, {-type=>'text/javascript',
+                               -src=>"$conf{'htmlRoot'}/player/slider.js"});
 
 
-# Javascript programs used in displaying results.
-print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/wait.js\"></script>\n";
-print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/", $CORPUS, ".conf.js\"></script>\n";
-print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/reslist.js\"></script>\n";
-print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/showtag.js\"></script>\n";
-my $video_scripts = <<STOP;
-   <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/base/jquery-ui.css" type="text/css" media="all" />
-   <link rel="stylesheet" href="http://static.jquery.com/ui/css/demo-docs-theme/ui.theme.css" type="text/css" media="all" />
-   <link rel="stylesheet" type="text/css" href="$conf{'htmlRoot'}/player/player.css" />
-   <link href="$conf{'htmlRoot'}/html/tags.css" rel="stylesheet" type="text/css" />
-   <script type='text/javascript' src='$conf{'htmlRoot'}/player/player.ajax.js'></script>
-   <script language="JavaScript" src="$conf{'htmlRoot'}/js/showtag.js" ></script>
-   <script type='text/javascript' src='$conf{'htmlRoot'}/js/jquery/jquery-1.4.3.min.js'></script>
-   <script type='text/javascript' src='$conf{'htmlRoot'}/js/jquery/jquery-ui-1.8.6.custom.min.js'></script>
-   <script type='text/javascript' src='$conf{'htmlRoot'}/player/slider.js'></script>
-   <script type='text/javascript'>var player;</script>
-STOP
+    push(@header_script_elts, {-type=>'text/javascript',
+                               -code=>"var player;"});
+}
 
+# google translate js code
+# TODO should be moved to separate file
 my $googletrans = <<STOP;
-<script type="text/javascript" src="http://www.google.com/jsapi"></script>
-<script type="text/javascript">
-
 google.load("language", "1");
 
 function translate(node, text) {
-  text = text.replace(/_/, " ");
-  google.language.detect(text, function(result) {
-    if (!result.error && result.language) {
-      google.language.translate(text, result.language, "en",
-                                function(result) {
-        if (result.translation) {
-	    node.innerHTML = result.translation;
-	    node.innerHTML += " <font size='-2'>(google)</font>"; //"&nbsp;<img src='$conf{'htmlRoot'}/html/img/google-g-icon-16.png'>";
+    text = text.replace(/_/, " ");
+    google.language.detect(text, function(result) {
+        if (!result.error && result.language) {
+            google.language.translate(text, result.language, "en",
+                                      function(result) {
+                                          if (result.translation) {
+                                              node.innerHTML = result.translation;
+                                              node.innerHTML += " <font size='-2'>(google)</font>"; //"&nbsp;<img src='$conf{'htmlRoot'}/html/img/google-g-icon-16.png'>";
+                                          }
+                                          else{ node.innerHTML = 'No translation available' }
+                                      });
         }
-        else{ node.innerHTML = 'No translation available' }
-      });
-    }
-  });
+                           });
 }
 
 var globalNodeVar;
@@ -168,11 +198,12 @@ function appendTranslateScript(node,text){
     var newScript = document.createElement('script');
     newScript.type = 'text/javascript';
     var sourceText = encodeURI(text); // seems to work better than encode() function
-    var source = 'https://www.googleapis.com/language/translate/v2?key=AIzaSyALLIemzcsdQYpyqxAE5k3V7luZ73P5SOQ&target=en&callback=translateText&q=' + sourceText;
+        var source = 'https://www.googleapis.com/language/translate/v2?key=AIzaSyALLIemzcsdQYpyqxAE5k3V7luZ73P5SOQ&target=en&callback=translateText&q=' + sourceText;
     newScript.src = source;
     document.getElementsByTagName('head')[0].appendChild(newScript);
 }
 function translateText(response){
+    console.log(response);
     globalNodeVar.innerHTML = response.data.translations[0].translatedText;
     globalNodeVar.innerHTML += " <font size='-2'>(google)</font>"; //"&nbsp;<img src='$conf{'htmlRoot'}/html/img/google-g-icon-16.png'>";
     globalNodeVar = 0;
@@ -180,43 +211,44 @@ function translateText(response){
 
 
 function translate2(text) {
-  google.language.detect(text, function(result) {
-   if (!result.error && result.language) {
-      google.language.translate(text, result.language, "en",
-                                function(result) {
-        if (result.translation) {
-          return result.translation;
+    google.language.detect(text, function(result) {
+        if (!result.error && result.language) {
+            google.language.translate(text, result.language, "en",
+                                      function(result) {
+                                          if (result.translation) {
+                                              return result.translation;
+                                          }
+                                          return "No translation available.";
+                                      });
         }
-	return "No translation available.";
-      });
-    }
-  });
+                           });
 }
-</script>
 STOP
 
-my $style = <<STYLE;
-<style>
-div.inspect{
+push(@header_script_elts, {-type=>'text/javascript',
+                           -src=>"http://www.google.com/jsapi"});
+push(@header_script_elts, {-type=>'text/javascript',
+                           -code=>$googletrans});
 
-	top: 0px;
-	left:0px;
-	padding: 5px;
-	border: 0px solid #000;
-	background: #fff;
-	width: 100%;
-        height: 340px;
-	display: none;
+# TODO move to separate file
+my $style = <<STYLE;
+div.inspect{
+  top: 0px;
+  left:0px;
+  padding: 5px;
+  border: 0px solid             #000;
+    background:                 #fff;
+    width: 100%;
+  height: 340px;
+  display: none;
 }
-</style>
 STYLE
 
-if ($speech_corpus) {
-    print $video_scripts;
-}
-
-print "\n$googletrans\n\n";
-print "$style\n</head>\n<body>\n";
+# generate HEAD section
+print start_html(-head=>\@header_html_elts,
+                 -title=>$lang{'title'},
+                 -script=>\@header_script_elts,
+                 -style=>{-code => $style});
 
 foreach my $p (@prms) {
     my @vals = $cgi->param($p);
