@@ -371,21 +371,27 @@ sub create_tid_list {
                 push @restr_neg, "$sql <= '$to'";	   
             }
             $from_string{$tablename}=1;
+        } else {
+            # MODE: like / not like / check
+            foreach my $val (@$vals) {
+                $subcorpus_string .= "\t" . $val;
+
+                if ($mode eq 'check') {
+                    $mode = '=';
+                }
+
+                my $val_restr = "$sql $mode '$val'";
+
+                if ($mode eq 'NOT LIKE') {
+                    push @restr_neg, $val_restr;
+                } else {
+                    push @restr_pos, $val_restr;
+                }
+
+                $from_string{$tablename}=1;
+            }
         }
 
-        # MODE: like / not like / check
-        foreach my $val (@$vals) {
-            $subcorpus_string .= "\t" . $val;
-
-            if ($mode eq 'check'){ $mode = '=';  }
-
-            my $val_restr = "$sql $mode '$val'";
-
-            if($mode eq 'NOT LIKE'){  push @restr_neg, $val_restr; }
-            else { push @restr_pos, $val_restr; }
-
-            $from_string{$tablename}=1;
-        }
         $subcorpus_string .= "\n";
 
         my $restr = "(";
