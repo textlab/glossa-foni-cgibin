@@ -1,11 +1,13 @@
 #!/usr/bin/perl
 
-use CGI;
+use CGI qw/:standard/;
 use DBI;
 use Data::Dumper;
 use lib("./lib/");
 use Glossa_local;
 use strict;
+
+my $logger = Glossa::getLogger('show_page_dev');
 
 # variables $query_id and $corpus ends up on the command line; 
 # must be checked for nastiness (like "taint")
@@ -29,112 +31,90 @@ my $hits_name=CGI::param('name');
 my $user = $ENV{'REMOTE_USER'}; 
 
 my %conf=Glossa::readConfig($corpus);
+$logger->info("Corpus is $corpus");
 
 my $corpus_mode = $conf{'corpus_mode'};
+$logger->info("Corpus mode is $corpus_mode");
 
 my $speech_corpus = 0;
 
-if($corpus_mode eq 'speech'){
+if($corpus_mode eq 'speech') {
+    $logger->info("Corpus is a speech corpus");
     $speech_corpus = 1;
 }
-my $video_scripts = <<STOP;
 
-   <link rel="stylesheet"
-    href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/base/jquery-ui.css"
-    type="text/css" media="all" />
-   <link rel="stylesheet"
-    href="http://static.jquery.com/ui/css/demo-docs-theme/ui.theme.css"
-    type="text/css" media="all" />
-   <link rel="stylesheet" type="text/css"
-    href="$conf{'htmlRoot'}/player/player.css" />
-   <link href="$conf{'htmlRoot'}/html/tags.css" rel="stylesheet" type="text/css" />
-   <script type='text/javascript' src="$conf{'htmlRoot'}/player/player.ajax.js">
-    </script>
-   <script language="JavaScript" src="$conf{'htmlRoot'}/js/showtag.js" ></script>
-   <script type='text/javascript'
-    src="$conf{'htmlRoot'}/js/jquery/jquery-1.4.3.min.js"></script>
-   <script type='text/javascript'
-    src="$conf{'htmlRoot'}/js/jquery/jquery-ui-1.8.6.custom.min.js"></script>
-   <script type='text/javascript' src="$conf{'htmlRoot'}/player/slider.js"></script>
-   <script type='text/javascript'>var player;</script>
+my @header_html_elts = (Link({-rel=>'shortcut icon',
+                              -href=>'favicon.ico',
+                              -type=>'image/ico'}),
+                        Link({-rel=>'stylesheet',
+                              -href=>"$conf{'htmlRoot'}/html/tags.css",
+                              -type=>'text/css'}));
 
-STOP
-    
-my $googletrans = <<STOP;
-
-<script type="text/javascript" src="http://www.google.com/jsapi"></script>
-<script type="text/javascript">
-
-var globalNodeVar;
-
-function appendTranslateScript(node,text){
-    globalNodeVar = node;
-    var newScript = document.createElement('script');
-    newScript.type = 'text/javascript';
-    var sourceText = encodeURI(text);
-    var source = 'https://www.googleapis.com/language/translate/v2?key=AIzaSyALLIemzcsdQYpyqxAE5k3V7luZ73P5SOQ&target=en&callback=translateText&q=' + sourceText;
-    newScript.src = source;
-    document.getElementsByTagName('head')[0].appendChild(newScript);
-}
-
-function translateText(response){
-    globalNodeVar.innerHTML = response.data.translations[0].translatedText;
-    globalNodeVar.innerHTML += " <font size='-2'>(google)</font>"; //"&nbsp;<img src='$conf{'htmlRoot'}/html/img/google-g-icon-16.png'>";
-    globalNodeVar = 0;
-}
-
-google.load("language", "1");
-
-function translate(node, text) {
-  text = text.replace(/_/, " ");
-  google.language.detect(text, function(result) {
-    if (!result.error && result.language) {
-      google.language.translate(text, result.language, "en",
-                                function(result) {
-        if (result.translation) {
-	    node.innerHTML = result.translation;
-	    node.innerHTML += " <font size='-2'>(google)</font>"; //"&nbsp;<img src='$conf{'htmlRoot'}/html/img/google-g-icon-16.png'>";
-        }
-        else{ node.innerHTML = 'No translation available' }
-      });
-    }
-  });
-}
-</script>
-
-STOP
-
-my $style = <<STYLE;
-
-<style>
-div.inspect{
-
-	top: 0px;
-	left:0px;
-	padding: 5px;
-	border: 0px solid #000;
-	background: #fff;
-	width: 100%;
-        height: 340px;
-	display: none;
-}
-</style>
-
-STYLE
-
-print "Content-type: text/html; charset=$conf{'charset'}\n\n";
-print "<html>\n<head>\n<title>Resultater</title>\n";
-print "<link href=\"", $conf{'htmlRoot'}, "/html/tags.css\" " .
-    "rel=\"stylesheet\" type=\"text/css\"></link>";
-print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/showtag.js\"></script>\n";
-print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/", $corpus, ".conf.js\"></script>\n";
+my @header_script_elts = ({-type=>'text/javascript',
+                           -src=>"$conf{'htmlRoot'}/js/$corpus.conf.js"},
+                          {-type=>'text/javascript',
+                           -src=>"$conf{'htmlRoot'}/js/showtag.js"});
 
 if ($speech_corpus) {
-    print $video_scripts;
+    push(@header_html_elts, Link({-rel=>'stylesheet',
+                                  -href=>"http://ajax.googleapis.com/" .
+                                      "ajax/libs/jqueryui/1.8.6/themes/" .
+                                      "base/jquery-ui.css",
+                                  -type=>'text/css',
+                                  -media=>'all'}));
+
+    push(@header_html_elts, Link({-rel=>'stylesheet',
+                                  -href=>"http://static.jquery.com/" .
+                                      "ui/css/demo-docs-theme/ui.theme.css",
+                                  -type=>'text/css',
+                                  -media=>'all'}));
+
+    push(@header_html_elts, Link({-rel=>'stylesheet',
+                                  -href=>"$conf{'htmlRoot'}/player/player.css",
+                                  -type=>'text/css'}));
+
+    push(@header_html_elts, Link({-rel=>'stylesheet',
+                                  -href=>"$conf{'htmlRoot'}/html/tags.css",
+                                  -type=>'text/css'}));
+
+    push(@header_script_elts, {-type=>'text/javascript',
+                               -src=>"$conf{'htmlRoot'}/player/player.ajax.js"});
+
+    push(@header_script_elts, {-type=>'text/javascript',
+                               -src=>"$conf{'htmlRoot'}/js/showtag.js"});
+
+    push(@header_script_elts, {-type=>'text/javascript',
+                               -src=>"$conf{'htmlRoot'}" .
+                                   "/js/jquery/jquery-1.4.3.min.js"});
+
+    push(@header_script_elts, {-type=>'text/javascript',
+                               -src=>$conf{'htmlRoot'} .
+                                   "/js/jquery/jquery-ui-1.8.6.custom.min.js"});
+
+    push(@header_script_elts, {-type=>'text/javascript',
+                               -src=>"$conf{'htmlRoot'}/player/slider.js"});
+
+
+    push(@header_script_elts, {-type=>'text/javascript',
+                               -code=>"var player;"});
 }
 
-print "\n$googletrans\n\n";
-print $style, "\n</head>\n<body>\n";
+push(@header_script_elts, {-type=>'text/javascript',
+                           -src=>"http://www.google.com/jsapi"});    
+push(@header_script_elts, {-type=>'text/javascript',
+                           -src=>"$conf{'htmlRoot'}/js/google_trans.js"});
+
+push(@header_html_elts, Link({-rel=>'stylesheet',
+                              -href=>"$conf{'htmlRoot'}/html/inspect.css",
+                              -type=>'text/css'}));
+
+## start the HTTP session and HTML file
+print header(-type=>'text/html', -charset=>$conf{'charset'});
+
+# generate HEAD section
+print start_html(-head=>\@header_html_elts,
+                 -title=>'Resultater',
+                 -script=>\@header_script_elts);
 
 print <<SCRIPT;
 
