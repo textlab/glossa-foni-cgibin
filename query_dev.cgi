@@ -177,25 +177,14 @@ push(@header_script_elts, {-type=>'text/javascript',
 push(@header_script_elts, {-type=>'text/javascript',
                            -src=>"$conf{'htmlRoot'}/js/google_trans.js"});
 
-# TODO move to separate file
-my $style = <<STYLE;
-div.inspect{
-  top: 0px;
-  left:0px;
-  padding: 5px;
-  border: 0px solid             #000;
-    background:                 #fff;
-    width: 100%;
-  height: 340px;
-  display: none;
-}
-STYLE
+push(@header_html_elts, Link({-rel=>'stylesheet',
+                              -href=>"$conf{'htmlRoot'}/html/inspect.css",
+                              -type=>'text/css'}));
 
 # generate HEAD section
 print start_html(-head=>\@header_html_elts,
                  -title=>$lang{'title'},
-                 -script=>\@header_script_elts,
-                 -style=>{-code => $style});
+                 -script=>\@header_script_elts);
 
 foreach my $p (@prms) {
     my @vals = $cgi->param($p);
