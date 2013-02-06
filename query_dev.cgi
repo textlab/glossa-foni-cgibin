@@ -172,63 +172,10 @@ if ($speech_corpus) {
 }
 
 # google translate js code
-# TODO should be moved to separate file
-my $googletrans = <<STOP;
-google.load("language", "1");
-
-function translate(node, text) {
-    text = text.replace(/_/, " ");
-    google.language.detect(text, function(result) {
-        if (!result.error && result.language) {
-            google.language.translate(text, result.language, "en",
-                                      function(result) {
-                                          if (result.translation) {
-                                              node.innerHTML = result.translation;
-                                              node.innerHTML += " <font size='-2'>(google)</font>"; //"&nbsp;<img src='$conf{'htmlRoot'}/html/img/google-g-icon-16.png'>";
-                                          }
-                                          else{ node.innerHTML = 'No translation available' }
-                                      });
-        }
-                           });
-}
-
-var globalNodeVar;
-function appendTranslateScript(node,text){
-    globalNodeVar = node;
-    var newScript = document.createElement('script');
-    newScript.type = 'text/javascript';
-    var sourceText = encodeURI(text); // seems to work better than encode() function
-        var source = 'https://www.googleapis.com/language/translate/v2?key=AIzaSyALLIemzcsdQYpyqxAE5k3V7luZ73P5SOQ&target=en&callback=translateText&q=' + sourceText;
-    newScript.src = source;
-    document.getElementsByTagName('head')[0].appendChild(newScript);
-}
-function translateText(response){
-    console.log(response);
-    globalNodeVar.innerHTML = response.data.translations[0].translatedText;
-    globalNodeVar.innerHTML += " <font size='-2'>(google)</font>"; //"&nbsp;<img src='$conf{'htmlRoot'}/html/img/google-g-icon-16.png'>";
-    globalNodeVar = 0;
-}
-
-
-function translate2(text) {
-    google.language.detect(text, function(result) {
-        if (!result.error && result.language) {
-            google.language.translate(text, result.language, "en",
-                                      function(result) {
-                                          if (result.translation) {
-                                              return result.translation;
-                                          }
-                                          return "No translation available.";
-                                      });
-        }
-                           });
-}
-STOP
-
 push(@header_script_elts, {-type=>'text/javascript',
                            -src=>"http://www.google.com/jsapi"});
 push(@header_script_elts, {-type=>'text/javascript',
-                           -code=>$googletrans});
+                           -src=>"$conf{'htmlRoot'}/js/google_trans.js"});
 
 # TODO move to separate file
 my $style = <<STYLE;
