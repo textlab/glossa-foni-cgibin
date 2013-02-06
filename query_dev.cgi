@@ -70,6 +70,8 @@ my $in = Glossa::create_cgi_hash2(\%cgi_hash);
 my %in = %$in;
 
 my $CORPUS = $in{'query'}->{'corpus'}->[0];
+$logger->info("Corpus id $CORPUS");
+
 my $user = $ENV{'REMOTE_USER'};
 my $display_struct = CGI::param('structDisplay');
 my $player = CGI::param('player');
@@ -77,10 +79,12 @@ my $player = CGI::param('player');
 my %conf = Glossa::readConfig($CORPUS);
 
 my $corpus_mode = $conf{'corpus_mode'};
+$logger->info("Corpus mode is $corpus_mode");
 
 my $speech_corpus = 0;
 
-if($corpus_mode eq 'speech'){
+if($corpus_mode eq 'speech') {
+    $logger->info("Corpus is a speech corpus");
     $speech_corpus = 1;
 }
 
