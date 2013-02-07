@@ -3,7 +3,7 @@ package Glossa;
 use warnings;
 use strict;
 use Carp;
-use CGI;
+use CGI qw/:standard/;
 use base qw{ Exporter };
 use Data::Dumper;
 use DBI;
@@ -171,6 +171,39 @@ sub readLanguageFile {
     $logger->info("Read $entries strings from $fn");
 
     return %lang;
+}
+
+# create html for the flash mediaplayer
+sub create_media_div {
+    my (%conf) = @_;
+
+    # make sure there is content or empty string in every div tag
+    # otherwise CGI will create illegal self-closing div tags
+    my $media_div =
+        div({id=>'inspector', class=>'inspect'},
+            div({id=>'playerpos',
+                 style=>"top:0px;left:0px;position:absolute;width:400px;height:300px"},
+                div({id=>'player', class=>'video'},
+                    'Loading player...')),
+            div({id=>'ctrl', class=>'console'},
+                div({id=>'holder', class=>'demo'},
+                    div({id=>'slider-range'}, ''),
+                    div({style=>"float:left;width:24px;position:absolute;left:6px;bottom:3;"},
+                        input({id=>'amountl', type=>'text',
+                              style=>'border:0; color:#ff2200; font-weight:bold;width:24px;background:#000;'})),
+                    div({id=>'play',
+                         style=>'float:left;position:absolute;left:194px;width:12px;height:16px;cursor:pointer;border:0px solid #f00;bottom:3;'},
+                        img({src=>"$conf{'htmlRoot'}/player/Button-Play-icon.png",
+                             style=>'align:bottom;'})),
+                    div({style=>'float:right;width:24px;position:absolute;left:378px;bottom:3;'},
+                        input({id=>'amountr', type=>'text',
+                               style=>'border:0; color:#ff2200; font-weight:bold;background:#000;width:20px;'})))),
+            div({id=>'scrollbox'}, ''),
+            div({id=>'pops'}, ''));
+
+    $media_div .= div({id=>'timecodes', style=>'z-index: 1;'}, '');
+
+    return $media_div;
 }
 
 sub create_cgi_hash0 {
