@@ -20,18 +20,8 @@ print "<html><head></head><body>";
 
 
 my $cgi = CGI->new;
-# FIXME: this should be done in module
-my %cgi_hash;
-my @prms = $cgi->param();
-foreach my $p (@prms) {
-    my @vals = $cgi->param($p);
-    $cgi_hash{$p}=\@vals;
-}
 
-
-my $in = Glossa::create_cgi_hash(\%cgi_hash);
-my %in = %$in;
-
+my %in = Glossa::create_params();
 
 my $CORPUS = $in{'query'}->{'corpus'}->[0];
 my $base_corpus = $in{'phrase'}->{'0'}->{'corpus'}->[0];

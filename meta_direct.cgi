@@ -22,21 +22,7 @@ my @prms = $cgi->param();
 
 my $test = 0;
 
-#catch all the post vars in a hash
-
-foreach my $p (@prms) {
-    my $p2 = $p;
-    $p2 =~ s/\[\]$//;
-    my @vals = $cgi->param($p);
-    if($test){ print "<br />$p - @vals";  }
-    $cgi_hash{$p2}=\@vals;
-}
-
-
-# creates hash de le hash
-
-my $in = Glossa::create_cgi_hash(\%cgi_hash);
-my %in = %$in;
+my %in = Glossa::create_params();
 
 my %meta = $in{"meta"};
 

@@ -33,16 +33,8 @@ print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/wait.js\
 my $time1 = time();
 
 my $cgi = CGI->new;
-# FIXME: this should be done in module
-my %cgi_hash;
-my @prms = $cgi->param();
-foreach my $p (@prms) {
-    my @vals = $cgi->param($p);
-    $cgi_hash{$p}=\@vals;
-}
 
-my $in = Glossa::create_cgi_hash(\%cgi_hash);
-my %in = %$in;
+my %in = Glossa::create_params();
 
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
 my $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'},

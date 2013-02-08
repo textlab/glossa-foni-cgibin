@@ -223,6 +223,35 @@ sub hash_string{
 
 }
 
+# processes the CGI params and store themin a hash.
+# - strips off []
+# - Converts parameter into a tree structure by splitting on _
+# TODO pass cgi params hash instead of accessing it directly to allow testing.
+sub create_params {
+    my $cgi = CGI->new;
+
+    my %cgi_hash;
+    my @prms = $cgi->param();
+
+    foreach my $p (@prms) {
+        my $p2 = $p;
+        $p2 =~ s/\[\]$//;
+
+        my @vals = $cgi->param($p);
+
+        $cgi_hash{$p2}=\@vals;
+    }
+
+    my $in = create_cgi_hash(\%cgi_hash);
+    my %in = %$in;
+
+    return %in;
+}
+
+# This functions converts the cgi input to a hash, based on underscores
+# (_) in the parameter names. This is a bit unintuitive, and is a key point
+# to grasp.
+# FIXME: examples
 sub create_cgi_hash {
     my $cgi_hash=shift;
     my %cgi_hash=%$cgi_hash;

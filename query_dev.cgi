@@ -46,28 +46,7 @@ my $parallel = 0;
 if($atttype eq 'x'){$parallel = 2; $atttype = 0}
 #</scandiasyn>
 
-my %cgi_hash;
-my @prms = $cgi->param();
-
-foreach my $p (@prms) {
-    my $p2 = $p;
-    $p2 =~ s/\[\]$//;
-    
-    if($p eq "tid") {
-        print "";
-    }
-
-    my @vals = $cgi->param($p);
-
-    $cgi_hash{$p2}=\@vals;
-}
-
-# This functions converts the cgi input to a hash, based on underscores
-# (_) in the parameter names. This is a bit unintuitive, and is a key point
-# to grasp.
-# FIXME: examples
-my $in = Glossa::create_cgi_hash(\%cgi_hash);
-my %in = %$in;
+my %in = Glossa::create_params();
 
 my $CORPUS = $in{'query'}->{'corpus'}->[0];
 $logger->info("Corpus id $CORPUS");
