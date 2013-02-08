@@ -118,16 +118,16 @@ my @header_script_elts = ({-type=>'text/javascript',
 # charset is set correctly in cgi.conf for these corpora,
 # shouldn't be necessary to do it here
 if($CORPUS eq 'mak') {
-    push(@header_html_elts, meta({-http-equiv=>'"Content-Type',
+    push(@header_html_elts, meta({(-http_equiv)=>'"Content-Type',
                                   -content=>'text/html', -charset=>'ISO-8859-5'}));
 }
 elsif($CORPUS eq 'latvian') {
-    push(@header_html_elts, meta({-http-equiv=>'"Content-Type',
+    push(@header_html_elts, meta({(-http_equiv)=>'"Content-Type',
                                   -content=>'text/html', -charset=>'CP1257'}));
 
 }
 elsif($CORPUS eq 'run') {
-    push(@header_html_elts, meta({-http-equiv=>'"Content-Type',
+    push(@header_html_elts, meta({(-http_equiv)=>'"Content-Type',
                                   -content=>'text/html', -charset=>'UTF-8'}));
 }
 
