@@ -66,7 +66,7 @@ foreach my $p (@prms) {
 # (_) in the parameter names. This is a bit unintuitive, and is a key point
 # to grasp.
 # FIXME: examples
-my $in = Glossa::create_cgi_hash2(\%cgi_hash);
+my $in = Glossa::create_cgi_hash(\%cgi_hash);
 my %in = %$in;
 
 my $CORPUS = $in{'query'}->{'corpus'}->[0];
@@ -189,17 +189,6 @@ push(@header_html_elts, Link({-rel=>'stylesheet',
 print start_html(-head=>\@header_html_elts,
                  -title=>$lang{'title'},
                  -script=>\@header_script_elts);
-
-foreach my $p (@prms) {
-    my @vals = $cgi->param($p);
-
-    if(0) {
-        print $p." - ";
-        foreach my $val (@vals) {
-            print $val . "<br />\n";
-        }
-    }
-}
 
 my $media_div = Glossa::create_media_div(%conf);
 

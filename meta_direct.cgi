@@ -35,7 +35,7 @@ foreach my $p (@prms) {
 
 # creates hash de le hash
 
-my $in = Glossa::create_cgi_hash2(\%cgi_hash);
+my $in = Glossa::create_cgi_hash(\%cgi_hash);
 my %in = %$in;
 
 my %meta = $in{"meta"};

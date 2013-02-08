@@ -41,7 +41,7 @@ foreach my $p (@prms) {
     $cgi_hash{$p}=\@vals;
 }
 
-my $in = Glossa::create_cgi_hash2(\%cgi_hash);
+my $in = Glossa::create_cgi_hash(\%cgi_hash);
 my %in = %$in;
 
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";

@@ -206,23 +206,6 @@ sub create_media_div {
     return $media_div;
 }
 
-sub create_cgi_hash0 {
-    # FIXED (joel 20071221) uses hash_string to recursively build perl code,
-    # then evals it.. or so we thought:-/
-    my $cgi_hash=shift;
-    my %cgi_hash=%$cgi_hash;
-    my %in = ();
-    while (my ($prm,$vvv) = each %cgi_hash ) {
-
-        my @vals = @$vvv;
-
-        my @prms=split(/_/, $prm);
-        my $hash_string = "\$in".hash_string(\@prms, $vvv);
-        eval $hash_string;
-    }
-    return (\%in);
-}
-
 sub hash_string{
     my $array = shift;
     my $val = shift;
@@ -240,7 +223,7 @@ sub hash_string{
 
 }
 
-sub create_cgi_hash2 {
+sub create_cgi_hash {
     my $cgi_hash=shift;
     my %cgi_hash=%$cgi_hash;
     # put form information into a hash
@@ -260,56 +243,6 @@ sub create_cgi_hash2 {
         elsif (@prm == 4) {
             $in{$prm[0]}->{$prm[1]}->{$prm[2]}->{$prm[3]}=\@vals;	    
         }
-    }
-
-    return (\%in);
-}
-
-sub create_cgi_hash3 {
-    my $cgi_hash=shift;
-    my %cgi_hash=%$cgi_hash;
-
-    # put form information into a hash
-    my %in;
-    while (my ($prm,$vvv) = each %cgi_hash ) {
-        my @vals = @$vvv;
-
-        my @prm=split(/_/, $prm);
-
-        my $strip;
-        my @rest;
-
-        ($strip, @rest) = @prm;
-        $in{$prm[0]}=%{hash_tree(\@rest, $vvv)};
-
-    }
-    return (\%in);
-}
-
-sub create_cgi_hash {
-
-    my $cgi=shift;
-    
-    my %in;
-
-    my @prms = $cgi->param();
-    foreach my $prm (@prms){
-	
-	my @vals = $cgi->param($prm);
-	
-	my @prm=split(/_/, $prm);
-	
-	# FIXME: do recursively, to allow arbitrary expansion
-	if (@prm == 2) {
-	    $in{$prm[0]}->{$prm[1]}=\@vals;	    
-	}
-	elsif (@prm == 3) {
-	    $in{$prm[0]}->{$prm[1]}->{$prm[2]}=\@vals;	    
-	}
-	elsif (@prm == 4) {
-	    $in{$prm[0]}->{$prm[1]}->{$prm[2]}->{$prm[3]}=\@vals;	    
-	}
-	
     }
 
     return (\%in);
