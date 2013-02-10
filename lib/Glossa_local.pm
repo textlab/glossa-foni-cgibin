@@ -173,8 +173,37 @@ sub readLanguageFile {
     return %lang;
 }
 
+# create the media player dom elemenents
+# for QT or flash player
+sub create_media_player_div {
+    my ($player, %conf) = @_;
+
+    if ($player eq 'qt') {
+        return create_qt_player_div(%conf);
+    }
+    else {
+        return create_flash_player_div(%conf);
+    }
+}
+
+# create the qt player
+sub create_qt_player_div {
+    my (%conf) = @_;
+
+    my $media_div = 
+        div({id=>'inspector', class=>'inspect'},
+            iframe({frameborder=>0, width=>'100%', height=>'100%',
+                    id=>'movie_frame'}, ''),
+            div({style=>'position: relative; left: 0px; top: 0px; cursor: pointer;',
+                 onclick=>"document.getElementById('inspector').style.display='none';"},
+                img({alt=>'[x]', src=>"$conf{'htmlRoot'}/html/img/close.png"})));
+    $media_div .= br();
+
+    return $media_div;
+}
+
 # create html for the flash mediaplayer
-sub create_media_div {
+sub create_flash_player_div {
     my (%conf) = @_;
 
     # make sure there is content or empty string in every div tag

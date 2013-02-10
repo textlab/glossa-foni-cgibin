@@ -136,25 +136,7 @@ function selectAll(Direction)  {
 
 SCRIPT
 
-my $media_div = Glossa::create_media_div(%conf);
-
-if ($speech_corpus) {
-    if ($player eq 'qt') {
-        print "  <div id=\"inspector\" class=\"inspect\">\n" .
-            "    <iframe frameborder='0' width='100%' height='100%' " .
-            "id=\"movie_frame\"></iframe>\n" .
-            "    <div style=\"position: relative; left: 0px; top: 0px; " .
-            "cursor: pointer\" onclick=\"document.getElementById(" .
-            "'inspector').style.display='none';\">\n" .
-            "      <img alt=\"[x]\" src=\"" . $conf{'htmlRoot'}  .
-            "html/img/close.png\" />\n" . 
-            "    </div>\n" .
-            "  </div>\n<br />\n";
-    }
-    else {
-        print $media_div;
-    }
-}
+print Glossa::create_media_player_div($player, %conf);
 
 my $set_id = CGI::param('set');
 my $annotation_in_conf_file;
