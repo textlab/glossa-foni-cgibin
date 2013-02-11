@@ -235,6 +235,56 @@ sub create_flash_player_div {
     return $media_div;
 }
 
+sub read_group_file {
+    my ($group_file) = @_;
+
+    my %allowed_users;
+
+    open (H, $group_file);
+    while (<H>) {
+        next if (/^\s*#/);
+        next if (/^\s*\n/);
+        chomp;
+        foreach my $u (split(/ +/, $_)) {
+            $allowed_users{$u}=1;
+        }
+    }
+
+    return %allowed_users;
+}
+
+# group file; for corpora with restricted access (in addition to
+# the .htaccess restrictions). Space-separated list of allowed users.
+sub check_group_file_access {
+    my ($user, %conf) = @_;
+
+    if ($conf{'disable_groupfile'} eq 'true') {
+        $logger->info("Groupfile access granted for $user, disabled in global config");
+        return 1;
+    }
+
+    if (not $conf{'groupfile'}) {
+        $logger->info("Groupfile access granted for $user, no groupfile");
+        return 1;
+    }
+
+    if (not -e $conf{'groupfile'}) {
+        $logger->info("Groupfile access denied for $user, groupfile missing");
+        return 0;
+    }
+
+    my %allowed_users = read_group_file($conf{'groupfile'});
+
+    if ($allowed_users{$user}) {
+        $logger->info("Groupfile access granted for $user");
+        return 1;
+    }
+
+    $logger->info("Groupfile access denied for $user");
+
+    return 0;
+}
+
 sub hash_string{
     my $array = shift;
     my $val = shift;

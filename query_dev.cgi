@@ -173,23 +173,9 @@ print Glossa::create_media_player_div($player, %conf);
 
 print "  <div id=\"body\">\n";
 
-# group file; for corpora with restricted access (in addition to 
-# the .htaccess restrictions). Space-separated list of allowed users.
-if ($conf{'groupfile'} and not ($conf{'disable_groupfile'} == 'true')) {
-    unless (-e $conf{'groupfile'}) { die("group file specified, but not found ($conf{'groupfile'})"); }
-    my %allowed_users;
-    open (H, $conf{'groupfile'});
-    while (<H>) {
-	next if (/^\s*#/);
-	next if (/^\s*\n/);
-	chomp;
-	foreach my $u (split(/ +/, $_)) {
-	    $allowed_users{$u}=1;
-	}
-    }
-    unless ($allowed_users{$user}) {
-	die("You do not have access to this corpus.");
-    }
+# additional group file access
+if (not Glossa::check_group_file_access($user, %conf)) {
+    die("You do not have access to this corpus.");
 }
 
 ## Set query id
