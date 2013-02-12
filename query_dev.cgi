@@ -179,11 +179,7 @@ if (not Glossa::check_group_file_access($user, %conf)) {
 }
 
 ## Set query id
-# This id is used to identify the files resulting from a query, so 
-# they can be processed by other functions (collocations, annotation etc.)
-my $starttime=time();
-    my $rand = int(rand 100000);
-$conf{'query_id'} = $starttime . "_" . $rand;
+$conf{'query_id'} = Glossa::createQueryId();
 
 ## turn off buffering; just a trick to display stuff more quickly
 select(STDOUT);

@@ -95,7 +95,7 @@ if ($action eq 'join') {
     print join("|",@join);
     print ". New name: $newname<br>";
 
-    my $new_query_id = time() . "_" . int(rand 100);
+    my $new_query_id = Glossa::createQueryId();
 
 
     my $firstjoin = $hits_dir . "/" . $join[0] . ".conf";

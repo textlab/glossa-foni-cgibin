@@ -173,6 +173,14 @@ sub readLanguageFile {
     return %lang;
 }
 
+# This id is used to identify the files resulting from a query, so 
+# they can be processed by other functions (collocations, annotation etc.)
+sub createQueryId {
+    my $starttime=time();
+    my $rand = int(rand 100000);
+    return $starttime . "_" . $rand;
+}
+
 # create the media player dom elemenents
 # for QT or flash player
 sub create_media_player_div {
