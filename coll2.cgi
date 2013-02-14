@@ -7,6 +7,7 @@ use Data::Dumper;
 
 use lib ('./lib/');
 use Glossa_local;
+use GlossaConfig;
 
 select(STDOUT);
 $|=1;
@@ -27,7 +28,7 @@ my $user = $ENV{'REMOTE_USER'};
 my $corpus = CGI::param('corpus');
 my $globalstats = CGI::param('globalstats');
 
-my %conf = Glossa::readConfig($corpus);
+my %conf = GlossaConfig::readConfig($corpus);
 
 print "Content-type: text/html; charset=$conf{'charset'}\n\n";
 print "<html><head></head><body>";

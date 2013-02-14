@@ -5,13 +5,14 @@ use Data::Dumper;
 
 use lib("./lib/");
 use Glossa_local;
+use GlossaConfig;
 
 print "Content-type: text/html\n\n";
 
 my $corpus = CGI::param('corpus');
 my $base_corpus = CGI::param('base_corpus');
 
-my %conf = Glossa::readConfig($corpus);
+my %conf = GlossaConfig::readConfig($corpus);
 
 my $query_id = CGI::param('query_id');
 

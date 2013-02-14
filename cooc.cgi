@@ -7,6 +7,7 @@ use DBI;
 
 use lib ('./lib/');
 use Glossa_local;
+use GlossaConfig;
 
 $ENV{'PATH'} = "/usr/etc/yp:/etc/yp:/local/sbin:/bin:/usr/bin:/usr/ucb:/etc:/usr/etc:/sbin:/usr/sbin:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/usr/X11R6/bin:/local/X11R6/bin:/usr/bin/X11:/usr/ccs/bin:/local/bin:/local/etc/bin:/usr/bsd:/local/etc:/local/gnu/bin:/site/share/perl5/5.8.8/Text/NSP/Measures/2D/Dice:/site/share/perl5/5.8.8/Text/NSP/Measures/2D:/site/share/perl5/5.8.8/Text/NSP/Measures:/site/share/perl5/5.8.8/Text/NSP:/site/share/perl5/5.8.8/Text:/site/share/perl5/5.8.8";
 
@@ -26,7 +27,7 @@ unless ($lib =~ m/^\w+\d*$/) { die("illegal value") };
 my $corpus_name = CGI::param('corpus_name');
 my $user = $ENV{'REMOTE_USER'}; 
 
-my %conf = Glossa::readConfig($corpus_name);
+my %conf = GlossaConfig::readConfig($corpus_name);
 
 # FIXME: this is a silly way of doing things
 my $conf= $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 

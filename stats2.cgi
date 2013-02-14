@@ -9,6 +9,7 @@ use strict;
 
 use lib ('./lib/');
 use Glossa_local;
+use GlossaConfig;
 
 select(STDOUT);
 $|=1;
@@ -24,7 +25,7 @@ unless ($base_corpus) { $base_corpus = $corpus }
 
 my $cutoff = CGI::param('cutoff');
 
-my %conf = Glossa::readConfig($corpus);
+my %conf = GlossaConfig::readConfig($corpus);
 
 # start waiting ticker
 print "<div id='waiting'>searching </div>";

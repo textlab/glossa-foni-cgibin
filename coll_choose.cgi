@@ -4,6 +4,7 @@ use CGI;
 
 use lib ('./lib/');
 use Glossa_local;
+use GlossaConfig;
 
 print "Content-type: text/html\n\n";
 
@@ -12,7 +13,7 @@ my $db_name = CGI::param('db_name');
 my $corpus = CGI::param('corpus');
 my $base_corpus = CGI::param('base_corpus');
 
-my %conf = Glossa::readConfig($corpus);
+my %conf = GlossaConfig::readConfig($corpus);
 
 my $ngram = CGI::param('ngram');
 

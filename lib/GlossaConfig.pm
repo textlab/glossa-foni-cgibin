@@ -1,4 +1,8 @@
-my $logger = getLogger('Glossa_local');
+package GlossaConfig;
+
+use Glossa_local;
+
+my $logger = Glossa::getLogger('GlossaConfig');
 
 my $global_config_file = "paths.conf";
 my $corpus_config_file = "cgi.conf";
@@ -41,14 +45,14 @@ sub readConfigFile {
         chomp;
 
         my $line = $_;
-        $line = trimString($line);
+        $line = Glossa::trimString($line);
 
         # skip comments and empty lines
         next if ($line =~ /^\#/);
         next if ($line =~ /^$/);
         
         my ($k,$v)=split(/\s*=\s*/, $line);
-        $conf{trimString($k)} = trimString($v);
+        $conf{Glossa::trimString($k)} = Glossa::trimString($v);
     }
 
     close CONF;

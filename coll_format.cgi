@@ -12,6 +12,7 @@ use Encode;
 
 use lib ('./lib/');
 use Glossa_local;
+use GlossaConfig;
 
 print "Content-type: text/html\n\n";
 
@@ -48,7 +49,7 @@ my $graph_left;
 my $graph_center;
 my $graph_right;
 
-my %conf = Glossa::readConfig($corpus);
+my %conf = GlossaConfig::readConfig($corpus);
 
 foreach my $pos ("left", "center", "right") {
 

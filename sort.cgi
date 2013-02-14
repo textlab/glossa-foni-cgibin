@@ -10,12 +10,13 @@ setlocale(LC_ALL, "norwegian");
 
 use lib ('./lib/');
 use Glossa_local;
+use GlossaConfig;
 
 my $corpus=CGI::param('corpus');
 my $user = $ENV{'REMOTE_USER'}; 
 my $query_id = CGI::param('query_id');
 
-my %conf=Glossa::readConfig($corpus);
+my %conf=GlossaConfig::readConfig($corpus);
 
 # FIXME: this is a silly way of doing things
 my $conf= $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 

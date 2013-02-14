@@ -14,6 +14,7 @@ use Encode;
 # Use Glossa module embedded in repo
 use lib ('./lib/');
 use Glossa_local;
+use GlossaConfig;
 
 ##                                        ##
 ##             0. Initialization          ##
@@ -55,7 +56,7 @@ my $user = $ENV{'REMOTE_USER'};
 my $display_struct = CGI::param('structDisplay');
 my $player = CGI::param('player');
 
-my %conf = Glossa::readConfig($CORPUS);
+my %conf = GlossaConfig::readConfig($CORPUS);
 
 my $corpus_mode = $conf{'corpus_mode'};
 $logger->info("Corpus mode is $corpus_mode");
@@ -68,7 +69,7 @@ if($corpus_mode eq 'speech') {
 }
 
 # multitag file
-my %multitags = Glossa::readMultitagFile(%conf);
+my %multitags = GlossaConfig::readMultitagFile(%conf);
 
 # language file
 my %lang = Glossa::readLanguageFile(%conf);
@@ -214,6 +215,7 @@ my $phrases=$in{'phrase'}->{'number'};
 
 my @token_freq;
 
+$logger->info("$phrases");
 
 ## Loop through all the phrases
 # This is a key step, where the form data is converted to fragments 

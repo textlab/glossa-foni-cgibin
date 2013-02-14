@@ -8,6 +8,7 @@ use File::Copy;
 
 use lib ('./lib/');
 use Glossa_local;
+use GlossaConfig;
 
 select(STDOUT);
 $|=1;
@@ -18,7 +19,7 @@ my $corpus=CGI::param('corpus');
 my $user = $ENV{'REMOTE_USER'}; 
 my $player = CGI::param('player'); 
 
-my %conf = Glossa::readConfig($corpus);
+my %conf = GlossaConfig::readConfig($corpus);
 
 print "<html>\n<head>\n";
 print "<script language=\"JavaScript\" src=\"", $conf{'htmlRoot'}, "/js/misc.js\"></script>\n";

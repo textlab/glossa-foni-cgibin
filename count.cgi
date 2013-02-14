@@ -8,6 +8,7 @@ use GD::Graph::pie;
 
 use lib("./lib/");
 use Glossa_local;
+use GlossaConfig;
 
 print "Content-type: text/html\n\n";
 
@@ -17,7 +18,7 @@ my $query_id = CGI::param('query_id');
 my $user = $ENV{'REMOTE_USER'}; 
 my $corpus = CGI::param('corpus');
 
-my %conf = Glossa::readConfig($corpus);
+my %conf = GlossaConfig::readConfig($corpus);
 
 # FIXME: this is a silly way of doing things
 my $conf= $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 

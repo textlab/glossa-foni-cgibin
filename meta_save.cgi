@@ -7,6 +7,7 @@ use CGI::Carp qw(fatalsToBrowser);
 
 use lib ('./lib/');
 use Glossa_local;
+use GlossaConfig;
 
 select(STDOUT);
 $|=1;
@@ -21,7 +22,7 @@ my $corpus = CGI::param('corpus');
 my $file = CGI::param('subcorpus_id');
 my $name = CGI::param('subcorpus_name');
 
-my %conf = Glossa::readConfig($corpus);
+my %conf = GlossaConfig::readConfig($corpus);
 
 my $new_file_name = $conf{'config_dir'} . "/" . $corpus . "/subcorp/" . $user;
 unless (-e $new_file_name) {

@@ -3,9 +3,11 @@
 use CGI qw/:standard/;
 use DBI;
 use Data::Dumper;
+use strict;
+
 use lib("./lib/");
 use Glossa_local;
-use strict;
+use GlossaConfig;
 
 my $logger = Glossa::getLogger('show_page_dev');
 
@@ -30,7 +32,7 @@ my $hits_name=CGI::param('name');
 
 my $user = $ENV{'REMOTE_USER'}; 
 
-my %conf=Glossa::readConfig($corpus);
+my %conf=GlossaConfig::readConfig($corpus);
 $logger->info("Corpus is $corpus");
 
 my $corpus_mode = $conf{'corpus_mode'};
@@ -198,7 +200,7 @@ my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
 my $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 1});
 
 # read multitag file
-my %multitags = Glossa::readMultitagFile(%conf);
+my %multitags = GlossaConfig::readMultitagFile(%conf);
 
 my $atts = $conf{'corpus_attributes'};
 my @atts = split(/ +/, $atts);

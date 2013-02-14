@@ -10,6 +10,7 @@ use strict;
 
 use lib ('./lib/');
 use Glossa_local;
+use GlossaConfig;
 
 print "Content-type: text/html\n\n";
 
@@ -30,7 +31,7 @@ my $cut_occ = CGI::param('cut_occ');
 
 my $corpus = CGI::param('corpus');
 
-my %conf = Glossa::readConfig($corpus);
+my %conf = GlossaConfig::readConfig($corpus);
 
 my $excel = $conf{'dat_files'} . "/" . $query_id . "_" . $lib . "_" . $format . ".xls";
 if (-s $excel) { `rm $excel` }

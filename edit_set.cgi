@@ -5,9 +5,10 @@ use DBI;
 
 use lib ('./lib/');
 use Glossa_local;
+use GlossaConfig;
 
 my $corpus=CGI::param('corpus');
-my %conf = Glossa::readConfig($corpus);
+my %conf = GlossaConfig::readConfig($corpus);
 
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
 $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 1})          ||              die $DBI::errstr;

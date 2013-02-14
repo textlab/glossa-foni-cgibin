@@ -8,6 +8,7 @@ use POSIX qw(locale_h);
 
 use lib ('./lib/');
 use Glossa_local;
+use GlossaConfig;
 
 setlocale('LC_TYPE', "norweigan");
 
@@ -31,7 +32,7 @@ my $CORPUS = $in{'query'}->{'corpus'}->[0];
 print "Content-type: text/html; charset=" . ($CORPUS =~ /^(run|skriv)$/ ? "UTF-8" : "ISO-8859-1") . "\n\n";
 print "<html>\n<head>\n</head>\n<body>\n";
 
-my %conf = Glossa::readConfig($CORPUS);
+my %conf = GlossaConfig::readConfig($CORPUS);
 
 my $corpus_mode = $conf{'corpus_mode'};
 

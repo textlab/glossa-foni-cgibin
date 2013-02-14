@@ -4,12 +4,13 @@ use CGI;
 
 use lib ('./lib/');
 use Glossa_local;
+use GlossaConfig;
 
 print "Content-type: text/html\n\n";
 
 my $corpus = CGI::param('corpus');
 
-my %conf = Glossa::readConfig($corpus);
+my %conf = GlossaConfig::readConfig($corpus);
 
 print "<html><head></head><body>";
 print "<form action=\"", $conf{'cgiRoot'}, "/cooc.cgi\" method=\"get\">";

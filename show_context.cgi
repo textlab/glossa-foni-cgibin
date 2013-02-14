@@ -9,6 +9,9 @@ use Data::Dumper;
 
 use lib ('./lib/');
 use Glossa_local;
+use GlossaConfig
+
+$logger = Glossa::getLogger();
 
 # meta
 #  - tid
@@ -22,12 +25,14 @@ my $s = CGI::param('s_id');
 my @ss = split(/\s+/, $s);
 $s = @ss[0];
 
+$logger->info("s_id is $s");
+
 my $text = CGI::param('text_id');
 my $context_size = CGI::param('cs');
 my $corpus = CGI::param('corpus');
 my $base_corpus=CGI::param('subcorpus');
 
-my %conf=Glossa::readConfig($corpus);
+my %conf=GlossaConfig::readConfig($corpus);
 
 my $dsn = "DBI:mysql:database=$conf{'db_name'};host=$conf{'db_host'}";
 my $dbh = DBI->connect($dsn, $conf{'db_uname'}, $conf{'db_pwd'}, {RaiseError => 1});
@@ -97,6 +102,8 @@ my $sql_query = "SELECT startpos,endpos FROM $text_table " .
 my $sth = $dbh->prepare($sql_query);
 $sth->execute  || die "Error fetching data: $DBI::errstr";
 my ($startpos,$endpos) = $sth->fetchrow_array;
+
+$logger->info("startpos is $startpos and endpos is $endpos");
 
 if ($startpos and $endpos) {
     my @ord = split(/ /, $ord);

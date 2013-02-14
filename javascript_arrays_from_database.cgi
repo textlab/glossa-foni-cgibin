@@ -7,6 +7,7 @@ use strict;
 
 use lib ('./lib/');
 use Glossa_local;
+use GlossaConfig;
 
 my $user = $ENV{'REMOTE_USER'};
 

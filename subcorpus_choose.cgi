@@ -5,6 +5,7 @@ use strict;
 
 use lib ('./lib/');
 use Glossa_local;
+use GlossaConfig;
 
 select(STDOUT);
 $|=1;
@@ -14,7 +15,7 @@ print "<html><head></head><body>";
 
 
 my $corpus = CGI::param('corpus');
-my %conf=Glossa::readConfig($corpus);
+my %conf=GlossaConfig::readConfig($corpus);
 
 my $subcorp_dir = $conf{'subcorp_files'};
 

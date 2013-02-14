@@ -6,6 +6,7 @@ use strict;
 
 use lib ('./lib/');
 use Glossa_local;
+use GlossaConfig;
 
 select(STDOUT);
 $|=1;
@@ -17,7 +18,7 @@ my $query_id = CGI::param('query_id');
 my $name = CGI::param('name');
 my $user = $ENV{'REMOTE_USER'}; 
 
-my %conf = Glossa::readConfig($corpus);
+my %conf = GlossaConfig::readConfig($corpus);
 
 print "<form action='", $conf{'cgiRoot'}, "/save_hits.cgi' method='GET'>\n";
 print "<input type='hidden' name='corpus' value='$corpus' />\n";

@@ -7,6 +7,7 @@ use Data::Dumper;
 
 use lib ('./lib/');
 use Glossa_local;
+use GlossaConfig;
 
 select(STDOUT);
 $|=1;
@@ -19,7 +20,7 @@ my $user = $ENV{'REMOTE_USER'};
 my $name = CGI::param('name');
 my $confirm = CGI::param('confirm');
  
-my %conf = Glossa::readConfig($corpus);
+my %conf = GlossaConfig::readConfig($corpus);
 
 my %taken_names;
 my $hits_dir = $conf{'config_dir'} . "/" . $corpus . "/hits/" . $user . "/";

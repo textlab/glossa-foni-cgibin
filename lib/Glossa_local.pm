@@ -10,8 +10,6 @@ use DBI;
 use Log::Log4perl;
 use File::Spec;
 
-require GlossaConfig;
-
 our $VERSION   = '0.1';
 our @EXPORT_OK = qw{ readConfig get_conf_file print_token print_token_target create_tid_list get_metadata_feat };
 

@@ -6,12 +6,13 @@ use strict;
 
 use lib ('./lib/');
 use Glossa_local;
+use GlossaConfig;
 
 my $corpus = CGI::param('corpus');
 my $set = CGI::param('set');
 my $user = $ENV{'REMOTE_USER'}; 
 
-my %conf=Glossa::readConfig($corpus);
+my %conf=GlossaConfig::readConfig($corpus);
 
 my $hits_dir = $conf{'config_dir'} . "/" . $corpus . "/hits/" . $user . "/";
 

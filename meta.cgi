@@ -9,13 +9,14 @@ use DBI;
 
 use lib ('./lib/');
 use Glossa_local;
+use GlossaConfig;
 
 # get cgi input
 my $cgi = CGI->new;
 my $corpus = CGI::param('corpus');
 my $query_id = CGI::param('query_id');
 
-my %conf = Glossa::readConfig($corpus);
+my %conf = GlossaConfig::readConfig($corpus);
 
 my @tids;
 # read query configuration fil
