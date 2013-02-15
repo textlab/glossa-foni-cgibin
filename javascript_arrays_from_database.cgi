@@ -23,7 +23,7 @@ print "var widgetContent = new Array();";
 
 # get some form input
 my $corpus = CGI::param('corpus');
-my %conf = Glossa::readConfig($corpus);
+my %conf = GlossaConfig::readConfig($corpus);
 
 print "\n\ndisplayContent= new Array();\n";
 
