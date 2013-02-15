@@ -24,10 +24,11 @@ $logger = Glossa::getLogger();
 my $s = CGI::param('s_id');
 my @ss = split(/\s+/, $s);
 $s = @ss[0];
-
 $logger->info("s_id is $s");
 
 my $text = CGI::param('text_id');
+$logger->info("text_id is $text");
+
 my $context_size = CGI::param('cs');
 my $corpus = CGI::param('corpus');
 my $base_corpus=CGI::param('subcorpus');
@@ -103,8 +104,6 @@ my $sth = $dbh->prepare($sql_query);
 $sth->execute  || die "Error fetching data: $DBI::errstr";
 my ($startpos,$endpos) = $sth->fetchrow_array;
 
-$logger->info("startpos is $startpos and endpos is $endpos");
-
 if ($startpos and $endpos) {
     my @ord = split(/ /, $ord);
     my @res_r = split(/ /, $res_r);
@@ -148,7 +147,7 @@ foreach my $m (@meta_text) {
 my $text_select = join(", ", @meta_text);
 
 my $sql_query = "SELECT $text_select FROM $text_table WHERE $text_table.tid='$text';";
-#print $sql_query, "<br>";
+
 my $sth = $dbh->prepare($sql_query);
 $sth->execute  || die "Error fetching data: $DBI::errstr";
 my @r = $sth->fetchrow_array;
@@ -182,16 +181,18 @@ my @a_class_print = @a_class;
 foreach my $a (@a_class) {
     $a = $author_table . "." . $a;
 }
+
 my $a_select = join(", ", @a_class);
 
 my $sql_query = "SELECT $a_select FROM $author_table WHERE $author_table.tid='$text';";
+
 my $sth = $dbh->prepare($sql_query);
 $sth->execute  || die "Error fetching data: $DBI::errstr";
 while (my @r = $sth->fetchrow_array) {
     for (my $i=0;$i<@r;$i++)  {
-	print "$a_class_print[$i]: <b>", $r[$i], "</b><br>";
+        print "$a_class_print[$i]: <b>", $r[$i], "</b><br>";
     }
-    
+
 }
 
 

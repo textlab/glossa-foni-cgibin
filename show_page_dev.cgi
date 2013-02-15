@@ -606,17 +606,23 @@ while (<DATA>) {
         foreach my $sts (@sts) {
             my ($k,$v) = split(/=/, $sts);
             $sts{$k}=$v;
+            # these are replaced with target s_id/tid
             next if ($k eq 's_id');
+            next if ($k eq 'text_id');
+            
             $sts_url .= "&" . $k . "=" . $v;
         }
-
-        my $t_id = $sts{'text_id'};
 
         my @targets = split(/ /, $targets);
 
         $sts_url .= "&s_id=" . $targets[0];
 
-        foreach my $target (@targets) {
+        # split off tid from s_id of target
+        my ($tid) = split(/\./, $targets[0]);
+
+        $sts_url .= "&text_id=" . $tid;
+
+        foreach my $target (@targets) {                    
             print "<font size=\"-2\"><a href=\"#\" onClick=\"window.open(" .
                 "'", $conf{'cgiRoot'}, "/show_context.cgi$sts_url',";
             print "'mywindow','height=500,width=650,status,scrollbars," .
