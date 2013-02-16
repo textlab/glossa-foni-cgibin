@@ -614,11 +614,12 @@ while (<DATA>) {
         }
 
         my @targets = split(/ /, $targets);
+        my $sid = $targets[0];
 
-        $sts_url .= "&s_id=" . $targets[0];
+        $sts_url .= "&s_id=" . $sid;
 
         # split off tid from s_id of target
-        my ($tid) = split(/\./, $targets[0]);
+        my ($tid) = Glossa::textid_from_sid($sid);
 
         $sts_url .= "&text_id=" . $tid;
 

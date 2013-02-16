@@ -275,6 +275,15 @@ sub create_cgi_hash {
     return (\%in);
 }
 
+# extracts the text_id (first part) from an s_id
+sub textid_from_sid {
+    my ($sid) = @_;
+
+    my ($tid) = split(/\./, $sid);
+
+    return $tid;
+}
+
 my $teed;
 
 sub get_metadata_feat {
