@@ -175,27 +175,29 @@ while (my @r = $sth->fetchrow_array) {
     
 }
 
-
-my @a_class = split(/ /, $conf{'meta_author'});
-my @a_class_print = @a_class;
-foreach my $a (@a_class) {
-    $a = $author_table . "." . $a;
-}
-
-my $a_select = join(", ", @a_class);
-
-my $sql_query = "SELECT $a_select FROM $author_table WHERE $author_table.tid='$text';";
-
-my $sth = $dbh->prepare($sql_query);
-$sth->execute  || die "Error fetching data: $DBI::errstr";
-while (my @r = $sth->fetchrow_array) {
-    for (my $i=0;$i<@r;$i++)  {
-        print "$a_class_print[$i]: <b>", $r[$i], "</b><br>";
+# only query the author table if it is configured in cgi.conf
+# corpora such as OMC4 has no meta_author field in cgi.conf
+if ($conf{'meta_author'}) {
+    my @a_class = split(/ /, $conf{'meta_author'});
+    my @a_class_print = @a_class;
+    foreach my $a (@a_class) {
+        $a = $author_table . "." . $a;
     }
 
+    my $a_select = join(", ", @a_class);
+
+    my $sql_query = "SELECT $a_select FROM $author_table WHERE $author_table.tid='$text';";
+
+    my $sth = $dbh->prepare($sql_query);
+    $sth->execute  || die "Error fetching data: $DBI::errstr";
+
+    while (my @r = $sth->fetchrow_array) {
+        for (my $i=0;$i<@r;$i++)  {
+            print "$a_class_print[$i]: <b>", $r[$i], "</b><br>";
+        }
+
+    }
 }
-
-
 
 print "</td></tr></table></body></html>";
 
