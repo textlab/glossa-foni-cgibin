@@ -199,7 +199,7 @@ sub printvals {
     my $sth = $dbh->prepare(qq{ SELECT id, value_name FROM $values_table where set_id='$id';});
     $sth->execute  || die "Error fetching data: $DBI::errstr";
     while (my ($id, $name) = $sth->fetchrow_array) {
-	$values{$id}=$name;
+        $values{$id}=$name;
     }
 
 
@@ -207,30 +207,30 @@ sub printvals {
     my $sth = $dbh->prepare(qq{ SELECT value_id,tid,start FROM $annotations_table WHERE set_id='$id';});	
     $sth->execute  || die "Error fetching data: $DBI::errstr";
     while (my ($value_id,$tid,$start) = $sth->fetchrow_array) {
-	next if ($storedvals and !($storedvals{$start}));
+        next if ($storedvals and !($storedvals{$start}));
 
-	my $name = $values{$value_id};
-	if ($trans{$name}) { $name = $trans{$name} }
+        my $name = $values{$value_id};
+        if ($trans{$name}) { $name = $trans{$name} }
 
-	if ($varvalue) {
-	    my $sth2 = $dbh->prepare(qq{ SELECT $varcol FROM $variable_table WHERE tid='$tid';});	
-	    $sth2->execute  || die "Error fetching data: $DBI::errstr";
-	    my ($variable_tid) = $sth2->fetchrow_array;
-	    next unless ($variable_tid eq $varvalue);
-	    if ($varvalue2) {
-		my $sth2 = $dbh->prepare(qq{ SELECT $varcol2 FROM $variable_table2 WHERE tid='$tid';});	
-		$sth2->execute  || die "Error fetching data: $DBI::errstr";
-		my ($variable_tid2) = $sth2->fetchrow_array;
-		next unless ($variable_tid2 eq $varvalue2);
-		$stats{$name}++;
-	    }
-	    else {
-		$stats{$name}++;		
-	    }
-	}
-	else {
-	    $stats{$name}++;	    
-	}
+        if ($varvalue) {
+            my $sth2 = $dbh->prepare(qq{ SELECT $varcol FROM $variable_table WHERE tid='$tid';});	
+            $sth2->execute  || die "Error fetching data: $DBI::errstr";
+            my ($variable_tid) = $sth2->fetchrow_array;
+            next unless ($variable_tid eq $varvalue);
+            if ($varvalue2) {
+                my $sth2 = $dbh->prepare(qq{ SELECT $varcol2 FROM $variable_table2 WHERE tid='$tid';});	
+                $sth2->execute  || die "Error fetching data: $DBI::errstr";
+                my ($variable_tid2) = $sth2->fetchrow_array;
+                next unless ($variable_tid2 eq $varvalue2);
+                $stats{$name}++;
+            }
+            else {
+                $stats{$name}++;		
+            }
+        }
+        else {
+            $stats{$name}++;	    
+        }
 
     }
 
@@ -239,18 +239,19 @@ sub printvals {
     my @stats;
     my $total;
     while (my ($k,$v) = each %stats) {
-	push @stats, [$k,$v];
-	$total += $v;
+        push @stats, [$k,$v];
+        $total += $v;
     }
 
     my @stats_sorted = sort { $b->[1] <=> $a->[1]} @stats;
 
     my @x;
     my @y;
-    
-    next unless ($total > 0);
 
-    
+    # next outside of loop
+    # next unless ($total > 0);
+
+
 
     my $all_prefix;
     if ($varvalue) { print " <i>variable1:</i> $varcol = $varvalue"; $all_prefix=$varvalue . "_" ; }
@@ -258,21 +259,21 @@ sub printvals {
     print "<br><table>";
     print "<tr><td><b>value</b></td><td><b>no&nbsp;</b></td><td><b>percent</td></tr>";
     foreach my $el (@stats_sorted) {
-	my $name = $el->[0];
+        my $name = $el->[0];
 
-	
-	print "<tr><td>", $name, "</td><td>", $el->[1], "</td><td>", sprintf("%.2f",($el->[1]/$total)*100), "</td></tr>";
 
-	my $name_pref = $all_prefix . $name;
-	push @all, [$name_pref,$el->[1]];
+        print "<tr><td>", $name, "</td><td>", $el->[1], "</td><td>", sprintf("%.2f",($el->[1]/$total)*100), "</td></tr>";
 
-	unshift @x, $name;
-	unshift @y, $el->[1];
+        my $name_pref = $all_prefix . $name;
+        push @all, [$name_pref,$el->[1]];
+
+        unshift @x, $name;
+        unshift @y, $el->[1];
     }
     push @all, ['',0];
 
     print "</table>";
-    
+
     my $x_len = @x;
     my $width = 60 + ($x_len * 35);
 
@@ -281,11 +282,11 @@ sub printvals {
     $graph->set_x_axis_font(GD::gdLargeFont);
 
     $graph->set( 
-		x_label           => '',
-		y_label           => '',
-		x_labels_vertical => 1,
-		title             => ''
-	       ) or die $graph->error;
+        x_label           => '',
+        y_label           => '',
+        x_labels_vertical => 1,
+        title             => ''
+        ) or die $graph->error;
 
 
 
@@ -310,7 +311,7 @@ sub printvals {
     chmod 0775,$picname;
 
     print "<hr>";
-    
+
 }
 
 
