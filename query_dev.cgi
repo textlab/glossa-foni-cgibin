@@ -776,7 +776,7 @@ $top_text .= "<option value='" . $conf{'cgiRoot'} .
 
 $top_text .="</select>\n";
 
-if($CORPUS eq 'scandiasyn' || $CORPUS eq 'amerikanorsk') {
+if($CORPUS eq 'scandiasyn' || $CORPUS eq 'amerikanorsk' || $CORPUS eq 'sls') {
     $top_text .= "<input type='button' onclick=\"mapper();\" value='Map' />";
     $top_text .= "<div style='float: right; top:0px;'>" .
         "<span onclick=\"mapper2();\">ø</span></div>";
@@ -1119,12 +1119,12 @@ for (my $i = 0; $i < $nr_result; $i++) {
                                   "corpus=$CORPUS',");
             $source_line.=sprintf("'mywindow','height=600,width=600,status," .
                                   "scrollbars,resizable');\">" .
-                                  "<img src='$conf{'htmlRoot'}/html/img/i.gif' " .
+                                  "<img border=\"0\" src='$conf{'htmlRoot'}/html/img/i.gif' " .
                                   "alt='i' border='0'></a>&nbsp;</font>");
 
             if (-e "/var/www/html$assignment_path") {
                 $source_line.=sprintf("<a href=\"$assignment_path\" " .
-                                      "target=\"_new\"><img src=\"/michalkk/skriv/" .
+                                      "target=\"_new\"><img border=\"0\" src=\"/michalkk/skriv/" .
                                       "img/assignment-text.png\" height=\"14\"/>" .
                                       "</a>&nbsp;");
             }
@@ -1133,7 +1133,7 @@ for (my $i = 0; $i < $nr_result; $i++) {
             my $answer_path = "/michalkk/skriv/oppgavesvar/${identifier_noslash}.pdf";
             if (-e "/var/www/html$answer_path") {
                 $source_line.=sprintf("<a href=\"$answer_path\" target=\"_new\">" .
-                                      "<img src=\"/michalkk/skriv/img/" .
+                                      "<img border=\"0\" src=\"/michalkk/skriv/img/" .
                                       "assignment-answer.png\" height=\"14\"/></a>");
             }
         }
@@ -1318,7 +1318,7 @@ foreach my $key ( keys %$tok2infs_map ) {
     foreach my $key2 (keys %{$tok2infs_map->{$key}}){
         $json_tok_inf .= "\"$key2\",";
         
-        if($CORPUS eq 'scandiasyn' || $CORPUS eq 'amerikanorsk'){	
+        if($CORPUS eq 'scandiasyn' || $CORPUS eq 'amerikanorsk' || $CORPUS eq 'sls'){	
             my $sth = $dbh->prepare( "SELECT place FROM " . uc ( $CORPUS ) .
                                      "author where tid = '$key2';");
 
