@@ -1245,7 +1245,7 @@ for (my $i = 0; $i < $nr_result; $i++) {
         $source_line.=sprintf("</td></tr>");
 
         if($parallel){
-            if ($CORPUS eq "skriv") {
+            if ($CORPUS eq "skriv" || $CORPUS eq "norm") {
                 $source_line .= "<tr><td></td><td align=\"right\">";
             }
             else {

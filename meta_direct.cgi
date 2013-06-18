@@ -29,7 +29,7 @@ my %meta = $in{"meta"};
 
 my $CORPUS = $in{'query'}->{'corpus'}->[0];
 
-print "Content-type: text/html; charset=" . ($CORPUS =~ /^(run|skriv)$/ ? "UTF-8" : "ISO-8859-1") . "\n\n";
+print "Content-type: text/html; charset=" . ($CORPUS =~ /^(run|skriv|norm)$/ ? "UTF-8" : "ISO-8859-1") . "\n\n";
 print "<html>\n<head>\n</head>\n<body>\n";
 
 my %conf = GlossaConfig::readConfig($CORPUS);
