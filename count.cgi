@@ -69,30 +69,29 @@ open (OUT, ">$out");
 
 
 foreach my $f (@files) {
-
     open (FILE, $f);
 
     my $i=0;
 
     $/="\n\n\n";
     while (<FILE>) {
-
 	my @n;
 
 	my @lines = split(/\n/, $_);
 
 	my $source = shift @lines;
-
-	my ($c,$s_id,$sts_string,$left,$match,$right) = split(/\t/, $source);
-
+	my ($c,$s_id,$sts_string,$left,$match,$right) = split(/\t/, $source); # only $match is actually used.
 	my $match2;
 	my @match = split(/ /, $match);
+#20130821 generalized. see count_choose.cgi
+#need something like this in download.cgi
 	foreach my $m (@match) {
 	    my @tmp;
-	    my ($token, $lexeme, $pos)=split(/\//,$m);
-	    if (CGI::param('form')) { push @tmp, $token };
-	    if (CGI::param('pos')) { push @tmp, $pos };
-	    if (CGI::param('lexeme')) { push @tmp, $lexeme };
+	    my @attributes = split /\//, $m;
+	    my @att_params = CGI::param('attributes');
+	    foreach my $att (@att_params){
+		push @tmp, $attributes[$att];
+	    }
 	    $match2 .= join("/", @tmp) . " ";
 	}
 	unless (CGI::param('case')) { $match2 = lc($match2) }
@@ -227,7 +226,9 @@ elsif ($format eq "html") {
     print "<table><tr><td><b>occurences</b> &nbsp;</td><td><b>match</b></td></tr>";
     
     foreach my $e (@list_sorted) {
-	print "<tr><td align=\"right\">$e->[1] &nbsp;</td><td><b>$e->[0]</b></td></tr>";
+	my $res = $e->[0];
+	$res =~ s/\// - /g;
+	print "<tr><td align=\"right\">$e->[1] &nbsp;</td><td><b>$res</b></td></tr>";
     }
 
     print "</table>"; 

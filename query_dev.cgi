@@ -59,6 +59,7 @@ my $player = CGI::param('player');
 my %conf = GlossaConfig::readConfig($CORPUS);
 
 my $corpus_mode = $conf{'corpus_mode'};
+
 $logger->info("Corpus mode is $corpus_mode");
 
 my $speech_corpus = 0;
@@ -765,10 +766,12 @@ if ($conf{'type'} eq 'multilingual') {
 
 $top_text .= "<option value='" . $conf{'cgiRoot'} .
     "/annotate_choose.cgi?$actionurl&atttype=$atttype'>$lang{'annotate'}</option>\n";
-$top_text .= "<option value='" . $conf{'cgiRoot'} .
-    "/meta.cgi?$actionurl'>$lang{'metadata'}</option>\n";
-$top_text .= "<option value='" . $conf{'cgiRoot'} .
-    "/meta-dist.cgi?$actionurl'>$lang{'meta-dist'}</option>\n";
+if(!$speech_corpus){
+    $top_text .= "<option value='" . $conf{'cgiRoot'} .
+	"/meta.cgi?$actionurl'>$lang{'metadata'}</option>\n";
+    $top_text .= "<option value='" . $conf{'cgiRoot'} .
+	"/meta-dist.cgi?$actionurl'>$lang{'meta-dist'}</option>\n";
+}
 $top_text .= "<option value='" . $conf{'cgiRoot'} .
     "/show_page_dev.cgi?$actionurl&n=1&del=yes'>$lang{'delete'}</option>\n";
 $top_text .= "<option value='" . $conf{'cgiRoot'} .
@@ -776,10 +779,11 @@ $top_text .= "<option value='" . $conf{'cgiRoot'} .
 
 $top_text .="</select>\n";
 
+# HERE! NEED TO ADD MAP ATTRIBUTE TO CONFIG!!
 if($CORPUS eq 'scandiasyn' || $CORPUS eq 'amerikanorsk') {
     $top_text .= "<input type='button' onclick=\"mapper();\" value='Map' />";
     $top_text .= "<div style='float: right; top:0px;'>" .
-        "<span onclick=\"mapper2();\">ø</span></div>";
+        "<span onclick=\"mapper2();\">ø</span></div>\n";
 }
 
 $top_text .= "<br />\n";
@@ -1358,26 +1362,24 @@ foreach my $key (keys %$tok2infs_map){
 
 
 #added 20120920. Need parameters for centering the map. The are used by gmap.html (documents.opener.blablabla)
-my $lat = "64";
-my $lng = "3";
 
-if ($CORPUS eq 'amerikanorsk') {
-    $lat = "37"; $lng = "-95";
-}
+my $lat = $conf{'map_lat'};
+my $lng = $conf{'map_lng'};
+
 
 print "\n<script>\nvar mapObj = {\ntokInf : $json_tok_inf,\ninfLoc : " .
     "$json_inf_loc,\nallLocs : $json_all_locs,\nlat : $lat,\nlng : " .
     "$lng};\n</script>";
 print TOP "\n<script>\nvar mapObj = {\ntokInf : $json_tok_inf,\ninfLoc : " .
     "$json_inf_loc,\nallLocs : $json_all_locs,\nlat : $lat,\nlng : $lng};\n" .
-    "</script>";
+    "</script>\n";
 
 print "\n<script language='javascript'>\nfunction mapper()" .
     "{\nwindow.open('$conf{'htmlRoot'}/html/gmap.html','mywindow2','height=780," .
     "width=1200,status,scrollbars,resizable');\n}\n</script>";
 print TOP "\n<script language='javascript'>\nfunction mapper()".
     "{\nwindow.open('$conf{'htmlRoot'}/html/gmap.html','mywindow2','height=780,".
-    "width=1200,status,scrollbars,resizable');\n}\n</script>";
+    "width=1200,status,scrollbars,resizable');\n}\n</script>\n";
 
     ##########################################
     #

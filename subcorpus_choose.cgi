@@ -28,5 +28,5 @@ my @files = <$subcorp_dir/*.dat>;
 foreach my $f (@files) {
     $f =~ s/\.dat$//;
     $f =~ s/.*\///;
-    print "<a href='", $conf{'htmlRoot'}, "/html/index_dev.php?corpus=$corpus&subcorpus=$f'>$f</a><br>";
+    print "<a href='", $conf{'htmlRoot'}, "/html/index.php?corpus=$corpus&subcorpus=$f'>$f</a><br>";
 }

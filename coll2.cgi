@@ -86,19 +86,13 @@ print "<form action=\"", $conf{'cgiRoot'}, "/coll_format.cgi\" method=\"GET\">";
 print "<input type=\"hidden\" name=\"query_id\" value=\"$query_id\"></input>";
 print "Change format to: <select name=\"format\"><option value=\"\">&nbsp;</option><option value=\"tsv\">Tab separated values</option><option value=\"csv\">Comma separated values</option><option value=\"xls\">Excel spreadsheet</option><option value=\"bars\">Histogram</option><option value=\"hbars\">Histogram (horisontal)</option></select>&nbsp;&nbsp;&nbsp;<input type=\"submit\"></input><br><br>";
 
-
-
-
 my $format = CGI::param('format');
 my $out = $query_id . "." . $format;
-
 
 $string = $query_id."_";
 my @files = <$conf{'tmp_dir'}/$string*.dat>;
 
 #print "F: $conf{'tmp_dir'}/$string<br>";
-
-
 
 my $output = "$conf{'tmp_dir'}/" . $string. ".tocnt";
 open (OUTPUT, ">$output");
@@ -176,24 +170,17 @@ foreach my $f (@files) {
 	    print OUTPUT $match2, " ";
 	}
 	print OUTPUT "\n";
-
     }
     close FILE;
-
 }
-
-
 close OUTPUT;
 
 my $cnt = $output;
 $cnt =~ s/tocnt$/cnt/;
 
-
-
 `rm -f $cnt`;
 
 `count.pl --newLine --token $conf{'config_dir'}/token.regexp $opts_n $opts_w $cnt $output`;
-
 
 $/="\n";
 

@@ -19,8 +19,9 @@ my $query_id = CGI::param('query_id');
 my %conf = GlossaConfig::readConfig($corpus);
 
 my @tids;
-# read query configuration fil
-my $conf= $conf{'tmp_dir'} . "/" . $query_id . ".conf"; 
+# read query configuration file
+my $conf= $conf{'tmp_dir'} . "/" . $query_id . ".conf";
+print "query  config file: $conf<br>";
 open (CONF, "$conf");
 while (<CONF>) {
     chomp;

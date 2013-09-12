@@ -17,10 +17,23 @@ my %conf = GlossaConfig::readConfig($corpus);
 
 my $ngram = CGI::param('ngram');
 
+my @corpus_attributes = split / /,  $conf{'corpus_attributes'};
+
+my @corpus_attributes_name = @corpus_attributes;
+if($conf{'corpus_attributes_name'}){
+    @corpus_attributes_name = split /\t/,  $conf{'corpus_attributes_name'};
+}
+my $corpus_attributes_ref = {};
+my $j = 0;
+foreach my $k (@corpus_attributes){
+    my $name = $corpus_attributes_name[$j++];
+    $name =~s/ default//;
+     $corpus_attributes_ref->{$k} = $name;
+}
+
 print "<html><head></head><body>";
 
 print "<form action=\"", $conf{'cgiRoot'}, "/coll2.cgi\" method=\"get\">";
-
 print "<input type=\"hidden\" name=\"query_id\" value=\"$query_id\">";
 print "<input type=\"hidden\" name=\"corpus\" value=\"$corpus\">";
 print "<input type=\"hidden\" name=\"base_corpus\" value=\"$base_corpus\">";
@@ -31,9 +44,9 @@ print "<input type=\"checkbox\" name=\"globalstats\">Use global lexical statisti
 
 print "</td><td valign=\"top\">";
 print "<b>Collocates:</b><br>";
-print "<input type=\"checkbox\" name=\"form\" checked></input> Word form ";
-print "<input type=\"checkbox\" name=\"lexeme\"></input> Lexeme ";
-print "<input type=\"checkbox\" name=\"pos\"></input> POS tag";
+print "<input type=\"checkbox\" name=\"pos\"></input>  $corpus_attributes_ref->{'pos'}";
+print "<input type=\"checkbox\" name=\"lexeme\"></input>  $corpus_attributes_ref->{'lemma'} ";
+print "<input type=\"checkbox\" name=\"form\" checked></input> ".$corpus_attributes_ref->{'word'};
 
 print "</td></tr></table>";
 

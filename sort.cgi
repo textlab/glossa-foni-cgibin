@@ -3,7 +3,6 @@
 use CGI;
 use locale;
 use LWP::Simple;
-
 use locale;
 use POSIX qw(locale_h);
 setlocale(LC_ALL, "norwegian");
@@ -47,73 +46,87 @@ foreach my $f (@files) {
         my $source = shift @lines;
         my ($c, $t,$s,$left,$match,$right) = split(/\t/, $source);
 
-        if ($pri eq "sent_id") {
-            $pri_dat=$s;
+
+#more alterations 20130909
+	my @sts = split(/\|\|/, $s);
+	my %sts;
+	my $pos1 = CGI::param('pos1');
+	unless ($pos1) { $pos = 1 }
+	my $pos2 = CGI::param('pos2');
+	unless ($pos2) { $pos2 = 1 }
+	foreach my $sts (@sts) { #hash all sts_string values, eg text_id=aaseral_04gk..
+	    my ($k,$v) = split(/=/, $sts);
+	    $sts{$k}=$v;
+	}
+
+
+
+        if ($pri =~ /sort_(.+)/) {
+	    my $by = $1;
+#$s is all structures, not s_id	    
+            $pri_dat=$sts{$by};
         }
         elsif ($pri eq "random") {
             $pri_dat=rand();
         }
         else {
-            my $pos = CGI::param('pos1');
-            unless ($pos) { $pos = 1 }
-            my $list;
-            if ($pri eq "left") {
-                $list=$left;
-                $pos = - $pos;
+	    my $list;
+	    if ($pri eq "left") {
+		$list=$left;
+		$pos1 = - $pos1;
             }
             elsif ($pri eq "match") {
                 $list=$match;
-                $pos = $pos-1;
+                $pos1 = $pos1-1;
             }
             elsif ($pri eq "right") {
                 $list=$right;
-                $pos = $pos-1;
+                $pos1 = $pos1-1;
             }
-
+	    
             my @to_sort;
             my @list = split(/ /, $list);
             if ($pri eq "match") {
                 @to_sort = @list;
             }
             else {
-                push @to_sort, $list[$pos];
+                push @to_sort, $list[$pos1];
             }
-
+	    
             my @to_sort2;
             foreach my $token (@to_sort) {
-                my ($form, $pos, $lexeme)=split(/\//,$token);
 
-                if (CGI::param('form_in1')) {
-                    push @to_sort2, $form;
-                    print "form_inl: $form<br />";
-                }
+#need to make changes here!!!
 
-                if (CGI::param('pos_in1')) { push @to_sort2, $pos };
-                if (CGI::param('lexeme_in1')) { push @to_sort2, $lexeme };
+#here we have to capture the attribute required by index (as given in the sort_choose.cgi sort_attributes array), rather than using the hardcoded param names (form_inl, pos_in1 etc)
+		my @components = split(/\//, $token);
+		my @att_params = CGI::param('sort_attributes');
+		foreach my $att (@att_params){
+		    push @to_sort2, $components[$att];
+		}
             }
 
             $pri_dat .= join("/", @to_sort2) . " ";	    
         }
 
-        if ($sec eq "sent_id") {
-            $sec_dat=$s;
+        if ($sec =~ /sort_(.+)/) {
+	    my $by = $1;
+            $sec_dat=$sts{$by};
         }
         else {
-            my $pos = CGI::param('pos2');
-            unless ($pos) { $pos = 1 }
             my $list;
 
             if ($sec eq "left") {
                 $list=$left;
-                $pos = - $pos;
+                $pos2 = - $pos2;
             }
             elsif ($sec eq "match") {
                 $list=$match;
-                $pos = $pos-1;
+                $pos2 = $pos2-1;
             }
             elsif ($sec eq "right") {
                 $list=$right;
-                $pos = $pos-1;
+                $pos2 = $pos2-1;
             }
 
             my @to_sort;
@@ -123,17 +136,17 @@ foreach my $f (@files) {
                 @to_sort = @list;
             }
             else {
-                push @to_sort, $list[$pos];
+                push @to_sort, $list[$pos2];
             }
 
             my @to_sort2;
 
             foreach my $token (@to_sort) {
-                my ($form, $pos, $lexeme)=split(/\//,$token);
-
-                if (CGI::param('form_in2')) { push @to_sort2, $form };
-                if (CGI::param('pos_in2')) { push @to_sort2, $pos };
-                if (CGI::param('lexeme_in2')) { push @to_sort2, $lexeme };
+		my @components = split(/\//, $token);
+		my @att_params = CGI::param('sort_attributes2');
+		foreach my $att (@att_params){
+		    push @to_sort2, $components[$att];
+		}
             }
             $sec_dat .= join("/", @to_sort2) . " ";	    
         }
@@ -142,7 +155,6 @@ foreach my $f (@files) {
             $pri_dat = lc($pri_dat);
             $sec_dat = lc($sec_dat);
         }
-
         push @data, [$pri_dat,$sec_dat,$dat];
 
     }
