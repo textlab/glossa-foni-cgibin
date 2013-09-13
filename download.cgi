@@ -7,7 +7,6 @@ use DBI;
 use lib ('./lib/');
 use Glossa_local;
 use GlossaConfig;
-use Data::Dumper;
 
 my $corpus=CGI::param('corpus');
 
@@ -92,7 +91,7 @@ $heredoc = <<END;
 <link rel="shortcut icon" href="http://tekstlab.uio.no/favicon.ico" type="image/ico" />
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <title>Glossa - results</title>
-<script src="http://tekstlab.uio.no/glossa-joel-dev/glossa//js/jquery/jquery-1.4.3.min.js" type="text/javascript"></script>
+<script src="$conf{'htmlRoot'}/js/jquery/jquery-1.4.3.min.js" type="text/javascript"></script>
 <script type="text/javascript">
     \$( document ).ready(function(){
 	\$(".button").click(function(){
@@ -113,7 +112,7 @@ p{
     font-family: Helvetica, Arial, Sans-Serif;
 /*    margin: 45px; */
     width: 100%;
-    text-align: right;
+    text-align: center;
     border-collapse: collapse;
 }
 #box-table-a th
