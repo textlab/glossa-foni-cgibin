@@ -29,7 +29,7 @@ my %meta = $in{"meta"};
 
 my $CORPUS = $in{'query'}->{'corpus'}->[0];
 
-print "Content-type: text/html; charset=" . ($CORPUS =~ /^(run|skriv)$/ ? "UTF-8" : "ISO-8859-1") . "\n\n";
+print "Content-type: text/html; charset=" . ($CORPUS =~ /^(run|skriv|norm)$/ ? "UTF-8" : "ISO-8859-1") . "\n\n";
 print "<html>\n<head>\n</head>\n<body>\n";
 
 my %conf = GlossaConfig::readConfig($CORPUS);
@@ -160,19 +160,19 @@ foreach my $tid (@tids_sorted) {
             my $identifier = $r{'tid'};
             my $source_line = "";
             my $assignment_code = join("_", (split("_", $identifier))[1,2]);
-            my $assignment_path = "/michalkk/skriv/oppgavetekster/${assignment_code}.pdf";
+            my $assignment_path = "/skriv/oppgavetekster/${assignment_code}.pdf";
 
 	    $source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" onClick=\"window.open('$conf{'htmlRoot'}/html/profile.php?tid=$identifier&corpus=$CORPUS',");
 	    $source_line.=sprintf("'mywindow','height=600,width=600,status,scrollbars,resizable');\"><img src='$conf{'htmlRoot'}/html/img/i.gif' alt='i' border='0'></a>&nbsp;</font>");
 
             if (-e "/var/www/html$assignment_path") {
-                $source_line.=sprintf("<a href=\"$assignment_path\" target=\"_new\"><img src=\"/michalkk/skriv/img/assignment-text.png\" height=\"14\"/></a>&nbsp;");
+                $source_line.=sprintf("<a href=\"$assignment_path\" target=\"_new\"><img src=\"/skriv/img/assignment-text.png\" height=\"14\"/></a>&nbsp;");
             }
             my $identifier_noslash = $identifier;
             $identifier_noslash =~ s,/,_,g;
-            my $answer_path = "/michalkk/skriv/oppgavesvar/${identifier_noslash}.pdf";
+            my $answer_path = "/skriv/oppgavesvar/${identifier_noslash}.pdf";
             if (-e "/var/www/html$answer_path") {
-                $source_line.=sprintf("<a href=\"$answer_path\" target=\"_new\"><img src=\"/michalkk/skriv/img/assignment-answer.png\" height=\"14\"/></a>");
+                $source_line.=sprintf("<a href=\"$answer_path\" target=\"_new\"><img src=\"/skriv/img/assignment-answer.png\" height=\"14\"/></a>");
             }
             print "<td>$source_line</td>";
     }
