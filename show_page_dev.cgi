@@ -409,7 +409,7 @@ while (<DATA>) {
     {
         $identifier = $sts{text_id};
         my $assignment_code = join("_", (split("_", $identifier))[1,2]);
-        my $assignment_path = "/michalkk/skriv/oppgavetekster/${assignment_code}.pdf";
+        my $assignment_path = "/skriv/oppgavetekster/${assignment_code}.pdf";
 
         print ("<font size=\"-2\">\n<a href=\"#\" onClick=\"window.open(" .
                "'$conf{'htmlRoot'}/html/profile.php?tid=$identifier&corpus=$CORPUS',");
@@ -419,17 +419,17 @@ while (<DATA>) {
 
         if (-e "/var/www/html$assignment_path") {
             printf("<a href=\"$assignment_path\" target=\"_new\"><img " .
-                   "src=\"/michalkk/skriv/img/assignment-text.png\" " .
+                   "src=\"/skriv/img/assignment-text.png\" " .
                    "height=\"14\" /></a>&nbsp;");
         }
 
         my $identifier_noslash = $identifier;
         $identifier_noslash =~ s,/,_,g;
-        my $answer_path = "/michalkk/skriv/oppgavesvar/${identifier_noslash}.pdf";
+        my $answer_path = "/skriv/oppgavesvar/${identifier_noslash}.pdf";
         
         if (-e "/var/www/html$answer_path") {
             printf("<a href=\"$answer_path\" target=\"_new\"><img " .
-                   "src=\"/michalkk/skriv/img/assignment-answer.png\" " .
+                   "src=\"/skriv/img/assignment-answer.png\" " .
                    "height=\"14\" /></a>");
         }
     }

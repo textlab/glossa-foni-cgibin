@@ -28,7 +28,11 @@ print "<input type=\"checkbox\" name=\"head\" checked></input> Create headings<b
 print "<br><b>Include:</b><br>";
 print "<input type=\"checkbox\" name=\"form\" checked></input> Word form<br>";
 print "<input type=\"checkbox\" name=\"lexeme\"></input> Lexeme<br>";
-print "<input type=\"checkbox\" name=\"pos\"></input> POS tag<br>";
+if ($corpus eq "skriv") {
+  print "<input type=\"checkbox\" name=\"pos\"></input> Original word form<br>";
+} else {
+  print "<input type=\"checkbox\" name=\"pos\"></input> POS tag<br>";
+}
 
 print "<br>Max number of results: <input type=\"text\" name=\"cutoff\" size=\"4\"></input><br>"; 
 

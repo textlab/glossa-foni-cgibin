@@ -1111,7 +1111,7 @@ for (my $i = 0; $i < $nr_result; $i++) {
         {
             $identifier = $sts{text_id};
             my $assignment_code = join("_", (split("_", $identifier))[1,2]);
-            my $assignment_path = "/michalkk/skriv/oppgavetekster/${assignment_code}.pdf";
+            my $assignment_path = "/skriv/oppgavetekster/${assignment_code}.pdf";
 
             $source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" " .
                                   "onClick=\"window.open('$conf{'htmlRoot'}" .
@@ -1124,16 +1124,16 @@ for (my $i = 0; $i < $nr_result; $i++) {
 
             if (-e "/var/www/html$assignment_path") {
                 $source_line.=sprintf("<a href=\"$assignment_path\" " .
-                                      "target=\"_new\"><img border=\"0\" src=\"/michalkk/skriv/" .
+                                      "target=\"_new\"><img border=\"0\" src=\"/skriv/" .
                                       "img/assignment-text.png\" height=\"14\"/>" .
                                       "</a>&nbsp;");
             }
             my $identifier_noslash = $identifier;
             $identifier_noslash =~ s,/,_,g;
-            my $answer_path = "/michalkk/skriv/oppgavesvar/${identifier_noslash}.pdf";
+            my $answer_path = "/skriv/oppgavesvar/${identifier_noslash}.pdf";
             if (-e "/var/www/html$answer_path") {
                 $source_line.=sprintf("<a href=\"$answer_path\" target=\"_new\">" .
-                                      "<img border=\"0\" src=\"/michalkk/skriv/img/" .
+                                      "<img border=\"0\" src=\"/skriv/img/" .
                                       "assignment-answer.png\" height=\"14\"/></a>");
             }
         }
