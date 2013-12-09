@@ -476,6 +476,7 @@ while (<DATA>) {
             }
         }
 
+        my $show_context = ($CORPUS eq "legepasient") ? "vis.jpg" : "sound.gif";
         if($player ne 'flash'){
             $source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" onClick=" .
                                   "\"document.getElementById('inspector')" .
@@ -484,7 +485,7 @@ while (<DATA>) {
                                   "'$conf{'htmlRoot'}html/$phpfile.php$ex_url&" .
                                   "video=0';\">\n");
             $source_line.=sprintf("<img style='border-style:none' src=" .
-                                  "'$conf{'htmlRoot'}html/img/sound.gif'>\n</a>" .
+                                  "'$conf{'htmlRoot'}html/img/$show_context' width=\"17\"></a>" .
                                   " \n&nbsp;</font>");
         }
         else{
@@ -494,7 +495,7 @@ while (<DATA>) {
             $source_line.=sprintf("player = shebang('$CORPUS', '$line_key'" .
                                   ",false);\">\n");
             $source_line.=sprintf("<img style='border-style:none' src=" .
-                                  "'$conf{'htmlRoot'}html/img/sound.gif'>\n</a>" .
+                                  "'$conf{'htmlRoot'}html/img/$show_context' width=\"17\"></a>" .
                                   " \n&nbsp;</font>");
         }
 

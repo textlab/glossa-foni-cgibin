@@ -279,6 +279,9 @@ foreach my $row (@$phrases) {
             # for multi-word-expressions
             $val =~ s/ /_/g;    
 
+            # to allow looking for strings containing space
+            $val =~ s/@@@/ /g;
+
             if ($conf{'charsetfrom'}) {
                 Encode::from_to($val, $conf{'charset'}, $conf{'charsetfrom'});
             } 
@@ -316,6 +319,9 @@ foreach my $row (@$phrases) {
             }
             elsif ($val =~ s/^!//) { # if the feature is negated
                 $atts{'neg'}->{$cat} .= "|" . $cat . "=\"" . $val. "\"";
+            }
+            elsif ($cat eq 'cmt') {
+                $string_string = '\(.*' . $string_string . '.*\)';
             }
             else {              # if it's *not* negated
                 # normal treatment to all others:
@@ -1181,6 +1187,7 @@ for (my $i = 0; $i < $nr_result; $i++) {
                 }
             }
 
+            my $show_context = ($CORPUS eq "legepasient") ? "vis.jpg" : "sound.gif";
             if($player ne 'flash'){
                 $source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" " .
                                       "onClick=\"document.getElementById(" .
@@ -1189,8 +1196,8 @@ for (my $i = 0; $i < $nr_result; $i++) {
                                       " = '$conf{'htmlRoot'}/html/" .
                                       "$phpfile.php$ex_url&video=0';\">\n");
                 $source_line.=sprintf("<img style='border-style:none' " .
-                                      "src='$conf{'htmlRoot'}/html/img/sound.gif'>" .
-                                      "\n</a> \n&nbsp;</font>");
+                                      "src='$conf{'htmlRoot'}/html/img/$show_context' width=\"17\">" .
+                                      "</a> \n&nbsp;</font>");
             }
             else{
                 $source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" " .
@@ -1200,7 +1207,7 @@ for (my $i = 0; $i < $nr_result; $i++) {
                                       "false);\">\n");
                 $source_line.=sprintf("<img style='border-style:none' " .
                                       "src='$conf{'htmlRoot'}/html/img/" .
-                                      "sound.gif'>\n</a> \n&nbsp;</font>");
+                                      "$show_context' width=\"17\"></a> \n&nbsp;</font>");
             }
             $source_line.="<strong>" . $sts{"text_id"} . "</strong>&nbsp;";	    
         }
@@ -1480,6 +1487,9 @@ sub print_tokens {
     foreach my $t (@t) {
         my (@atts_token) = split(/\//, $t);
         my $token_string = $atts_token[$atts_index];
+        if ($CORPUS eq 'legepasient') {
+          $token_string =~ y/{}/[]/;
+        }
 
         if($token_string eq '__UNDEF__') {
             $token_string = "<span style='color: #444; font-style: italic;'>" .
