@@ -1378,13 +1378,14 @@ foreach my $key (keys %$tok2infs_map){
 
 my $lat = $conf{'map_lat'};
 my $lng = $conf{'map_lng'};
+my $zoom = $conf{'map_zoom'};
 
 
 print "\n<script>\nvar mapObj = {\ntokInf : $json_tok_inf,\ninfLoc : " .
     "$json_inf_loc,\nallLocs : $json_all_locs,\nlat : $lat,\nlng : " .
-    "$lng};\n</script>";
+    "$lng,\nzoom : $zoom};\n</script>";
 print TOP "\n<script>\nvar mapObj = {\ntokInf : $json_tok_inf,\ninfLoc : " .
-    "$json_inf_loc,\nallLocs : $json_all_locs,\nlat : $lat,\nlng : $lng};\n" .
+    "$json_inf_loc,\nallLocs : $json_all_locs,\nlat : $lat,\nlng : $lng,\nzoom : $zoom};\n" .
     "</script>\n";
 
 print "\n<script language='javascript'>\nfunction mapper()" .
