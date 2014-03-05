@@ -546,6 +546,8 @@ if ($sql_query_nl) {
 }
 
 if ($speech_corpus) {
+    print "<img src='http://tekstlab.uio.no/glossa/html/img/tri.png' alt='caution'>";
+    print "<b>The videos in this corpus are currently unavailable for Internet Explorer 9 and 10. The issue is being resolved (2014.02.03)</b><br />";
     if(!$infs) {
         print "<b>The $CORPUS corpus has no informants that satisfy " .
             "your search criteria.</b><br />";
@@ -1117,7 +1119,7 @@ for (my $i = 0; $i < $nr_result; $i++) {
                                   "<img src='$conf{'htmlRoot'}/html/img/i.gif' " .
                                   "alt='i' / border='0'></a> \n&nbsp;</font>\n");
         }
-        elsif ($CORPUS eq "skriv")
+        elsif ($CORPUS eq "skriv" || $CORPUS eq "norm")
         {
             $identifier = $sts{text_id};
             my $assignment_code = join("_", (split("_", $identifier))[1,2]);

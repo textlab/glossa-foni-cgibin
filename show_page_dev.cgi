@@ -405,7 +405,7 @@ while (<DATA>) {
                "<img src='$conf{'htmlRoot'}/html/img/i.gif' alt='i' / border='0'>" .
                "</a> \n&nbsp;</font>\n");
     }
-    elsif ($CORPUS eq "skriv")
+    elsif ($CORPUS eq "skriv" || $CORPUS eq "norm")
     {
         $identifier = $sts{text_id};
         my $assignment_code = join("_", (split("_", $identifier))[1,2]);
