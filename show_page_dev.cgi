@@ -425,7 +425,7 @@ while (<DATA>) {
 
         my $identifier_noslash = $identifier;
         $identifier_noslash =~ s,/,_,g;
-        my $answer_path = "/skriv/oppgavesvar/${identifier_noslash}.pdf";
+        my $answer_path = "/$CORPUS/oppgavesvar/${identifier_noslash}.pdf";
         
         if (-e "/var/www/html$answer_path") {
             printf("<a href=\"$answer_path\" target=\"_new\"><img " .

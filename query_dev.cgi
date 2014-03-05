@@ -1142,7 +1142,7 @@ for (my $i = 0; $i < $nr_result; $i++) {
             }
             my $identifier_noslash = $identifier;
             $identifier_noslash =~ s,/,_,g;
-            my $answer_path = "/skriv/oppgavesvar/${identifier_noslash}.pdf";
+            my $answer_path = "/$CORPUS/oppgavesvar/${identifier_noslash}.pdf";
             if (-e "/var/www/html$answer_path") {
                 $source_line.=sprintf("<a href=\"$answer_path\" target=\"_new\">" .
                                       "<img border=\"0\" src=\"/skriv/img/" .
