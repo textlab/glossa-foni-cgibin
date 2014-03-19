@@ -501,6 +501,9 @@ while (my ($k,$v) = each %aligned_corpora) {
     $cqp_all .= ":" . $k . "" . join(") | (", (keys %$v)) . ") "
 }
 
+# convert spaces to &nbsp; in the queries (within double quotes)
+$cqp_all =~ s/(".+?[^\\]")/(my $ret = $1) =~ s# #&nbsp;#g; $ret/ge;
+
 # end it
     $cqp_all .= ";";
 
