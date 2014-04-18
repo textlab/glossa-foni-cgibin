@@ -101,6 +101,7 @@ sub create_media_player_div {
         return create_qt_player_div(%conf);
     }
     else {
+	return div({id=>'inspector', class=>'inspect', style=>'height:400px;'}, '');
         return create_flash_player_div(%conf);
     }
 }
@@ -126,7 +127,7 @@ sub create_flash_player_div {
     my (%conf) = @_;
 
     # make sure there is content or empty string in every div tag
-    # otherwise CGI will create illegal self-closing div tags
+    # otherwise CGI will create illegal self-closing div tags 
     my $media_div =
         div({id=>'inspector', class=>'inspect'},
             div({id=>'playerpos',
