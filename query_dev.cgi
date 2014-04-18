@@ -113,6 +113,7 @@ elsif($CORPUS eq 'run') {
 }
 
 if ($speech_corpus) {
+
     push(@header_html_elts, Link({-rel=>'stylesheet',
                                   -href=>"http://ajax.googleapis.com/" .
                                       "ajax/libs/jqueryui/1.8.6/themes/" .
@@ -125,32 +126,48 @@ if ($speech_corpus) {
                                       "ui/css/demo-docs-theme/ui.theme.css",
                                   -type=>'text/css',
                                   -media=>'all'}));
-
+=pod
     push(@header_html_elts, Link({-rel=>'stylesheet',
                                   -href=>"$conf{'htmlRoot'}/player/player.css",
                                   -type=>'text/css'}));
-
+=cut
     push(@header_html_elts, Link({-rel=>'stylesheet',
                                   -href=>"$conf{'htmlRoot'}/html/tags.css",
                                   -type=>'text/css'}));
 
+    push(@header_html_elts, Link({-rel=>'stylesheet',
+                                  -href=>"$conf{'htmlRoot'}/glossa_video/css/jplayer.blue.monday.css",
+                                  -type=>'text/css'}));
+
+    push(@header_html_elts, Link({-rel=>'stylesheet',
+                                  -href=>"$conf{'htmlRoot'}/glossa_video/css/media.css",
+                                  -type=>'text/css'}));
+
+    push(@header_html_elts, Link({-rel=>'stylesheet',
+                                  -href=>"http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css",
+                                  -type=>'text/css'}));
+=pod
     push(@header_script_elts, {-type=>'text/javascript',
                                -src=>"$conf{'htmlRoot'}/player/player.ajax.js"});
-    
-    push(@header_script_elts, {-type=>'text/javascript',
+=cut
+ 
+   push(@header_script_elts, {-type=>'text/javascript',
                                -src=>"$conf{'htmlRoot'}/js/showtag.js"});
 
     push(@header_script_elts, {-type=>'text/javascript',
-                               -src=>"$conf{'htmlRoot'}" .
-                                   "/js/jquery/jquery-1.4.3.min.js"});
+                               -src=>"//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"});
+
+    push(@header_script_elts, {-type=>'text/javascript',
+                               -src=>"$conf{'htmlRoot'}/glossa_video/jquery.jplayer.min.js"});
     
     push(@header_script_elts, {-type=>'text/javascript',
-                               -src=>$conf{'htmlRoot'} .
-                                   "/js/jquery/jquery-ui-1.8.6.custom.min.js"});
-
+                               -src=>"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"});
+=oink
     push(@header_script_elts, {-type=>'text/javascript',
                                -src=>"$conf{'htmlRoot'}/player/slider.js"});
-
+=cut
+    push(@header_script_elts, {-type=>'text/javascript',
+                               -src=>"$conf{'htmlRoot'}/glossa_video/video.js"});
 
     push(@header_script_elts, {-type=>'text/javascript',
                                -code=>"var player;"});
@@ -172,7 +189,6 @@ print start_html(-head=>\@header_html_elts,
                  -script=>\@header_script_elts);
 
 print Glossa::create_media_player_div($player, %conf);
-
 print "  <div id=\"body\">\n";
 
 # additional group file access
@@ -590,6 +606,16 @@ my $results_max=$in{'query'}->{'results'}->{'max'}->[0];
 my $randomize=$in{'query'}->{'results'}->{'random'}->[0];
 my $fastcut=$in{'query'}->{'results'}->{'fastcut'}->[0];
 
+my $concordance_for_speech = 0;
+my $truncate_left = 0;
+my $truncate_right = 0;
+if ($speech_corpus){
+    $concordance_for_speech = $in{'query'}->{'results'}->{'concordance'}->[0];
+}
+if( $concordance_for_speech ){
+    $truncate_left = 'l';
+    $truncate_right = 'r';
+}
 # initialize CWB query object
 my $query = new WebCqp::Query "$base_corpus";
 
@@ -776,7 +802,7 @@ if ($conf{'type'} eq 'multilingual') {
 }
 
 $top_text .= "<option value='" . $conf{'cgiRoot'} .
-    "/annotate_choose.cgi?$actionurl&atttype=$atttype'>$lang{'annotate'}</option>\n";
+    "/annotate_choose.cgi?$actionurl&atttype=$atttype&concordance_for_speech=$concordance_for_speech'>$lang{'annotate'}</option>\n";
 if(!$speech_corpus){
     $top_text .= "<option value='" . $conf{'cgiRoot'} .
 	"/meta.cgi?$actionurl'>$lang{'metadata'}</option>\n";
@@ -1181,14 +1207,18 @@ for (my $i = 0; $i < $nr_result; $i++) {
                                           "mov.gif'>\n</a> \n&nbsp;</font>");
                 }
                 else{
-                    $source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" " .
-                                          "onClick=\"document.getElementById(" .
-                                          "'inspector').style.display='block';");
-                    $source_line.=sprintf("player = shebang('$CORPUS', " .
-                                          "'$line_key', true);\">\n");
-                    $source_line.=sprintf("<img style='border-style:none' " .
-                                          "src='$conf{'htmlRoot'}/html/img/" .
-                                          "mov.gif'>\n</a> \n&nbsp;</font>");
+
+		    $source_line.=sprintf("<a href='#' class='getdata-button' name='video' id='".$CORPUS."_$line_key'><img src='$conf{'htmlRoot'}/html/img/mov.gif'></a>&nbsp;");
+
+#                    $source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" " .
+#                                          "onClick=\"document.getElementById(" .
+#                                          "'inspector').style.display='block';");
+		    
+#                    $source_line.=sprintf("player = shebang('$CORPUS', " .
+#                                          "'$line_key', true);\">\n");
+#                    $source_line.=sprintf("<img style='border-style:none' " .
+#                                          "src='$conf{'htmlRoot'}/html/img/" .
+#                                          "mov.gif'>\n</a> \n&nbsp;</font>");
                 }
             }
 
@@ -1205,6 +1235,8 @@ for (my $i = 0; $i < $nr_result; $i++) {
                                       "</a> \n&nbsp;</font>");
             }
             else{
+		$source_line.=sprintf("<a href='#' class='getdata-button' name='audio' id='".$CORPUS."_$line_key'><img src='$conf{'htmlRoot'}/html/img/$show_context'></a>&nbsp;");
+=oink
                 $source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" " .
                                       "onClick=\"document.getElementById(" .
                                       "'inspector').style.display='block';");
@@ -1213,17 +1245,18 @@ for (my $i = 0; $i < $nr_result; $i++) {
                 $source_line.=sprintf("<img style='border-style:none' " .
                                       "src='$conf{'htmlRoot'}/html/img/" .
                                       "$show_context' width=\"17\"></a> \n&nbsp;</font>");
+=cut
             }
             $source_line.="<strong>" . $sts{"text_id"} . "</strong>&nbsp;";	    
         }
-
+	
         if(!($speech_corpus and ($display_struct =~ /text\.tid/))) {
-            $source_line.="<i>" . $sts{$display_struct} . "</i>";
+            $source_line.="<i>" . $sts{$display_struct} ."</i>";
         }
 
-        $source_line.=sprintf("</nobr>\n</td>\n<td");
+        $source_line.=sprintf("</nobr>\n</td>\n<td ");
 
-        if ($context_type eq "chars") {
+        if ($context_type eq "chars" or $concordance_for_speech) {
             $source_line.=sprintf(" align=\"right\"");
         }
 
@@ -1235,10 +1268,10 @@ for (my $i = 0; $i < $nr_result; $i++) {
             $a =~ s/\&amp;quot;/\&quot;/g;
         }
 
-        $source_line .= print_tokens($res_l, $atttype);
+        $source_line .= print_tokens($res_l, $atttype, $truncate_left);
 
-        if ($context_type eq "chars") {
-            $source_line.=sprintf("</td><td");
+        if ($context_type eq "chars" or $concordance_for_speech) {
+            $source_line.=sprintf("</td><td ");
             if (($CORPUS eq 'quran_mono') or ($base_corpus eq 'UNCORPORA_AR')) {
                 $source_line.=sprintf(" align=\"center\" ");
             }
@@ -1246,59 +1279,77 @@ for (my $i = 0; $i < $nr_result; $i++) {
         }
 
         $source_line.=sprintf("<b> &nbsp;");
-        $source_line .= print_tokens($ord, $atttype);
+        $source_line .= print_tokens($ord, $atttype, 0);
         $source_line.=sprintf(" &nbsp;</b>");
 
-        if ($context_type eq "chars") {
-            $source_line.=sprintf("</td><td");
+        if ($context_type eq "chars" or $concordance_for_speech) {
+            $source_line.=sprintf("</td><td ");
             if (($CORPUS eq 'quran_mono') or ($base_corpus eq 'UNCORPORA_AR')) {
                 $source_line.=sprintf(" align=\"left\" ");
             }
+
             $source_line.=sprintf(">");
         }
 
-        $source_line .= print_tokens($res_r, $atttype);
+        $source_line .= print_tokens($res_r, $atttype, $truncate_right);
         $source_line.=sprintf("</td></tr>");
 
         if($parallel){
-            if ($CORPUS eq "skriv" || $CORPUS eq "norm" || $CORPUS eq 'sls') {
+            if ($CORPUS eq "skriv" || $CORPUS eq "norm" || $concordance_for_speech) {
                 $source_line .= "<tr><td></td><td align=\"right\">";
             }
             else {
                 $source_line .= "<tr><td></td><td>";
             }
 
-            $source_line .= print_tokens($res_l, 2);
+            $source_line .= print_tokens($res_l, 2, $truncate_left);
 
-            if ($context_type eq "chars") {
+            if ($context_type eq "chars" or $concordance_for_speech) {
                 $source_line.=sprintf("</td><td>");
             }
 
             $source_line.=sprintf("<b> &nbsp;");
-            $source_line .= print_tokens($ord, 2);
+            $source_line .= print_tokens($ord, 2, 0);
             $source_line.=sprintf(" &nbsp;</b>");
 
-            if ($context_type eq "chars") {
+            if ($context_type eq "chars" or $concordance_for_speech) {
                 $source_line.=sprintf("</td><td>");
             }
 
-            $source_line .= print_tokens($res_r, 2);
+            $source_line .= print_tokens($res_r, 2, $truncate_right);
             $source_line.=sprintf("</td></tr>");
 
             $source_line .= "<tr><td></td><td></td></tr>";
         }
 
         if($speech_corpus){
-            my $orig = get_first($res_l) . "<b> " . get_first($ord) .
-		" </b>" . get_first($res_r);
+
+	    my $left_context = get_first($res_l);
+	    my $right_context = get_first($res_r);
+
+	    if($concordance_for_speech){
+		my @r = split(/ /, $right_context);
+		my @l = split (/ /, $left_context);
+		my $ll = @l;
+		$left_context = join(" ", @l[$ll - 15 .. $#l]);
+		$right_context = join(" ", @r[0 .. 15]);
+	    }
+
+            my $orig = $left_context . "<b>" . get_first($ord) . "</b>" . $right_context;
+
+#            my $conv = Text::Iconv->new("ISO-8859-1", "UTF-8");
+#            $orig = $conv->convert($orig);
+	    
+	    $orig =~ s/^ +//;
             $orig =~ s/"/_/g;
             $orig =~ s/\#+/&hellip;/g;
-	    $orig =~ s/  +/ /g;
-            $source_line .= "<tr><td></td><td colspan=\"3\" align=\"left\">";
-            $source_line .= "<div><span onclick=\"appendTranslateScript(" .
-                "this.parentNode, '$orig');\" style='font-size:small;cursor:" .
-                "pointer;'>[translate]</span></div>";
-            $source_line.=sprintf("</td></tr>");
+            $source_line .= "<tr><td>";
+	    my $googleAttribution1 = $conf{'htmlRoot'}."/html/img/attr2-2.png";
+	    my $googleAttribution2 = $conf{'htmlRoot'}."/html/img/attr1-2.png";
+            $source_line .= "<span onclick=\"appendTranslateScript(" .
+                "this.parentNode, '$orig', '$googleAttribution2');\" style='font-size:small;cursor:" .
+                "pointer;'><img alt='translate' onmouseover=\"this.src='$googleAttribution1';\" onmouseout=\"this.src='';\" /></span>";
+            $source_line.=sprintf("</td><td></td></tr>");
             $source_line .= "<tr><td></td><td></td></tr>";
         }
     }
@@ -1380,21 +1431,21 @@ my $lat = $conf{'map_lat'};
 my $lng = $conf{'map_lng'};
 my $zoom = $conf{'map_zoom'};
 
+if($lat){
+    print "\n<script>\nvar mapObj = {\ntokInf : $json_tok_inf,\ninfLoc : " .
+	"$json_inf_loc,\nallLocs : $json_all_locs,\nlat : $lat,\nlng : " .
+	"$lng,\nzoom : $zoom};\n</script>";
+    print TOP "\n<script>\nvar mapObj = {\ntokInf : $json_tok_inf,\ninfLoc : " .
+	"$json_inf_loc,\nallLocs : $json_all_locs,\nlat : $lat,\nlng : $lng,\nzoom : $zoom};\n" .
+	"</script>\n";
 
-print "\n<script>\nvar mapObj = {\ntokInf : $json_tok_inf,\ninfLoc : " .
-    "$json_inf_loc,\nallLocs : $json_all_locs,\nlat : $lat,\nlng : " .
-    "$lng,\nzoom : $zoom};\n</script>";
-print TOP "\n<script>\nvar mapObj = {\ntokInf : $json_tok_inf,\ninfLoc : " .
-    "$json_inf_loc,\nallLocs : $json_all_locs,\nlat : $lat,\nlng : $lng,\nzoom : $zoom};\n" .
-    "</script>\n";
-
-print "\n<script language='javascript'>\nfunction mapper()" .
-    "{\nwindow.open('$conf{'htmlRoot'}/html/gmap.html','mywindow2','height=780," .
-    "width=1200,status,scrollbars,resizable');\n}\n</script>";
-print TOP "\n<script language='javascript'>\nfunction mapper()".
-    "{\nwindow.open('$conf{'htmlRoot'}/html/gmap.html','mywindow2','height=780,".
-    "width=1200,status,scrollbars,resizable');\n}\n</script>\n";
-
+    print "\n<script language='javascript'>\nfunction mapper()" .
+	"{\nwindow.open('$conf{'htmlRoot'}/html/gmap.html','mywindow2','height=780," .
+	"width=1200,status,scrollbars,resizable');\n}\n</script>";
+    print TOP "\n<script language='javascript'>\nfunction mapper()".
+	"{\nwindow.open('$conf{'htmlRoot'}/html/gmap.html','mywindow2','height=780,".
+	"width=1200,status,scrollbars,resizable');\n}\n</script>\n";
+}
     ##########################################
     #
     # 5. Cleanup.
@@ -1429,7 +1480,7 @@ if($parallel){$atttype = 'x'}
 
 print "\n<script language=\"javascript\">showList($d_files,'" . $conf{'query_id'} .
     "','" . $lang{'hits_found'} . "',$hits,'" . $lang{'results_pages'} .
-    "','$CORPUS','$max', '$atttype', '$player', '$conf{'cgiRoot'}')</script>\n";
+    "','$CORPUS','$max', '$atttype', '$player', '$conf{'cgiRoot'}','$concordance_for_speech')</script>\n";
 
 # print page header to file, so that it is accessible for 
 # the other results pages
@@ -1439,7 +1490,7 @@ print TOP "$lang{'results_pages'}:";
 
 foreach my $i (1..$d_files) {
     my $id = "page_" . $i;
-    print TOP " <a id=\"$id\" href=\"$conf{'cgiRoot'}/show_page_dev.cgi?n=$i&query_id=$conf{'query_id'}&corpus=$CORPUS&atttype=$atttype&player=$player\">$i</a> ";
+    print TOP " <a id=\"$id\" href=\"$conf{'cgiRoot'}/show_page_dev.cgi?n=$i&query_id=$conf{'query_id'}&corpus=$CORPUS&atttype=$atttype&concordance_for_speech=$concordance_for_speech&player=$player\">$i</a> ";
 }
 print "</div>";
 print "</body></html>\n";
@@ -1488,7 +1539,18 @@ sub get_first{
 sub print_tokens {
     my $in = shift;
     my $atts_index = shift;
+    my $truncate = shift;
     my @t = split (/ /, $in);
+    my $length = @t;
+    my $limit = 15;
+    if($truncate){
+	if($truncate eq "l"){
+	    @t = @t[$length - $limit .. $#t];
+	}
+	else{
+	    @t = @t[0 .. $limit];
+	}
+    }
     my $string  ="";
 
     foreach my $t (@t) {
@@ -1527,6 +1589,13 @@ sub print_tokens {
                            "\'$tag_i\')\" onMouseOut=\"hideTag(\'$tag_i\')\">\n");
         $string .= sprintf("%s </span>",$token_string); 
         $tags{$tag_i}=$token_atts;
+    }
+
+    if($truncate){
+	if($length > $limit){
+	    if($truncate eq 'r'){ $string .= " ...";}
+	    else{$string = "... " . $string;}
+	}
     }
     return $string;
 

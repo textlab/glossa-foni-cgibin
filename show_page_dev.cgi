@@ -45,6 +45,18 @@ if($corpus_mode eq 'speech') {
     $speech_corpus = 1;
 }
 
+my $concordance_for_speech = 0;
+my $truncate_left = 0;
+my $truncate_right = 0;
+if ($speech_corpus){
+    $concordance_for_speech = CGI::param('concordance_for_speech');
+}
+if( $concordance_for_speech ){
+    $truncate_left = 'l';
+    $truncate_right = 'r';
+}
+
+
 my @header_html_elts = (Link({-rel=>'shortcut icon',
                               -href=>'favicon.ico',
                               -type=>'image/ico'}),
@@ -70,32 +82,47 @@ if ($speech_corpus) {
                                       "ui/css/demo-docs-theme/ui.theme.css",
                                   -type=>'text/css',
                                   -media=>'all'}));
-
+=oink
     push(@header_html_elts, Link({-rel=>'stylesheet',
                                   -href=>"$conf{'htmlRoot'}/player/player.css",
                                   -type=>'text/css'}));
-
+=cut
     push(@header_html_elts, Link({-rel=>'stylesheet',
                                   -href=>"$conf{'htmlRoot'}/html/tags.css",
                                   -type=>'text/css'}));
 
+    push(@header_html_elts, Link({-rel=>'stylesheet',
+                                  -href=>"$conf{'htmlRoot'}/glossa_video/css/jplayer.blue.monday.css",
+                                  -type=>'text/css'}));
+
+    push(@header_html_elts, Link({-rel=>'stylesheet',
+                                  -href=>"$conf{'htmlRoot'}/glossa_video/css/media.css",
+                                  -type=>'text/css'}));
+
+    push(@header_html_elts, Link({-rel=>'stylesheet',
+                                  -href=>"http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css",
+                                  -type=>'text/css'}));
+=woof
     push(@header_script_elts, {-type=>'text/javascript',
                                -src=>"$conf{'htmlRoot'}/player/player.ajax.js"});
-
+=cut
     push(@header_script_elts, {-type=>'text/javascript',
                                -src=>"$conf{'htmlRoot'}/js/showtag.js"});
 
     push(@header_script_elts, {-type=>'text/javascript',
-                               -src=>"$conf{'htmlRoot'}" .
-                                   "/js/jquery/jquery-1.4.3.min.js"});
+                               -src=>"//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"});
 
     push(@header_script_elts, {-type=>'text/javascript',
-                               -src=>$conf{'htmlRoot'} .
-                                   "/js/jquery/jquery-ui-1.8.6.custom.min.js"});
-
+                               -src=>"$conf{'htmlRoot'}/glossa_video/jquery.jplayer.min.js"});
+    
+    push(@header_script_elts, {-type=>'text/javascript',
+                               -src=>"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"});
+=bah
     push(@header_script_elts, {-type=>'text/javascript',
                                -src=>"$conf{'htmlRoot'}/player/slider.js"});
-
+=cut
+    push(@header_script_elts, {-type=>'text/javascript',
+                               -src=>"$conf{'htmlRoot'}/glossa_video/video.js"});
 
     push(@header_script_elts, {-type=>'text/javascript',
                                -code=>"var player;"});
@@ -465,6 +492,8 @@ while (<DATA>) {
                                       " \n&nbsp;</font>");
             }
             else{
+		$source_line.=sprintf("<a href='#' class='getdata-button' name='video' id='".$CORPUS."_$line_key'><img src='$conf{'htmlRoot'}/html/img/mov.gif'></a>&nbsp;");
+=oops
                 $source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" onClick=" .
                                       "\"document.getElementById('inspector')" .
                                       ".style.display='block';");
@@ -473,6 +502,7 @@ while (<DATA>) {
                 $source_line.=sprintf("<img style='border-style:none' src=" .
                                       "'$conf{'htmlRoot'}html/img/mov.gif'>" .
                                       "\n</a> \n&nbsp;</font>");
+=cut
             }
         }
 
@@ -489,6 +519,8 @@ while (<DATA>) {
                                   " \n&nbsp;</font>");
         }
         else{
+	    $source_line.=sprintf("<a href='#' class='getdata-button' name='audio' id='".$CORPUS."_$line_key'><img src='$conf{'htmlRoot'}/html/img/$show_context'></a>&nbsp;");
+=bang
             $source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" onClick=" .
                                   "\"document.getElementById('inspector')" .
                                   ".style.display='block';");
@@ -497,6 +529,7 @@ while (<DATA>) {
             $source_line.=sprintf("<img style='border-style:none' src=" .
                                   "'$conf{'htmlRoot'}html/img/$show_context' width=\"17\"></a>" .
                                   " \n&nbsp;</font>");
+=cut
         }
 
         $source_line.="<strong>" . $sts{"text_id"} . "</strong>";
@@ -506,27 +539,27 @@ while (<DATA>) {
 
     print "</nobr></td><td";
 
-    if ($context_type eq "chars") {
+    if ($context_type eq "chars" or $concordance_for_speech) {
         print " align=\"right\"";
     }
 
     print ">";
 
-    print_it($res_l, $atttype);
+    print_it($res_l, $atttype, $truncate_left);
 
-    if ($context_type eq "chars") {
+    if ($context_type eq "chars" or $concordance_for_speech) {
         print "</td><td>";
     }
 
     print "<b> &nbsp;";
-    print_it($ord, $atttype);
+    print_it($ord, $atttype, 0);
     print " &nbsp;</b>";
 
-    if ($context_type eq "chars") {
+    if ($context_type eq "chars" or $concordance_for_speech) {
         print "</td><td>";
     }
 
-    print_it($res_r, $atttype);
+    print_it($res_r, $atttype, $truncate_right);
 
 
     print "</td></tr>";###
@@ -540,21 +573,21 @@ while (<DATA>) {
 
         print ">";
 
-        print_it($res_l, 2);
+        print_it($res_l, 2, $truncate_left);
         
         if ($context_type eq "chars") {
             print "</td><td>";
         }
 
         print "<b> &nbsp;";
-        print_it($ord, 2);
+        print_it($ord, 2, 0);
         print " &nbsp;</b>";
 
         if ($context_type eq "chars") {
             print "</td><td>";
         }
 
-        print_it($res_r, 2);
+        print_it($res_r, 2, $truncate_right);
         print "</td></tr><tr><td></td><td><br /></td></tr>";###
     }
     
@@ -581,15 +614,32 @@ while (<DATA>) {
     }
 
     if ($speech_corpus) {
-        my $orig = get_first($res_l) . "<b>" . get_first($ord) . "</b>" .
-            get_first($res_r);
+
+	my $left_context = get_first($res_l);
+	my $right_context = get_first($res_r);
+
+	if($concordance_for_speech){
+	    my @r = split(/ /, $right_context);
+	    my @l = split (/ /, $left_context);
+	    my $ll = @l;
+	    $left_context = join(" ", @l[$ll - 15 .. $#l]);
+	    $right_context = join(" ", @r[0 .. 15]);
+	}
+        my $orig = $left_context . "<b>" . get_first($ord) . "</b>" . $right_context;
+	    
+	$orig =~ s/^ +//;
         $orig =~ s/"/_/g;
         $orig =~ s/\#+/&hellip;/g;
-        my $source_line .= "<tr><td></td><td>";
-        $source_line .= "<div><span onclick=\"appendTranslateScript(" .
-            "this.parentNode, '$orig');\" style='font-size:small;cursor:" .
-            "pointer;'>[translate]</span></div>";
-        $source_line.=sprintf("</td></tr>");
+        my $source_line .= "<tr><td>";
+	my $googleAttribution1 = $conf{'htmlRoot'}."/html/img/attr2-2.png";
+	my $googleAttribution2 = $conf{'htmlRoot'}."/html/img/attr1-2.png";
+	$source_line .= "<span onclick=\"appendTranslateScript(" .
+	    "this.parentNode, '$orig', '$googleAttribution2');\" style='font-size:small;cursor:" .
+	    "pointer;'><img alt='translate' onmouseover=\"this.src='$googleAttribution1';\" onmouseout=\"this.src='';\" /></span>";
+#        $source_line .= "<div><span onclick=\"appendTranslateScript(" .
+#            "this.parentNode, '$orig');\" style='font-size:small;cursor:" .
+#            "pointer;'>[translate]</span></div>";
+        $source_line.=sprintf("</td><td></td></tr>");
         $source_line .= "<tr><td></td><td></td></tr>";
         print $source_line;
     }
@@ -658,7 +708,6 @@ print "</form></table>";
 
 ## to allow tags to be show at the bottom of the page
 print "<br><br><br><br><br><br><br><br><br>";
-
 print "</body></html>";
 
 my $tag_i;
@@ -672,7 +721,18 @@ sub get_first{
 sub print_it {
     my $in = shift;
     my $atts_index = shift;
+    my $truncate = shift;
     my @t = split (/ /, $in);
+    my $length = @t;
+    my $limit = 15;
+    if($truncate){
+	if($truncate eq "l"){
+	    @t = @t[$length - $limit .. $#t];
+	}
+	else{
+	    @t = @t[0 .. $limit];
+	}
+    }
 
     my $alert = 0;
 
