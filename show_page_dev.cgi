@@ -567,7 +567,7 @@ while (<DATA>) {
     if ($parallel) {
         print "<tr><td></td><td";
 
-        if ($context_type eq "chars") {
+        if ($context_type eq "chars" or $concordance_for_speech) {
             print " align=\"right\"";
         }
 
@@ -575,7 +575,7 @@ while (<DATA>) {
 
         print_it($res_l, 2, $truncate_left);
         
-        if ($context_type eq "chars") {
+        if ($context_type eq "chars" or $concordance_for_speech) {
             print "</td><td>";
         }
 
@@ -583,12 +583,12 @@ while (<DATA>) {
         print_it($ord, 2, 0);
         print " &nbsp;</b>";
 
-        if ($context_type eq "chars") {
+        if ($context_type eq "chars" or $concordance_for_speech) {
             print "</td><td>";
         }
 
         print_it($res_r, 2, $truncate_right);
-        print "</td></tr><tr><td></td><td><br /></td></tr>";###
+        print "</td></tr><tr><td></td></tr>";###
     }
     
     if (0) {
