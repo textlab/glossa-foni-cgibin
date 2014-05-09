@@ -1261,7 +1261,7 @@ for (my $i = 0; $i < $nr_result; $i++) {
         $source_line.=sprintf("</td></tr>");
 
         if($parallel){
-            if ($CORPUS eq "skriv" || $CORPUS eq "norm") {
+            if ($CORPUS eq "skriv" || $CORPUS eq "norm" || $CORPUS eq 'sls') {
                 $source_line .= "<tr><td></td><td align=\"right\">";
             }
             else {
@@ -1289,11 +1289,12 @@ for (my $i = 0; $i < $nr_result; $i++) {
         }
 
         if($speech_corpus){
-            my $orig = get_first($res_l) . "<b>" . get_first($ord) .
-                "</b>" . get_first($res_r);
+            my $orig = get_first($res_l) . "<b> " . get_first($ord) .
+		" </b>" . get_first($res_r);
             $orig =~ s/"/_/g;
             $orig =~ s/\#+/&hellip;/g;
-            $source_line .= "<tr><td></td><td>";
+	    $orig =~ s/  +/ /g;
+            $source_line .= "<tr><td></td><td colspan=\"3\" align=\"left\">";
             $source_line .= "<div><span onclick=\"appendTranslateScript(" .
                 "this.parentNode, '$orig');\" style='font-size:small;cursor:" .
                 "pointer;'>[translate]</span></div>";
