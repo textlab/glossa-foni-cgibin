@@ -1197,7 +1197,9 @@ for (my $i = 0; $i < $nr_result; $i++) {
         }
 
         if ($speech_corpus) {
-            $source_line.=sprintf("<a href='#' class='waveform-button' id='".$CORPUS."_$line_key'><img src='$conf{'htmlRoot'}/html/img/waveform.png' title='Waveform' border='1'></a>&nbsp;");
+            if ($CORPUS ne 'legepasient') {
+              $source_line.=sprintf("<a href='#' class='waveform-button' id='".$CORPUS."_$line_key'><img src='$conf{'htmlRoot'}/html/img/waveform.png' title='Waveform' border='1'></a>&nbsp;");
+            }
             if($video_stars{ucfirst $identifier}){
                 if($player ne 'flash'){
                     $source_line.=sprintf("<font size=\"-2\">\n<a href=\"#\" " .

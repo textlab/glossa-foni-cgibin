@@ -479,7 +479,9 @@ while (<DATA>) {
             "&size=1&nested=0";
         my $source_line;
 
-        $source_line.=sprintf("<a href='#' class='waveform-button' id='".$CORPUS."_$line_key'><img src='$conf{'htmlRoot'}/html/img/waveform.png' title='Waveform' border='1'></a>&nbsp;");
+        if ($CORPUS ne 'legepasient') {
+          $source_line.=sprintf("<a href='#' class='waveform-button' id='".$CORPUS."_$line_key'><img src='$conf{'htmlRoot'}/html/img/waveform.png' title='Waveform' border='1'></a>&nbsp;");
+        }
         if( $video_stars{ $identifier } ) {
 
             if($player ne 'flash'){
