@@ -31,6 +31,7 @@ my %in;
 my $hits_name=CGI::param('name');
 
 my $user = $ENV{'REMOTE_USER'}; 
+my $display_struct = CGI::param('structDisplay');
 
 my %conf=GlossaConfig::readConfig($corpus);
 $logger->info("Corpus is $corpus");
@@ -411,6 +412,14 @@ while (<DATA>) {
 
     print "<tr><td height=\"30\"><nobr>";
     my $cpos = $sts{'cpos'};
+
+    # get value to display from database
+    # i.e. if the value to be displayed is not
+    if ($display_struct and !($sts{$display_struct})) { 
+        # a cqp structural annotation
+        $sts{$display_struct} =
+            Glossa::get_metadata_feat($display_struct, $sts{'text_id'},\%conf);
+    } 
     
     if ($del) {
         # val was $s_id
@@ -539,6 +548,10 @@ while (<DATA>) {
         $source_line.="<strong>" . $sts{"text_id"} . "</strong>";
 
         print $source_line;
+    }
+
+    if(!($speech_corpus and ($display_struct =~ /text\.tid/))) {
+        print ("<i>" . $sts{$display_struct} ."</i>");
     }
 
     print "</nobr></td><td";

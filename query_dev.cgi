@@ -1486,7 +1486,7 @@ if($parallel){$atttype = 'x'}
 
 print "\n<script language=\"javascript\">showList($d_files,'" . $conf{'query_id'} .
     "','" . $lang{'hits_found'} . "',$hits,'" . $lang{'results_pages'} .
-    "','$CORPUS','$max', '$atttype', '$player', '$conf{'cgiRoot'}','$concordance_for_speech')</script>\n";
+    "','$CORPUS','$max', '$atttype', '$player', '$conf{'cgiRoot'}','$concordance_for_speech', '$display_struct')</script>\n";
 
 # print page header to file, so that it is accessible for 
 # the other results pages
@@ -1496,7 +1496,7 @@ print TOP "$lang{'results_pages'}:";
 
 foreach my $i (1..$d_files) {
     my $id = "page_" . $i;
-    print TOP " <a id=\"$id\" href=\"$conf{'cgiRoot'}/show_page_dev.cgi?n=$i&query_id=$conf{'query_id'}&corpus=$CORPUS&atttype=$atttype&concordance_for_speech=$concordance_for_speech&player=$player\">$i</a> ";
+    print TOP " <a id=\"$id\" href=\"$conf{'cgiRoot'}/show_page_dev.cgi?n=$i&query_id=$conf{'query_id'}&corpus=$CORPUS&atttype=$atttype&concordance_for_speech=$concordance_for_speech&player=$player&structDisplay=$display_struct\">$i</a> ";
 }
 print "</div>";
 print <<EOF;
